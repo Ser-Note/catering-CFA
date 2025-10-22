@@ -1,0 +1,3 @@
+1,2025-10-16,"Exeter Cheer",500,,"chick fil a;garden herb ranch;honey mustard",2500,0,pickup,10:00,"chase rogers",6107638706,yes,3,"chase rogers","chase rogers"
+2,2025-10-21,"Exeter Cheer",40,"12-ct nugget: 1","BBQ, Chick-fil-A, Garden Herb Ranch",203,0,pickup,22:00,"chase rogers",6107638706,yes,3,"chase rogers"
+3,2025-10-21,"Exeter Cheer",500,,"Garden Herb Ranch, Ketchup, Polynesian",2500,0,pickup,21:00,"chase rogers",6107638706,yes,3,"chase rogers"

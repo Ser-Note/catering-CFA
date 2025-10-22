@@ -1,0 +1,2859 @@
+[
+    {
+        "id": 1,
+        "order_type": "Delivery",
+        "date": "Saturday 10\/25\/2025",
+        "time": "2:45pm",
+        "destination": "17 Mulligan Drive Reading , PA 19606",
+        "customer_name": "Lindsey Kopec",
+        "phone_number": "+14844326282",
+        "customer_email": "lindseykopec@yahoo.com",
+        "guest_count": "50",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$319.50"
+    },
+    {
+        "id": 2,
+        "order_type": "Delivery",
+        "date": "Saturday 10\/25\/2025",
+        "time": "2:45pm",
+        "destination": "17 Mulligan Drive Reading , PA 19606",
+        "customer_name": "Lindsey Kopec",
+        "phone_number": "+14844326282",
+        "customer_email": "lindseykopec@yahoo.com",
+        "guest_count": "50",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$223.50"
+    },
+    {
+        "id": 3,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Margie Weber",
+        "phone_number": "+16103243746",
+        "customer_email": "mdweber@ptd.net",
+        "guest_count": "15",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$113.00"
+    },
+    {
+        "id": 4,
+        "order_type": "Delivery",
+        "date": "Monday 10\/13\/2025",
+        "time": "4:45pm",
+        "destination": "100 Bieber Lane Douglassville , PA 19518",
+        "customer_name": "Karen Norheim",
+        "phone_number": "+16106337628",
+        "customer_email": "karennorheim@gmail.com",
+        "guest_count": "20",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Spicy Chicken Sandwich",
+                "qty": 10
+            },
+            {
+                "item": "Kale Crunch Side",
+                "qty": 10
+            },
+            {
+                "item": "Regular Chick-fil-A® Chicken Sandwich Packaged Meal",
+                "qty": 10
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Ketchup",
+                "qty": 1
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$336.09"
+    },
+    {
+        "id": 5,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/14\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Chanelle McCoy",
+        "phone_number": "*",
+        "customer_email": "chanellelaus@gmail.com",
+        "guest_count": "50",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 25
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 2
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Ketchup",
+                "qty": 10
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 6
+            },
+            {
+                "item": "Polynesian Sauce",
+                "qty": 4
+            },
+            {
+                "item": "Barbeque Sauce",
+                "qty": 6
+            },
+            {
+                "item": "Garden Herb Ranch Sauce",
+                "qty": 6
+            },
+            {
+                "item": "Honey Mustard Sauce",
+                "qty": 4
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 10
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 4
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 6
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 6
+            },
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 5
+            },
+            {
+                "item": "Fat-Free Honey Mustard Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 5
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 3
+            }
+        ],
+        "total": "$385.25"
+    },
+    {
+        "id": 6,
+        "order_type": "Delivery",
+        "date": "Thursday 10\/16\/2025",
+        "time": "11:00am",
+        "destination": "2624 Westview Drive",
+        "customer_name": "Elizabeth Novatnack",
+        "phone_number": "+15705941216",
+        "customer_email": "liznovatnack@gmail.com",
+        "guest_count": "33",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Chick-fil-A Cool Wrap® Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Kale Crunch Side Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Chocolate Chunk Cookie and Chocolate Fudge Brownie Tray",
+                "qty": 2
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 4
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 3
+            }
+        ],
+        "total": "$626.00"
+    },
+    {
+        "id": 7,
+        "order_type": "Pickup",
+        "date": "Saturday 11\/8\/2025",
+        "time": "5:00pm",
+        "destination": "N\/A",
+        "customer_name": "Angela Houck",
+        "phone_number": "+14843332880",
+        "customer_email": "Anghouck27@yahoo.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$107.00"
+    },
+    {
+        "id": 8,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/14\/2025",
+        "time": "8:30pm",
+        "destination": "N\/A",
+        "customer_name": "Eli Hall",
+        "phone_number": "+18288175694",
+        "customer_email": "xceli2011@yahoo.com",
+        "guest_count": "130",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 130
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 115
+            },
+            {
+                "item": "Honey Mustard Sauce",
+                "qty": 20
+            },
+            {
+                "item": "Barbeque Sauce",
+                "qty": 15
+            }
+        ],
+        "total": "$687.70"
+    },
+    {
+        "id": 9,
+        "order_type": "Pickup",
+        "date": "Monday 10\/13\/2025",
+        "time": "4:15pm",
+        "destination": "N\/A",
+        "customer_name": "Dani Passifione",
+        "phone_number": "+16108581241",
+        "customer_email": "depass2023@gmail.com",
+        "guest_count": "30",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Fruit Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Freshly-Brewed Iced Tea Sweetened",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Freshly-Brewed Iced Tea Unsweetened",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$274.25"
+    },
+    {
+        "id": 10,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/15\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Justin Hoyte",
+        "phone_number": "+17573344032",
+        "customer_email": "jhoyte14@yahoo.com",
+        "guest_count": "10",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 11,
+        "order_type": "Delivery",
+        "date": "Thursday 11\/6\/2025",
+        "time": "4:00pm",
+        "destination": "300 South 6th Avenue",
+        "customer_name": "Joanne Paules",
+        "phone_number": "+16105547889",
+        "customer_email": "jomikejo@ptd.net",
+        "guest_count": "25",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Regular Chick-fil-A® Chicken Sandwich Packaged Meal",
+                "qty": 25
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            },
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$366.14"
+    },
+    {
+        "id": 12,
+        "order_type": "Delivery",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "11:00am",
+        "destination": "2675 Morgantown Road",
+        "customer_name": "Garipoli Garipoli",
+        "phone_number": "+14849269008",
+        "customer_email": "kayla.garipoli@penske.com",
+        "guest_count": "50",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Regular Chick-fil-A? Chicken Sandwich Packaged Meal",
+                "qty": 35
+            },
+            {
+                "item": "Chick-fil-A? Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            },
+            {
+                "item": "Regular Spicy Chicken Sandwich Packaged Meal",
+                "qty": 15
+            },
+            {
+                "item": "Spicy Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$601.90"
+    },
+    {
+        "id": 13,
+        "order_type": "Delivery",
+        "date": "Wednesday 10\/15\/2025",
+        "time": "11:45am",
+        "destination": "931 Penn Avenue Wyomissing , PA 19610",
+        "customer_name": "Chris Fioti",
+        "phone_number": "+15702621756",
+        "customer_email": "fioticj@gmail.com",
+        "guest_count": "10",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Grilled Chicken Bundle",
+                "qty": 1
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Garden Salad Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$285.00"
+    },
+    {
+        "id": 14,
+        "order_type": "Pickup",
+        "date": "Thursday 11\/6\/2025",
+        "time": "10:00am",
+        "destination": "N\/A",
+        "customer_name": "Tori Keech",
+        "phone_number": "+16102410452",
+        "customer_email": "tkeech10@gmail.com",
+        "guest_count": "10",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$49.25"
+    },
+    {
+        "id": 15,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Debbie Tholan",
+        "phone_number": "+14848862672",
+        "customer_email": "debbietholan@yahoo.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 2
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$113.00"
+    },
+    {
+        "id": 16,
+        "order_type": "Delivery",
+        "date": "Monday 10\/27\/2025",
+        "time": "11:15am",
+        "destination": "825 East Wyomissing Boulevard Reading , PA 19611",
+        "customer_name": "Richell Bard",
+        "phone_number": "+16104518942",
+        "customer_email": "shopgrl12@live.com",
+        "guest_count": "25",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-n-Strips® Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Kale Crunch Side Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Kale Crunch Side Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$335.17"
+    },
+    {
+        "id": 17,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "11:00am",
+        "destination": "N\/A",
+        "customer_name": "Nikki Koutsouros",
+        "phone_number": "+12153785290",
+        "customer_email": "nkoutsouros@netscape.net",
+        "guest_count": "10",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Chilled Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 18,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/15\/2025",
+        "time": "6:45am",
+        "destination": "N\/A",
+        "customer_name": "Travis Trader",
+        "phone_number": "+15853305045",
+        "customer_email": "ttrader96@gmail.com",
+        "guest_count": "14",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Chick-fil-A® Chicken Biscuit",
+                "qty": 7
+            },
+            {
+                "item": "Spicy Chicken Biscuit",
+                "qty": 7
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 14
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Ketchup",
+                "qty": 7
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 7
+            },
+            {
+                "item": "Barbeque Sauce",
+                "qty": 3
+            },
+            {
+                "item": "Garden Herb Ranch Sauce",
+                "qty": 3
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 4
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 4
+            }
+        ],
+        "total": "$79.94"
+    },
+    {
+        "id": 19,
+        "order_type": "Pickup",
+        "date": "Saturday 11\/1\/2025",
+        "time": "12:30pm",
+        "destination": "N\/A",
+        "customer_name": "Cristin Consugar",
+        "phone_number": "+14849412367",
+        "customer_email": "heller.c@live.com",
+        "guest_count": "20",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$107.00"
+    },
+    {
+        "id": 20,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Dharma Sivasamy",
+        "phone_number": "+16104061868",
+        "customer_email": "dharma11@comcast.net",
+        "guest_count": "25",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 1
+            },
+            {
+                "item": "Regular Chick-fil-A® Chicken Sandwich Packaged Meal",
+                "qty": 15
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            },
+            {
+                "item": "Regular Chick-fil-A® Chicken Sandwich Packaged Meal",
+                "qty": 10
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 1
+            },
+            {
+                "item": "Chocolate Chunk Cookie",
+                "qty": 1
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 1
+            },
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$337.25"
+    },
+    {
+        "id": 21,
+        "order_type": "Delivery",
+        "date": "Friday 10\/17\/2025",
+        "time": "11:30am",
+        "destination": "2675 Morgantown Road",
+        "customer_name": "Claudia Hurwitz",
+        "phone_number": "+14846512596",
+        "customer_email": "cloudja63@gmail.com",
+        "guest_count": "60",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 2
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 40
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 2
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 2
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Chick-fil-A® Iced Tea (1\/2 Sweet Tea, 1\/2 Unsweet Tea)",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 14
+            },
+            {
+                "item": "Polynesian Sauce",
+                "qty": 13
+            },
+            {
+                "item": "Barbeque Sauce",
+                "qty": 13
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 2
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 2
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 2
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Fat-Free Honey Mustard Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 4
+            }
+        ],
+        "total": "$879.66"
+    },
+    {
+        "id": 22,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "8:00pm",
+        "destination": "N\/A",
+        "customer_name": "Allison Kercher",
+        "phone_number": "+14847729261",
+        "customer_email": "ASKercher@yahoo.com",
+        "guest_count": "15",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$107.00"
+    },
+    {
+        "id": 23,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "9:00am",
+        "destination": "N\/A",
+        "customer_name": "Stacey Miles",
+        "phone_number": "+16106083763",
+        "customer_email": "milessam94@gmail.com",
+        "guest_count": "30",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Chick-fil-A Chick-n-Minis® Tray",
+                "qty": 2
+            },
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 5
+            },
+            {
+                "item": "Honey",
+                "qty": 4
+            },
+            {
+                "item": "Grape Jam",
+                "qty": 3
+            },
+            {
+                "item": "Strawberry Jam",
+                "qty": 3
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 5
+            }
+        ],
+        "total": "$82.00"
+    },
+    {
+        "id": 24,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "5:15pm",
+        "destination": "N\/A",
+        "customer_name": "kayla lowe",
+        "phone_number": "+14843664622",
+        "customer_email": "lowek943@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 25,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "2:30pm",
+        "destination": "N\/A",
+        "customer_name": "Kiersten Leitner",
+        "phone_number": "+12158285653",
+        "customer_email": "kleitner0715@gmail.com",
+        "guest_count": "20",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$145.00"
+    },
+    {
+        "id": 26,
+        "order_type": "Pickup",
+        "date": "Thursday 10\/16\/2025",
+        "time": "12:00pm",
+        "destination": "N\/A",
+        "customer_name": "Chanelle McCoy",
+        "phone_number": "*",
+        "customer_email": "chanellelaus@gmail.com",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 4
+            },
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 2
+            }
+        ],
+        "total": "$139.00"
+    },
+    {
+        "id": 27,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "3:00pm",
+        "destination": "N\/A",
+        "customer_name": "Lora Bonnett",
+        "phone_number": "+16104173719",
+        "customer_email": "lora441@ptd.net",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Chilled Chick-n-Strips® (Cooked & Chilled for Later) Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 28,
+        "order_type": "Pickup",
+        "date": "Thursday 10\/16\/2025",
+        "time": "3:15pm",
+        "destination": "N\/A",
+        "customer_name": "David Medina",
+        "phone_number": "+16104687118",
+        "customer_email": "mexicosoccer98@gmail.com",
+        "guest_count": "30",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A? Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$65.00"
+    },
+    {
+        "id": 29,
+        "order_type": "Pickup",
+        "date": "Thursday 10\/16\/2025",
+        "time": "5:15pm",
+        "destination": "N\/A",
+        "customer_name": "arden kaley",
+        "phone_number": "+16107811025",
+        "customer_email": "ardentheshopper@gmail.com",
+        "guest_count": "50",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$172.00"
+    },
+    {
+        "id": 30,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "3:30pm",
+        "destination": "N\/A",
+        "customer_name": "Timothy Umstead",
+        "phone_number": "+16105744036",
+        "customer_email": "timumstead@comcast.net",
+        "guest_count": "18",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 31,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "12:15pm",
+        "destination": "N\/A",
+        "customer_name": "Christa Alvaro",
+        "phone_number": "+14848244212",
+        "customer_email": "cmay0424@gmail.com",
+        "guest_count": "20",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$106.00"
+    },
+    {
+        "id": 32,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "1:00pm",
+        "destination": "N\/A",
+        "customer_name": "Jennifer Kramer",
+        "phone_number": "+14844378376",
+        "customer_email": "jennifergkramer@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Chilled Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 2
+            }
+        ],
+        "total": "$119.25"
+    },
+    {
+        "id": 33,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "1:30pm",
+        "destination": "N\/A",
+        "customer_name": "Lisa Karst",
+        "phone_number": "+14843363166",
+        "customer_email": "cmfycozy@yahoo.com",
+        "guest_count": "10",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 34,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "11:45am",
+        "destination": "N\/A",
+        "customer_name": "Kayla Winesickle",
+        "phone_number": "+17179007900",
+        "customer_email": "kaylawinesickle@gmail.com",
+        "guest_count": "20",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Chick-fil-A® Cool Wrap Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-n-Strips® Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$305.50"
+    },
+    {
+        "id": 35,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Danielle Jones",
+        "phone_number": "+16108503328",
+        "customer_email": "dcjones0319@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Chilled Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 36,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "4:15pm",
+        "destination": "N\/A",
+        "customer_name": "Cindy Berdick",
+        "phone_number": "+16105680218",
+        "customer_email": "cberdick@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Chilled Chick-n-Strips® (Cooked & Chilled for Later) Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 37,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Dj Fox",
+        "phone_number": "+14847440300",
+        "customer_email": "foxydf54@gmail.com",
+        "guest_count": "12",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$35.00"
+    },
+    {
+        "id": 38,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Heather Peterson",
+        "phone_number": "+16104061474",
+        "customer_email": "Peterson0409@gmail.com",
+        "guest_count": "15",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 2
+            }
+        ],
+        "total": "$68.00"
+    },
+    {
+        "id": 39,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "2:00pm",
+        "destination": "N\/A",
+        "customer_name": "Kelsey Pinelli",
+        "phone_number": "*",
+        "customer_email": "Ksnyd16@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Chunk Cookie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$57.00"
+    },
+    {
+        "id": 40,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "4:45pm",
+        "destination": "N\/A",
+        "customer_name": "Rob Heebner",
+        "phone_number": "+16108234470",
+        "customer_email": "rheebner3@yahoo.com",
+        "guest_count": "20",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 41,
+        "order_type": "Pickup",
+        "date": "Friday 10\/17\/2025",
+        "time": "5:00pm",
+        "destination": "N\/A",
+        "customer_name": "Amy Harris",
+        "phone_number": "+12152379950",
+        "customer_email": "x88xamyx88x@yahoo.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$38.00"
+    },
+    {
+        "id": 42,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "1:45pm",
+        "destination": "N\/A",
+        "customer_name": "Emily George",
+        "phone_number": "+16109060244",
+        "customer_email": "emmgood18@icloud.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 43,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Christina Wabish",
+        "phone_number": "+14846861417",
+        "customer_email": "Christinampaschall@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Chocolate Chunk Cookie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$218.00"
+    },
+    {
+        "id": 44,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "6:45pm",
+        "destination": "N\/A",
+        "customer_name": "Melissa Robbins",
+        "phone_number": "+16107632249",
+        "customer_email": "Haasm84@yahoo.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 45,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "10:45am",
+        "destination": "N\/A",
+        "customer_name": "Natasha Moyer",
+        "phone_number": "+16106361437",
+        "customer_email": "tasha@ppappraisers.com",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Chocolate Fudge Brownie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$92.00"
+    },
+    {
+        "id": 46,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/25\/2025",
+        "time": "3:00pm",
+        "destination": "N\/A",
+        "customer_name": "Jamie Terefenko",
+        "phone_number": "+16103015326",
+        "customer_email": "Jamie.schearer@yahoo.com",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$37.00"
+    },
+    {
+        "id": 47,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "4:45pm",
+        "destination": "N\/A",
+        "customer_name": "Roy Hilferty",
+        "phone_number": "+13025402019",
+        "customer_email": "rhilferty@yahoo.com",
+        "guest_count": "15",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 48,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "5:30pm",
+        "destination": "N\/A",
+        "customer_name": "Kristin Chapple",
+        "phone_number": "+16107905008",
+        "customer_email": "kristinwhite224@gmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Chick-fil-A® Cool Wrap Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 5
+            }
+        ],
+        "total": "$112.50"
+    },
+    {
+        "id": 49,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "6:00pm",
+        "destination": "N\/A",
+        "customer_name": "Mark Greaves",
+        "phone_number": "+16104510526",
+        "customer_email": "Gremar@share.wilsonsd.org",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 50,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/18\/2025",
+        "time": "2:00pm",
+        "destination": "N\/A",
+        "customer_name": "Loren McHugh",
+        "phone_number": "+12678862324",
+        "customer_email": "nursefish93@hotmail.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 51,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/21\/2025",
+        "time": "2:00pm",
+        "destination": "N\/A",
+        "customer_name": "Mary Tibbetts",
+        "phone_number": "+16103018696",
+        "customer_email": "mary.tibbetts@verizon.net",
+        "guest_count": "12",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A? Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$65.00"
+    },
+    {
+        "id": 52,
+        "order_type": "Delivery",
+        "date": "Saturday 10\/25\/2025",
+        "time": "2:45pm",
+        "destination": "17 Mulligan Drive Reading , PA 19606",
+        "customer_name": "Lindsey Kopec",
+        "phone_number": "+14844326282",
+        "customer_email": "lindseykopec@yahoo.com",
+        "guest_count": "50",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$278.00"
+    },
+    {
+        "id": 53,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/21\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "Rebecca Horner",
+        "phone_number": "+14105982439",
+        "customer_email": "rhorner_us@yahoo.com",
+        "guest_count": "10",
+        "paper_goods": "Please include paper goods",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chick-fil-A® Cool Wrap Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Fudge Brownie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Iced Tea (1\/2 Sweet Tea, 1\/2 Unsweet Tea)",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 1
+            }
+        ],
+        "total": "$119.50"
+    },
+    {
+        "id": 54,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/29\/2025",
+        "time": "11:00am",
+        "destination": "N\/A",
+        "customer_name": "Samantha Zebert",
+        "phone_number": "+16104061948",
+        "customer_email": "szebert924@yahoo.com",
+        "guest_count": "60",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 2
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 120
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Diet Lemonade",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 2
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Honey Roasted BBQ Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$888.55"
+    },
+    {
+        "id": 55,
+        "order_type": "Pickup",
+        "date": "Thursday 10\/23\/2025",
+        "time": "11:15am",
+        "destination": "N\/A",
+        "customer_name": "A.J. Gray",
+        "phone_number": "+14846616132",
+        "customer_email": "andrew-gray@comcast.net",
+        "guest_count": "8",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Chunk Cookie and Chocolate Fudge Brownie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Creamy Salsa Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Fat-Free Honey Mustard Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 2
+            }
+        ],
+        "total": "$124.50"
+    },
+    {
+        "id": 56,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/25\/2025",
+        "time": "5:15pm",
+        "destination": "N\/A",
+        "customer_name": "Jamie Butzer",
+        "phone_number": "+17178751841",
+        "customer_email": "butzer2202@gmail.com",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$65.00"
+    },
+    {
+        "id": 57,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/21\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Kirk Gottschall",
+        "phone_number": "+15708759079",
+        "customer_email": "kxt9qwcctd@privaterelay.appleid.com",
+        "guest_count": "12",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 10
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Mayo",
+                "qty": 11
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 5
+            },
+            {
+                "item": "Ketchup",
+                "qty": 7
+            }
+        ],
+        "total": "$161.90"
+    },
+    {
+        "id": 58,
+        "order_type": "Pickup",
+        "date": "Tuesday 10\/21\/2025",
+        "time": "4:30pm",
+        "destination": "N\/A",
+        "customer_name": "Jessica Walter",
+        "phone_number": "+12158524489",
+        "customer_email": "jtwalter@yahoo.com",
+        "guest_count": "12",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$68.00"
+    },
+    {
+        "id": 59,
+        "order_type": "Pickup",
+        "date": "Saturday 10\/25\/2025",
+        "time": "3:00pm",
+        "destination": "N\/A",
+        "customer_name": "Kristin Kessler",
+        "phone_number": "+16109601254",
+        "customer_email": "kaksoccer09@yahoo.com",
+        "guest_count": "N\/A",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$107.00"
+    },
+    {
+        "id": 60,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "11:45am",
+        "destination": "N\/A",
+        "customer_name": "Matthew Agati",
+        "phone_number": "+16098026534",
+        "customer_email": "Matthew.agati@coxautoinc.com",
+        "guest_count": "25",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 2
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 25
+            },
+            {
+                "item": "Large Hot Chick-n-Strips® Tray",
+                "qty": 1
+            },
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 10
+            },
+            {
+                "item": "Original Flavor Waffle Potato Chips",
+                "qty": 25
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Freshly-Brewed Iced Tea Sweetened",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "Ketchup",
+                "qty": 25
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 25
+            },
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$513.65"
+    },
+    {
+        "id": 61,
+        "order_type": "Pickup",
+        "date": "Thursday 10\/23\/2025",
+        "time": "11:00am",
+        "destination": "N\/A",
+        "customer_name": "Peter Guerrieri",
+        "phone_number": "+16106988822",
+        "customer_email": "Pguerrieri252@gmail.com",
+        "guest_count": "10",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Chunk Cookie Tray",
+                "qty": 1
+            },
+            {
+                "item": "Medium Hot Chick-n-Strips® Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$194.00"
+    },
+    {
+        "order_type": "Pickup",
+        "customer_name": "chase",
+        "phone_number": "6107638706",
+        "customer_email": "chasea0102@gmail.com",
+        "date": "Tuesday, 10\/21\/2025",
+        "time": "9:30pm",
+        "destination": "",
+        "guest_count": "14",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "large strips tray",
+                "qty": 1
+            }
+        ],
+        "meal_boxes": [],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$107.00",
+        "id": 62
+    },
+    {
+        "order_type": "Pickup",
+        "customer_name": "chase",
+        "phone_number": "6107638706",
+        "customer_email": "chasea0102@gmail.com",
+        "date": "Tuesday, 10\/21\/2025",
+        "time": "10:00pm",
+        "destination": "",
+        "guest_count": "14",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "20 chick-n-mini tray",
+                "qty": 1
+            },
+            {
+                "item": "40 chick-n-mini tray",
+                "qty": 1
+            }
+        ],
+        "meal_boxes": [],
+        "drink_items": [],
+        "sauces_dressings": [],
+        "total": "$69.00",
+        "id": 63
+    },
+    {
+        "id": 64,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "11:30am",
+        "destination": "N\/A",
+        "customer_name": "Christian Reinecker",
+        "phone_number": "+16107808049",
+        "customer_email": "office@reineckerdentalgroup.com",
+        "guest_count": "26",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Fruit Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Garden Salad Tray",
+                "qty": 2
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 6
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 5
+            },
+            {
+                "item": "Light Italian Dressing",
+                "qty": 3
+            },
+            {
+                "item": "Fat-Free Honey Mustard Dressing",
+                "qty": 2
+            },
+            {
+                "item": "Creamy Salsa Dressing",
+                "qty": 4
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 6
+            }
+        ],
+        "total": "$247.00"
+    },
+    {
+        "id": 65,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "11:00am",
+        "destination": "N\/A",
+        "customer_name": "Jackie Cassidy Parsons",
+        "phone_number": "+14842585779",
+        "customer_email": "skyrayne92@aol.com",
+        "guest_count": "40",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Chilled Grilled Chicken Sub Sandwich Tray",
+                "qty": 2
+            },
+            {
+                "item": "Large Chick-fil-A® Cool Wrap Tray",
+                "qty": 1
+            },
+            {
+                "item": "Large Mac & Cheese Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 1
+            }
+        ],
+        "total": "$245.50"
+    },
+    {
+        "id": 66,
+        "order_type": "Delivery",
+        "date": "Saturday 10\/25\/2025",
+        "time": "3:45pm",
+        "destination": "540 Upland Avenue",
+        "customer_name": "Widener Football",
+        "phone_number": "+18327464737",
+        "customer_email": "mcsaldana@widener.edu",
+        "guest_count": "90",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Chick-fil-A® Chicken Sandwich",
+                "qty": 200
+            },
+            {
+                "item": "5 ct Chick-fil-A® Nuggets",
+                "qty": 100
+            },
+            {
+                "item": "Market Salad w\/ No Chicken",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 100
+            },
+            {
+                "item": "Polynesian Sauce",
+                "qty": 25
+            },
+            {
+                "item": "Sweet & Spicy Sriracha Sauce",
+                "qty": 25
+            },
+            {
+                "item": "Garden Herb Ranch Sauce",
+                "qty": 50
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 75
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 50
+            },
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 1
+            }
+        ],
+        "total": "$1827.09"
+    },
+    {
+        "id": 67,
+        "order_type": "Pickup",
+        "date": "Friday 10\/24\/2025",
+        "time": "4:15pm",
+        "destination": "N\/A",
+        "customer_name": "Ryan Gonzalez",
+        "phone_number": "+14847060065",
+        "customer_email": "ryan.gonzalez1006@gmail.com",
+        "guest_count": "30",
+        "paper_goods": "No",
+        "food_items": [
+            {
+                "item": "Large Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Honey Mustard Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$113.00"
+    },
+    {
+        "id": 68,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "7:30am",
+        "destination": "N\/A",
+        "customer_name": "Patrick Monaghan",
+        "phone_number": "+12159155035",
+        "customer_email": "patrickm1104@gmail.com",
+        "guest_count": "11",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Large Chick-fil-A Chick-n-Minis® Tray",
+                "qty": 1
+            },
+            {
+                "item": "Berry Parfait w\/ Granola",
+                "qty": 7
+            },
+            {
+                "item": "Small Fruit Cup",
+                "qty": 6
+            },
+            {
+                "item": "Regular 96 oz Coffee",
+                "qty": 1
+            },
+            {
+                "item": "Chick-fil-A® Chicken Biscuit",
+                "qty": 5
+            },
+            {
+                "item": "Spicy Chicken Biscuit",
+                "qty": 4
+            },
+            {
+                "item": "Sausage Biscuit",
+                "qty": 2
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "Ketchup",
+                "qty": 2
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Polynesian Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Barbeque Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Garden Herb Ranch Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Honey Mustard Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Ketchup",
+                "qty": 2
+            },
+            {
+                "item": "Chick-fil-A® Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Polynesian Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Honey Mustard Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Zesty Buffalo Sauce",
+                "qty": 2
+            },
+            {
+                "item": "Honey Roasted BBQ Sauce",
+                "qty": 2
+            }
+        ],
+        "total": "$158.72"
+    },
+    {
+        "id": 69,
+        "order_type": "Delivery",
+        "date": "Monday 10\/27\/2025",
+        "time": "11:30am",
+        "destination": "1025 Old Wyomissing Road",
+        "customer_name": "Hannah Rodriguez",
+        "phone_number": "+14846500886",
+        "customer_email": "hannah.rodriguez2@towerhealth.org",
+        "guest_count": "15",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Medium Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Chunk Cookie and Chocolate Fudge Brownie Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Garden Salad Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [
+            {
+                "item": "Gallon Chick-fil-A® Lemonade",
+                "qty": 1
+            },
+            {
+                "item": "Gallon Sunjoy® (1\/2 Sweet Tea, 1\/2 Lemonade)",
+                "qty": 1
+            }
+        ],
+        "sauces_dressings": [
+            {
+                "item": "8oz Chick-fil-A® Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Garden Herb Ranch Sauce",
+                "qty": 1
+            },
+            {
+                "item": "Avocado Lime Ranch Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Garden Herb Ranch Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Creamy Salsa Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Zesty Apple Cider Vinaigrette Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Fat-Free Honey Mustard Dressing",
+                "qty": 1
+            },
+            {
+                "item": "Light Balsamic Vinaigrette Dressing",
+                "qty": 1
+            }
+        ],
+        "total": "$212.64"
+    },
+    {
+        "id": 70,
+        "order_type": "Pickup",
+        "date": "Wednesday 10\/22\/2025",
+        "time": "3:30pm",
+        "destination": "N\/A",
+        "customer_name": "Sueanne Reisig",
+        "phone_number": "+16107630311",
+        "customer_email": "sueyreisig1@hotmail.com",
+        "guest_count": "7",
+        "paper_goods": "Yes",
+        "food_items": [
+            {
+                "item": "Small Hot Chick-fil-A® Nuggets Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Mac & Cheese Tray",
+                "qty": 1
+            },
+            {
+                "item": "Small Chocolate Fudge Brownie Tray",
+                "qty": 1
+            }
+        ],
+        "drink_items": [],
+        "sauces_dressings": [
+            {
+                "item": "8oz Polynesian Sauce",
+                "qty": 1
+            },
+            {
+                "item": "8oz Barbeque Sauce",
+                "qty": 1
+            }
+        ],
+        "total": "$91.50"
+    }
+]

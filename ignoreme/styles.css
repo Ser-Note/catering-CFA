@@ -1,0 +1,13 @@
+body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 20px; }
+h1 { color: #c8102e; text-align: center; margin-bottom: 40px; }
+.order-card { background: #fff; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); cursor:pointer; transition: 0.3s; }
+.order-card:hover { box-shadow: 0 5px 12px rgba(0,0,0,0.2); }
+.order-header { display: flex; justify-content: space-between; align-items: center; }
+.order-header h2 { margin: 0; font-size: 1.2em; }
+.order-summary { margin-top:10px; }
+.order-summary div { display:inline-block; margin-right:15px; font-weight:bold; }
+.order-details { display:none; margin-top:10px; border-top:1px solid #ddd; padding-top:10px; }
+.items-list { list-style:none; padding-left:0; }
+.items-list li { background:#f4f4f4; margin-bottom:5px; padding:5px 10px; border-radius:5px; }
+.pickup { color:#4CAF50; font-weight:bold; }
+.delivery { color:#2196F3; font-weight:bold; }
