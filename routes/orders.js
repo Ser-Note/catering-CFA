@@ -1,48 +1,53 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const { cateringOrderDB, emailOrderDB } = require('../database/db');
 const router = express.Router();
 
 const ordersJsonPath = path.join(__dirname, "..", "data", "orders.json");
-const cateringPath = path.join(__dirname, "..", "data", "catering.json");
 
-// --- Read catering orders ---
-function readCateringOrders() {
-  if (!fs.existsSync(cateringPath)) return [];
+// --- Read catering orders from database ---
+async function readCateringOrders() {
   try {
-    const cateringData = JSON.parse(fs.readFileSync(cateringPath, "utf8"));
+    const cateringData = await cateringOrderDB.getAll();
     return cateringData.map(order => ({
-      uid: "catering_" + (order.id || Math.random().toString(36).substr(2, 9)),
+      uid: "catering_" + order.id,
       id: order.id || "",
-      date: order.orderDate || new Date().toISOString().split("T")[0],
+      date: order.order_date || new Date().toISOString().split("T")[0],
       team: order.organization || "",
-      sandwiches: order.numSandwiches || "N/A",
-      food_items: order.otherItems || "N/A",
+      sandwiches: order.num_sandwiches || "N/A",
+      food_items: order.other_items || "N/A",
       sauces_dressings: order.sauces || "N/A",
-      hotbags: order.numBags || "N/A",
+      hotbags: order.num_bags || "N/A",
       pickles: order.pickles || "N/A",
       created_by: order.creator || "",
-      time: formatTime12h(order.timeOfDay || ""),
-      method: order.orderType || "",
-      contact: order.contactName || "",
-      phone: order.contactPhone || "",
+      time: formatTime12h(order.time_of_day || ""),
+      method: order.order_type || "",
+      contact: order.contact_name || "",
+      phone: order.contact_phone || "",
       special_instructions: "",
       paid: order.paid || false,
       completed_boh: order.completed_boh || false,
       completed_foh: order.completed_foh || false,
     }));
   } catch (e) {
-    console.error('Failed to parse catering.json', e);
+    console.error('Failed to read catering orders from database', e);
     return [];
   }
 }
 
-// --- Read JSON orders ---
-function readJsonOrders() {
-  if (!fs.existsSync(ordersJsonPath)) return [];
+// --- Read email orders from database ---
+async function readEmailOrders() {
   try {
-    return JSON.parse(fs.readFileSync(ordersJsonPath, "utf8"));
-  } catch {
+    const emailOrders = await emailOrderDB.getAll();
+    return emailOrders.map(order => ({
+      ...order,
+      date: order.order_date,
+      time: order.order_time,
+      orderType: order.order_type
+    }));
+  } catch (error) {
+    console.error('Failed to read email orders from database', error);
     return [];
   }
 }
@@ -116,11 +121,12 @@ function processJsonOrder(order) {
 }
 
 // --- GET /orders ---
-router.get("/", (req, res) => {
-  const cateringOrders = readCateringOrders();
-  const jsonOrdersRaw = readJsonOrders();
-  const jsonOrders = jsonOrdersRaw.map(processJsonOrder);
-  const allOrders = [...jsonOrders, ...cateringOrders];
+router.get("/", async (req, res) => {
+  try {
+    const cateringOrders = await readCateringOrders();
+    const emailOrdersRaw = await readEmailOrders();
+    const emailOrders = emailOrdersRaw.map(processJsonOrder);
+    const allOrders = [...emailOrders, ...cateringOrders];
 
   // Determine view mode from query params (defaults to 'boh')
   const viewMode = req.query.view || 'boh'; // 'boh' or 'foh'
@@ -251,16 +257,32 @@ traySizes["Chick-n-Strips® Tray"] = traySizes["strip tray"];
     todayStr: etDate,
     viewMode: viewMode
   });
+  } catch (error) {
+    console.error('Error loading orders:', error);
+    res.status(500).send('Error loading orders');
+  }
 });
 
 // --- API: update an order's paid/completed status ---
-router.post('/update', (req, res) => {
-  const body = req.body || {};
-  const { source, id, paid, completed_boh, completed_foh } = body;
+router.post('/update', async (req, res) => {
+  try {
+    const body = req.body || {};
+    const { source, id, paid, completed_boh, completed_foh } = body;
 
-  if (!source || !id) return res.status(400).json({ success: false, error: 'source and id required' });
+    if (!source || !id) return res.status(400).json({ success: false, error: 'source and id required' });
 
-  if (source === 'json') {
+    if (source === 'email') {
+      // Update email orders in database
+      const updates = {};
+      if (typeof paid !== 'undefined') updates.paid = !!paid;
+      if (typeof completed_boh !== 'undefined') updates.completed_boh = !!completed_boh;
+      if (typeof completed_foh !== 'undefined') updates.completed_foh = !!completed_foh;
+      
+      await emailOrderDB.updateStatus(id, updates);
+      return res.json({ success: true });
+    }
+
+    if (source === 'json') {
     // update data/orders.json
     try {
       const raw = fs.readFileSync(ordersJsonPath, 'utf8');
@@ -285,30 +307,21 @@ router.post('/update', (req, res) => {
   }
 
   if (source === 'catering') {
-    try {
-      const cateringData = JSON.parse(fs.readFileSync(cateringPath, 'utf8'));
-      let found = false;
-      for (let order of cateringData) {
-        if (String(order.id) === String(id)) {
-          if (typeof paid !== 'undefined') order.paid = !!paid;
-          if (typeof completed_boh !== 'undefined') order.completed_boh = !!completed_boh;
-          if (typeof completed_foh !== 'undefined') order.completed_foh = !!completed_foh;
-          found = true;
-          break;
-        }
-      }
-      if (!found) return res.status(404).json({ success: false, error: 'order not found' });
-      const tmp = cateringPath + '.tmp';
-      fs.writeFileSync(tmp, JSON.stringify(cateringData, null, 2), 'utf8');
-      fs.renameSync(tmp, cateringPath);
-      return res.json({ success: true });
-    } catch (err) {
-      console.error('Error updating catering orders', err);
-      return res.status(500).json({ success: false, error: 'write-failed' });
-    }
+    // Update catering orders in database
+    const updates = {};
+    if (typeof paid !== 'undefined') updates.paid = !!paid;
+    if (typeof completed_boh !== 'undefined') updates.completed_boh = !!completed_boh;
+    if (typeof completed_foh !== 'undefined') updates.completed_foh = !!completed_foh;
+    
+    await cateringOrderDB.updateStatus(id, updates);
+    return res.json({ success: true });
   }
 
   return res.status(400).json({ success: false, error: 'unknown source' });
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return res.status(500).json({ success: false, error: 'server error' });
+  }
 });
 
 module.exports = router;

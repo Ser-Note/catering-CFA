@@ -8,38 +8,23 @@ const path = require('path');
 const router = express.Router();
 
 const debugMode = true;
-const debugLog = path.join(__dirname, '..', 'data', 'debug_log.json');
+const { debugLogDB, emailOrderDB } = require('../database/db');
 const ordersPath = path.join(__dirname, '..', 'data', 'orders.json');
 
 // ---------- Helpers ----------
 
-function logDebug(msg) {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    message: msg
-  };
-  
-  let debugData = [];
-  if (fs.existsSync(debugLog)) {
-    try {
-      debugData = JSON.parse(fs.readFileSync(debugLog, 'utf8'));
-    } catch (e) {
-      debugData = [];
+async function logDebug(msg) {
+  try {
+    await debugLogDB.log(msg);
+    // Periodically clean up old logs (every 100 log entries)
+    if (Math.random() < 0.01) { // 1% chance
+      await debugLogDB.cleanup(1000);
     }
+  } catch (error) {
+    console.error('Failed to write debug log to database:', error);
   }
   
-  debugData.push(entry);
-  
-  // Keep only last 1000 entries to prevent file from growing too large
-  if (debugData.length > 1000) {
-    debugData = debugData.slice(-1000);
-  }
-  
-  const tmp = debugLog + '.tmp';
-  fs.writeFileSync(tmp, JSON.stringify(debugData, null, 2), 'utf8');
-  fs.renameSync(tmp, debugLog);
-  
-  if (debugMode) console.log(`[${entry.timestamp}] ${msg}`);
+  if (debugMode) console.log(`[${new Date().toISOString()}] ${msg}`);
 }
 
 function cleanField(str) {
@@ -296,12 +281,12 @@ function fetchCateringOrders() {
 
           f.on('message', msg => {
             msg.on('body', stream => {
-              simpleParser(stream, (err, parsed) => {
+              simpleParser(stream, async (err, parsed) => {
                 if (err || !parsed.text) return;
                 if (!/Incoming Catering Order/i.test(parsed.subject || '')) return;
 
-                // --- Log raw email text to debug_log.json ---
-                logDebug(`RAW EMAIL START:\n${parsed.text}\nRAW EMAIL END`);
+                // --- Log raw email text to debug log database ---
+                await logDebug(`RAW EMAIL START:\n${parsed.text}\nRAW EMAIL END`);
 
                 const text = normalizeText(parsed.text);
                 const orderData = parseOrder(text);
@@ -378,56 +363,52 @@ function fetchCateringOrders() {
             });
           });
 
-          f.once('end', () => {
+          f.once('end', async () => {
             try {
-              // Safely read existing orders.json. Handle empty or corrupted files gracefully.
-              let existingOrders = [];
-              if (fs.existsSync(ordersPath)) {
-                try {
-                  const raw = fs.readFileSync(ordersPath, 'utf8').trim();
-                  existingOrders = raw ? JSON.parse(raw) : [];
-                } catch (e) {
-                  // Backup the corrupted file with a timestamp and continue with empty array
-                  try {
-                    const backupPath = ordersPath + '.corrupt.' + Date.now();
-                    fs.copyFileSync(ordersPath, backupPath);
-                    logDebug(`WARNING: orders.json parse failed, backed up to ${backupPath} - ${e.message}`);
-                    if (debugMode) console.error('orders.json parse failed, backup created:', backupPath, e.message);
-                  } catch (copyErr) {
-                    logDebug(`ERROR backing up orders.json: ${copyErr.message}`);
-                    if (debugMode) console.error('Failed to backup corrupted orders.json:', copyErr);
-                  }
-                  existingOrders = [];
-                }
-              } else {
-                existingOrders = [];
-              }
-
+              // Save orders to database, avoiding duplicates
+              let savedCount = 0;
               for (const newOrder of orders) {
-                const exists = existingOrders.some(
-                  oldOrder =>
-                    oldOrder.customer_email === newOrder.customer_email &&
-                    oldOrder.date === newOrder.date &&
-                    oldOrder.total === newOrder.total
-                );
-                if (!exists) existingOrders.push(newOrder);
-              }
-
-              existingOrders.forEach((o, i) => (o.id = i + 1));
-              // Atomic write: write to a temp file then rename
-              try {
-                const tmpPath = ordersPath + '.tmp';
-                fs.writeFileSync(tmpPath, JSON.stringify(existingOrders, null, 2), 'utf8');
-                fs.renameSync(tmpPath, ordersPath);
-              } catch (writeErr) {
-                logDebug(`ERROR writing orders.json: ${writeErr.message}`);
-                console.error('Error writing orders:', writeErr);
+                try {
+                  // Check for duplicate order
+                  const existing = await emailOrderDB.findDuplicate(
+                    newOrder.customer_email,
+                    newOrder.date,
+                    newOrder.total
+                  );
+                  
+                  if (!existing) {
+                    // Convert arrays to JSONB format for database
+                    const dbOrder = {
+                      order_type: newOrder.order_type,
+                      order_date: newOrder.date,
+                      order_time: newOrder.time,
+                      destination: newOrder.destination,
+                      customer_name: newOrder.customer_name,
+                      phone_number: newOrder.phone_number,
+                      customer_email: newOrder.customer_email,
+                      guest_count: newOrder.guest_count,
+                      paper_goods: newOrder.paper_goods,
+                      special_instructions: newOrder.special_instructions,
+                      food_items: newOrder.food_items,
+                      drink_items: newOrder.drink_items,
+                      sauces_dressings: newOrder.sauces_dressings,
+                      total: newOrder.total
+                    };
+                    
+                    await emailOrderDB.create(dbOrder);
+                    savedCount++;
+                  }
+                } catch (orderErr) {
+                  await logDebug(`ERROR saving order: ${orderErr.message}`);
+                  console.error('Error saving individual order:', orderErr);
+                }
               }
 
               if (debugMode)
-                logDebug(`Saved ${existingOrders.length} total orders`);
+                await logDebug(`Processed ${orders.length} orders, saved ${savedCount} new orders to database`);
             } catch (e) {
-              console.error('Error writing orders:', e);
+              console.error('Error processing orders:', e);
+              await logDebug(`ERROR processing orders: ${e.message}`);
             } finally {
               safeEnd();
               resolve(orders.length);
