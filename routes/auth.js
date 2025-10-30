@@ -70,6 +70,41 @@ router.post('/login', (req, res) => {
   }
 });
 
+// GET /auth/test-login - Test login functionality
+router.get('/test-login', (req, res) => {
+  const storedPasswordHash = process.env.DATA_PASSWORD_HASH;
+  res.json({
+    message: 'Login test endpoint',
+    passwordHashConfigured: !!storedPasswordHash,
+    hashLength: storedPasswordHash?.length || 0,
+    sessionExists: !!req.session,
+    sessionId: req.session?.id,
+    authenticated: req.session?.authenticated
+  });
+});
+
+// POST /auth/test-login - Manually authenticate for testing
+router.post('/test-login', (req, res) => {
+  console.log('🧪 Manual authentication test');
+  req.session.authenticated = true;
+  req.session.authenticatedAt = new Date().toISOString();
+  
+  req.session.save((err) => {
+    if (err) {
+      console.error('❌ Test auth session save error:', err);
+      return res.json({ success: false, error: err.message });
+    }
+    
+    console.log('✅ Test authentication successful');
+    res.json({ 
+      success: true, 
+      sessionId: req.session.id,
+      authenticated: req.session.authenticated,
+      message: 'Manually authenticated - try accessing /options now'
+    });
+  });
+});
+
 // GET /auth/debug - Debug session information (only in development or when DEBUG_SESSIONS=true)
 router.get('/debug', (req, res) => {
   if (process.env.NODE_ENV === 'production' && process.env.DEBUG_SESSIONS !== 'true') {
