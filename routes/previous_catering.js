@@ -5,37 +5,64 @@ const { parse } = require("csv-parse/sync");
 const { stringify } = require("csv-stringify/sync");
 
 const router = express.Router();
-const csvFile = path.join(__dirname, "..", "data", "catering.txt");
+const cateringFile = path.join(__dirname, "..", "data", "catering.json");
 
-// --- CSV helpers ---
+// --- JSON helpers ---
 function loadRows() {
-  if (!fs.existsSync(csvFile)) return [];
+  if (!fs.existsSync(cateringFile)) return [];
 
-  const fileContent = fs.readFileSync(csvFile, "utf8");
-  if (!fileContent.trim()) return [];
-
-  // ✅ Safe parsing: allow flexible column counts
-  const rows = parse(fileContent, {
-    delimiter: ",",
-    quote: '"',
-    escape: "\\",
-    trim: true,
-    skip_empty_lines: true,
-    relax_column_count: true, // <-- prevents "Invalid Record Length" error
-  });
-
-  // ✅ Normalize all rows to 16 columns
-  rows.forEach((row) => {
-    while (row.length < 16) row.push("");
-    if (row.length > 16) row.length = 16;
-  });
-
-  return rows;
+  try {
+    const cateringData = JSON.parse(fs.readFileSync(cateringFile, "utf8"));
+    
+    // Convert JSON objects to array format for template compatibility
+    return cateringData.map(order => [
+      order.id,
+      order.orderDate,
+      order.organization,
+      order.numSandwiches,
+      order.otherItems,
+      order.sauces,
+      order.cost,
+      order.paid ? 1 : 0,
+      order.orderType,
+      order.timeOfDay,
+      order.contactName,
+      order.contactPhone,
+      order.pickles,
+      order.numBags,
+      order.creator,
+      order.lastEditedBy || ""
+    ]);
+  } catch (e) {
+    console.error('Failed to parse catering.json', e);
+    return [];
+  }
 }
 
 function saveRows(rows) {
-  const csvData = stringify(rows, { quoted: true });
-  fs.writeFileSync(csvFile, csvData, "utf8");
+  // Convert array format back to JSON objects
+  const cateringData = rows.map(row => ({
+    id: parseInt(row[0]) || 0,
+    orderDate: row[1] || '',
+    organization: row[2] || '',
+    numSandwiches: parseInt(row[3]) || 0,
+    otherItems: row[4] || '',
+    sauces: row[5] || '',
+    cost: parseFloat(row[6]) || 0,
+    paid: row[7] == 1,
+    orderType: row[8] || '',
+    timeOfDay: row[9] || '',
+    contactName: row[10] || '',
+    contactPhone: row[11] || '',
+    pickles: row[12] || 'no',
+    numBags: parseInt(row[13]) || 0,
+    creator: row[14] || '',
+    lastEditedBy: row[15] || ''
+  }));
+  
+  const tmp = cateringFile + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(cateringData, null, 2), 'utf8');
+  fs.renameSync(tmp, cateringFile);
 }
 
 // --- Pagination helper ---

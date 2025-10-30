@@ -1,33 +1,42 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const { parse } = require("csv-parse/sync");
+// CSV parsing no longer needed for JSON files
 
 const router = express.Router();
 
 // ✅ Correct file path (no leading slash)
-const csvFile = path.join(__dirname, "..", "data", "catering.txt");
+const cateringFile = path.join(__dirname, "..", "data", "catering.json");
 
 router.get("/", (req, res) => {
   try {
     // 1️⃣ Check file existence
-    if (!fs.existsSync(csvFile)) {
-      console.warn("⚠️ catering.txt not found:", csvFile);
+    if (!fs.existsSync(cateringFile)) {
+      console.warn("⚠️ catering.json not found:", cateringFile);
       return res.render("catering", { rows: [] });
     }
 
     // 2️⃣ Read file contents
-    const fileContent = fs.readFileSync(csvFile, "utf8");
+    const cateringData = JSON.parse(fs.readFileSync(cateringFile, "utf8"));
 
-    // 3️⃣ Parse CSV content safely
-    const rows = parse(fileContent, {
-      delimiter: ",",
-      quote: '"',
-      escape: "\\",
-      trim: true,
-      relax_column_count: true,       // allow uneven rows
-      skip_records_with_error: true,  // skip bad lines
-    });
+    // 3️⃣ Convert JSON objects to array format for template compatibility
+    const rows = cateringData.map(order => [
+      order.id,
+      order.orderDate,
+      order.organization,
+      order.numSandwiches,
+      order.otherItems,
+      order.sauces,
+      order.cost,
+      order.paid ? 1 : 0,
+      order.orderType,
+      order.timeOfDay,
+      order.contactName,
+      order.contactPhone,
+      order.pickles,
+      order.numBags,
+      order.creator
+    ]);
 
     // 4️⃣ Render template
     res.render("catering", { rows });

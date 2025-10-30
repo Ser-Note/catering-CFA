@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const argon2 = require('argon2');
 
 // Paths
-const EMP_TXT = path.join(__dirname, '..', 'data', 'employee.txt');
+const EMP_JSON = path.join(__dirname, '..', 'data', 'employee.json');
 const USERS_JSON = path.join(__dirname, '..', 'data', 'users.json');
 const TEMP_CREDS = path.join(__dirname, '..', 'data', 'temp-creds.csv');
 
@@ -17,25 +17,22 @@ function genPassword() {
 }
 
 async function migrate() {
-  if (!fs.existsSync(EMP_TXT)) {
-    console.error('No employee.txt found at', EMP_TXT);
+  if (!fs.existsSync(EMP_JSON)) {
+    console.error('No employee.json found at', EMP_JSON);
     process.exit(1);
   }
 
-  const raw = fs.readFileSync(EMP_TXT, 'utf8');
-  const lines = raw.split(/\r?\n/).filter(Boolean);
+  const employeeData = JSON.parse(fs.readFileSync(EMP_JSON, 'utf8'));
   const users = [];
   const creds = [];
 
-  for (const line of lines) {
-    const parts = line.split(',');
-    if (parts.length < 3) continue;
-    const fname = parts[1].trim();
-    const lname = parts[2].trim();
+  for (const emp of employeeData) {
+    const fname = emp.fname.trim();
+    const lname = emp.lname.trim();
     const username = sanitizeUsername(fname, lname);
     const password = genPassword();
     const hash = await argon2.hash(password);
-    users.push({ id: Number(parts[0]) || null, username, fname, lname, password_hash: hash, created_at: new Date().toISOString() });
+    users.push({ id: emp.id || null, username, fname, lname, password_hash: hash, created_at: new Date().toISOString() });
     creds.push(`${username},${password}`);
     console.log(`Migrated ${username}`);
   }

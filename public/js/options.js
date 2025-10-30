@@ -3,7 +3,7 @@
       const choice = document.getElementById("choice").value;
 
       if (choice === "prev_txt") {
-        // Redirect to PHP that reads catering.txt
+        // Redirect to route that reads catering.json
         window.location.href = "/catering";
       } else if (choice === "prev_json") {
         window.location.href = "/json-catering";

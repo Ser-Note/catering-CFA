@@ -3,12 +3,24 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
-const csvFile = path.join(__dirname, '..', 'data', 'catering.txt');
+const cateringFile = path.join(__dirname, '..', 'data', 'catering.json');
 
-// Helper to append CSV row
-function appendCSVRow(row) {
-    const line = row.join(',') + '\n';
-    fs.appendFileSync(csvFile, line, 'utf8');
+// Helper to add catering order
+function addCateringOrder(orderData) {
+    let cateringData = [];
+    if (fs.existsSync(cateringFile)) {
+        try {
+            cateringData = JSON.parse(fs.readFileSync(cateringFile, 'utf8'));
+        } catch (e) {
+            cateringData = [];
+        }
+    }
+    
+    cateringData.push(orderData);
+    
+    const tmp = cateringFile + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(cateringData, null, 2), 'utf8');
+    fs.renameSync(tmp, cateringFile);
 }
 
 // Show fundraiser form
@@ -44,35 +56,39 @@ router.post('/submit', (req, res) => {
     let sauces = Array.isArray(data.sauces) ? data.sauces.join('; ') : '';
 
     // Get next ID
-    let rows = [];
-    if (fs.existsSync(csvFile)) {
-        rows = fs.readFileSync(csvFile, 'utf8').split('\n').filter(Boolean);
+    let cateringData = [];
+    if (fs.existsSync(cateringFile)) {
+        try {
+            cateringData = JSON.parse(fs.readFileSync(cateringFile, 'utf8'));
+        } catch (e) {
+            cateringData = [];
+        }
     }
-    const newId = rows.length + 1;
+    const newId = cateringData.length + 1;
 
     // Creator
     const creator = `${req.session.firstName} ${req.session.lastName}`;
 
-    // Build CSV row
-    const newRow = [
-        newId,
-        data.orderDate || '',
-        data.organization || '',
-        data.numSandwiches || 0,
-        otherItemsStr,
-        sauces,
-        cost,
-        data.paid ? 1 : 0,
-        data.orderType || '',
-        data.timeOfDay || '',
-        data.contactName || '',
-        data.contactPhone || '',
-        data.pickles || 'no',
-        data.numBags || 0,
-        creator
-    ];
+    // Build order object
+    const newOrder = {
+        id: newId,
+        orderDate: data.orderDate || '',
+        organization: data.organization || '',
+        numSandwiches: parseInt(data.numSandwiches || 0),
+        otherItems: otherItemsStr,
+        sauces: sauces,
+        cost: cost,
+        paid: data.paid ? true : false,
+        orderType: data.orderType || '',
+        timeOfDay: data.timeOfDay || '',
+        contactName: data.contactName || '',
+        contactPhone: data.contactPhone || '',
+        pickles: data.pickles || 'no',
+        numBags: parseInt(data.numBags || 0),
+        creator: creator
+    };
 
-    appendCSVRow(newRow);
+    addCateringOrder(newOrder);
 
     res.redirect('/options'); // redirect back like PHP
 });

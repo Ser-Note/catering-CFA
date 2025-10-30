@@ -2,14 +2,13 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const path = require("path");
-const { parse } = require("csv-parse/sync");
-const { stringify } = require("csv-stringify/sync");
+// CSV parsing no longer needed for JSON files
 const argon2 = require('argon2');
 
 // Paths
-const employeeFile = path.join(__dirname, "..", "data", "employee.txt");
+const employeeFile = path.join(__dirname, "..", "data", "employee.json");
 const usersFile = path.join(__dirname, "..", "data", "users.json");
-const checkInFile = path.join(__dirname, "..", "data", "checkIn.txt");
+const checkInFile = path.join(__dirname, "..", "data", "checkIn.json");
 
 // GET /login → serve login page
 router.get("/login", (req, res) => {
@@ -89,10 +88,10 @@ router.post("/login", async (req, res) => {
       req.session.lname = user.lname || '';
 
       // record check-in
-      const checkRows = fs.existsSync(checkInFile)
-        ? parse(fs.readFileSync(checkInFile), { relaxQuotes: true })
+      const checkInData = fs.existsSync(checkInFile)
+        ? JSON.parse(fs.readFileSync(checkInFile, 'utf8'))
         : [];
-      const nextId = checkRows.length > 0 ? parseInt(checkRows.at(-1)[0]) + 1 : 1;
+      const nextId = checkInData.length > 0 ? Math.max(...checkInData.map(c => c.id)) + 1 : 1;
       const date = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
       const time = new Date().toLocaleTimeString('en-GB', {
         timeZone: 'America/New_York',
@@ -101,10 +100,17 @@ router.post("/login", async (req, res) => {
         minute: '2-digit',
       });
 
-      fs.appendFileSync(
-        checkInFile,
-        stringify([[nextId, (user.fname || '').toLowerCase(), (user.lname || '').toLowerCase(), date, time]])
-      );
+      checkInData.push({
+        id: nextId,
+        fname: (user.fname || '').toLowerCase(),
+        lname: (user.lname || '').toLowerCase(),
+        date: date,
+        time: time
+      });
+
+      const tmp = checkInFile + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(checkInData, null, 2), 'utf8');
+      fs.renameSync(tmp, checkInFile);
 
       return res.json({ redirect: '/options' });
     }
@@ -114,12 +120,17 @@ router.post("/login", async (req, res) => {
 
     let found = false;
     if (fs.existsSync(employeeFile)) {
-      const rows = parse(fs.readFileSync(employeeFile), { relaxQuotes: true });
-      found = rows.some(
-        (row) =>
-          row[1]?.toLowerCase() === firstName.toLowerCase() &&
-          row[2]?.toLowerCase() === lastName.toLowerCase()
-      );
+      try {
+        const employees = JSON.parse(fs.readFileSync(employeeFile, 'utf8'));
+        found = employees.some(
+          (emp) =>
+            emp.fname?.toLowerCase() === firstName.toLowerCase() &&
+            emp.lname?.toLowerCase() === lastName.toLowerCase()
+        );
+      } catch (e) {
+        console.error('Failed to parse employee.json', e);
+        found = false;
+      }
     }
 
     if (found) {
@@ -127,10 +138,10 @@ router.post("/login", async (req, res) => {
       req.session.lastName = lastName;
 
       // record check-in
-      const checkRows = fs.existsSync(checkInFile)
-        ? parse(fs.readFileSync(checkInFile), { relaxQuotes: true })
+      const checkInData = fs.existsSync(checkInFile)
+        ? JSON.parse(fs.readFileSync(checkInFile, 'utf8'))
         : [];
-      const nextId = checkRows.length > 0 ? parseInt(checkRows.at(-1)[0]) + 1 : 1;
+      const nextId = checkInData.length > 0 ? Math.max(...checkInData.map(c => c.id)) + 1 : 1;
       const date = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
       const time = new Date().toLocaleTimeString('en-GB', {
         timeZone: 'America/New_York',
@@ -139,10 +150,17 @@ router.post("/login", async (req, res) => {
         minute: '2-digit',
       });
 
-      fs.appendFileSync(
-        checkInFile,
-        stringify([[nextId, firstName.toLowerCase(), lastName.toLowerCase(), date, time]])
-      );
+      checkInData.push({
+        id: nextId,
+        fname: firstName.toLowerCase(),
+        lname: lastName.toLowerCase(),
+        date: date,
+        time: time
+      });
+
+      const tmp = checkInFile + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(checkInData, null, 2), 'utf8');
+      fs.renameSync(tmp, checkInFile);
 
       return res.json({ redirect: '/options' });
     }

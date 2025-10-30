@@ -4,43 +4,37 @@ const path = require("path");
 const router = express.Router();
 
 const ordersJsonPath = path.join(__dirname, "..", "data", "orders.json");
-const csvPath = path.join(__dirname, "..", "data", "catering.txt");
+const cateringPath = path.join(__dirname, "..", "data", "catering.json");
 
-// --- Read CSV orders ---
-function readCsvOrders() {
-  if (!fs.existsSync(csvPath)) return [];
-  const content = fs.readFileSync(csvPath, "utf8");
-  const lines = content.split(/\r?\n/);
-  const orders = [];
-
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const data = line.split(",");
-    orders.push({
-      uid: "csv_" + (data[0] || Math.random().toString(36).substr(2, 9)),
-      id: data[0] || "",
-      date: data[1] || new Date().toISOString().split("T")[0],
-      team: data[2] || "",
-      sandwiches: data[3] || "N/A",
-      food_items: data[4] || "N/A",
-      sauces_dressings: data[5] || "N/A",
-      hotbags: data[13] || "N/A",
-      pickles: data[12] || "N/A",
-      created_by: data[10] || "",
-      time: formatTime12h(data[9] || ""),
-      method: data[8] || "",
-      contact: data[10] || "",
-      phone: data[11] || ""
-      ,
-      // optional fields at the end of the CSV (new columns)
-      special_instructions: data[14] || "",
-      paid: (typeof data[15] !== 'undefined') ? String(data[15]).toLowerCase() === 'true' || String(data[15]).toLowerCase().startsWith('paid') : false,
-      completed_boh: (typeof data[16] !== 'undefined') ? String(data[16]).toLowerCase() === 'true' || String(data[16]).toLowerCase().startsWith('complete') : false,
-      completed_foh: (typeof data[17] !== 'undefined') ? String(data[17]).toLowerCase() === 'true' || String(data[17]).toLowerCase().startsWith('complete') : false,
-    });
+// --- Read catering orders ---
+function readCateringOrders() {
+  if (!fs.existsSync(cateringPath)) return [];
+  try {
+    const cateringData = JSON.parse(fs.readFileSync(cateringPath, "utf8"));
+    return cateringData.map(order => ({
+      uid: "catering_" + (order.id || Math.random().toString(36).substr(2, 9)),
+      id: order.id || "",
+      date: order.orderDate || new Date().toISOString().split("T")[0],
+      team: order.organization || "",
+      sandwiches: order.numSandwiches || "N/A",
+      food_items: order.otherItems || "N/A",
+      sauces_dressings: order.sauces || "N/A",
+      hotbags: order.numBags || "N/A",
+      pickles: order.pickles || "N/A",
+      created_by: order.creator || "",
+      time: formatTime12h(order.timeOfDay || ""),
+      method: order.orderType || "",
+      contact: order.contactName || "",
+      phone: order.contactPhone || "",
+      special_instructions: "",
+      paid: order.paid || false,
+      completed_boh: order.completed_boh || false,
+      completed_foh: order.completed_foh || false,
+    }));
+  } catch (e) {
+    console.error('Failed to parse catering.json', e);
+    return [];
   }
-
-  return orders;
 }
 
 // --- Read JSON orders ---
@@ -123,10 +117,10 @@ function processJsonOrder(order) {
 
 // --- GET /orders ---
 router.get("/", (req, res) => {
-  const csvOrders = readCsvOrders();
+  const cateringOrders = readCateringOrders();
   const jsonOrdersRaw = readJsonOrders();
   const jsonOrders = jsonOrdersRaw.map(processJsonOrder);
-  const allOrders = [...jsonOrders, ...csvOrders];
+  const allOrders = [...jsonOrders, ...cateringOrders];
 
   // Determine view mode from query params (defaults to 'boh')
   const viewMode = req.query.view || 'boh'; // 'boh' or 'foh'
@@ -290,30 +284,26 @@ router.post('/update', (req, res) => {
     }
   }
 
-  if (source === 'csv') {
+  if (source === 'catering') {
     try {
-      const raw = fs.readFileSync(csvPath, 'utf8');
-      const lines = raw.split(/\r?\n/);
+      const cateringData = JSON.parse(fs.readFileSync(cateringPath, 'utf8'));
       let found = false;
-      const newLines = lines.map(line => {
-        if (!line.trim()) return line;
-        const cols = line.split(',');
-        if (String(cols[0]) === String(id)) {
-          // ensure we have at least up to index 17
-          while (cols.length <= 17) cols.push('');
-          if (typeof paid !== 'undefined') cols[15] = paid ? 'true' : 'false';
-          if (typeof completed_boh !== 'undefined') cols[16] = completed_boh ? 'true' : 'false';
-          if (typeof completed_foh !== 'undefined') cols[17] = completed_foh ? 'true' : 'false';
+      for (let order of cateringData) {
+        if (String(order.id) === String(id)) {
+          if (typeof paid !== 'undefined') order.paid = !!paid;
+          if (typeof completed_boh !== 'undefined') order.completed_boh = !!completed_boh;
+          if (typeof completed_foh !== 'undefined') order.completed_foh = !!completed_foh;
           found = true;
-          return cols.join(',');
+          break;
         }
-        return line;
-      });
+      }
       if (!found) return res.status(404).json({ success: false, error: 'order not found' });
-      fs.writeFileSync(csvPath, newLines.join('\n'), 'utf8');
+      const tmp = cateringPath + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(cateringData, null, 2), 'utf8');
+      fs.renameSync(tmp, cateringPath);
       return res.json({ success: true });
     } catch (err) {
-      console.error('Error updating CSV orders', err);
+      console.error('Error updating catering orders', err);
       return res.status(500).json({ success: false, error: 'write-failed' });
     }
   }

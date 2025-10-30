@@ -8,15 +8,38 @@ const path = require('path');
 const router = express.Router();
 
 const debugMode = true;
-const debugLog = path.join(__dirname, '..', 'data', 'debug_log.txt');
+const debugLog = path.join(__dirname, '..', 'data', 'debug_log.json');
 const ordersPath = path.join(__dirname, '..', 'data', 'orders.json');
 
 // ---------- Helpers ----------
 
 function logDebug(msg) {
-  const line = `[${new Date().toISOString()}] ${msg}\n`;
-  fs.appendFileSync(debugLog, line);
-  if (debugMode) console.log(line.trim());
+  const entry = {
+    timestamp: new Date().toISOString(),
+    message: msg
+  };
+  
+  let debugData = [];
+  if (fs.existsSync(debugLog)) {
+    try {
+      debugData = JSON.parse(fs.readFileSync(debugLog, 'utf8'));
+    } catch (e) {
+      debugData = [];
+    }
+  }
+  
+  debugData.push(entry);
+  
+  // Keep only last 1000 entries to prevent file from growing too large
+  if (debugData.length > 1000) {
+    debugData = debugData.slice(-1000);
+  }
+  
+  const tmp = debugLog + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(debugData, null, 2), 'utf8');
+  fs.renameSync(tmp, debugLog);
+  
+  if (debugMode) console.log(`[${entry.timestamp}] ${msg}`);
 }
 
 function cleanField(str) {
@@ -277,8 +300,8 @@ function fetchCateringOrders() {
                 if (err || !parsed.text) return;
                 if (!/Incoming Catering Order/i.test(parsed.subject || '')) return;
 
-                // --- Log raw email text to debug_log.txt ---
-                fs.appendFileSync(debugLog, `\n--- RAW EMAIL START ---\n${parsed.text}\n--- RAW EMAIL END ---\n`);
+                // --- Log raw email text to debug_log.json ---
+                logDebug(`RAW EMAIL START:\n${parsed.text}\nRAW EMAIL END`);
 
                 const text = normalizeText(parsed.text);
                 const orderData = parseOrder(text);
@@ -368,10 +391,10 @@ function fetchCateringOrders() {
                   try {
                     const backupPath = ordersPath + '.corrupt.' + Date.now();
                     fs.copyFileSync(ordersPath, backupPath);
-                    fs.appendFileSync(debugLog, `[${new Date().toISOString()}] WARNING: orders.json parse failed, backed up to ${backupPath} - ${e.message}\n`);
+                    logDebug(`WARNING: orders.json parse failed, backed up to ${backupPath} - ${e.message}`);
                     if (debugMode) console.error('orders.json parse failed, backup created:', backupPath, e.message);
                   } catch (copyErr) {
-                    fs.appendFileSync(debugLog, `[${new Date().toISOString()}] ERROR backing up orders.json: ${copyErr.message}\n`);
+                    logDebug(`ERROR backing up orders.json: ${copyErr.message}`);
                     if (debugMode) console.error('Failed to backup corrupted orders.json:', copyErr);
                   }
                   existingOrders = [];
@@ -397,12 +420,12 @@ function fetchCateringOrders() {
                 fs.writeFileSync(tmpPath, JSON.stringify(existingOrders, null, 2), 'utf8');
                 fs.renameSync(tmpPath, ordersPath);
               } catch (writeErr) {
-                fs.appendFileSync(debugLog, `[${new Date().toISOString()}] ERROR writing orders.json: ${writeErr.message}\n`);
+                logDebug(`ERROR writing orders.json: ${writeErr.message}`);
                 console.error('Error writing orders:', writeErr);
               }
 
               if (debugMode)
-                fs.appendFileSync(debugLog, `Saved ${existingOrders.length} total orders\n`);
+                logDebug(`Saved ${existingOrders.length} total orders`);
             } catch (e) {
               console.error('Error writing orders:', e);
             } finally {

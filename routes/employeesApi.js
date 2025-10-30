@@ -6,7 +6,7 @@ const argon2 = require('argon2');
 
 const router = express.Router();
 
-const empFile = path.join(__dirname, '..', 'data', 'employee.txt');
+const empFile = path.join(__dirname, '..', 'data', 'employee.json');
 const usersFile = path.join(__dirname, '..', 'data', 'users.json');
 
 function sanitizeUsername(fname, lname) {
@@ -17,21 +17,31 @@ function genPassword() {
   return crypto.randomBytes(9).toString('base64').replace(/[^A-Za-z0-9]/g, '').slice(0, 12);
 }
 
-function readEmployeesFromTxt() {
+function readEmployeesFromJson() {
   if (!fs.existsSync(empFile)) return [];
-  const lines = fs.readFileSync(empFile, 'utf8').split(/\r?\n/).filter(Boolean);
-  const out = [];
-  for (const line of lines) {
-    const parts = line.split(',');
-    if (parts.length < 3) continue;
-    out.push({ id: Number(parts[0]) || null, fname: parts[1], lname: parts[2], name: parts[1] + ' ' + parts[2] });
+  try {
+    const data = JSON.parse(fs.readFileSync(empFile, 'utf8'));
+    return data.map(emp => ({
+      id: emp.id,
+      fname: emp.fname,
+      lname: emp.lname,
+      name: emp.fname + ' ' + emp.lname
+    }));
+  } catch (e) {
+    console.error('Failed to parse employee.json', e);
+    return [];
   }
-  return out;
 }
 
-function writeEmployeesToTxt(list) {
-  const lines = list.map((e, i) => `${i+1},${e.fname},${e.lname}`);
-  fs.writeFileSync(empFile, lines.join('\n') + (lines.length ? '\n' : ''), 'utf8');
+function writeEmployeesToJson(list) {
+  const data = list.map((e, i) => ({
+    id: i + 1,
+    fname: e.fname,
+    lname: e.lname
+  }));
+  const tmp = empFile + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+  fs.renameSync(tmp, empFile);
 }
 
 function readUsers() {
@@ -60,7 +70,7 @@ router.get('/employees', (req, res) => {
       return res.json(mapped);
     }
 
-    const employees = readEmployeesFromTxt();
+    const employees = readEmployeesFromJson();
     res.json(employees);
   } catch (err) {
     console.error('Failed to read employees', err);
@@ -102,12 +112,12 @@ router.post('/employees', (req, res) => {
       return;
     }
 
-    // Legacy TXT path (keeps old behavior)
-    const employees = readEmployeesFromTxt();
+    // Legacy JSON path (keeps old behavior)
+    const employees = readEmployeesFromJson();
     // store lowercase as original PHP did
     const entry = { fname: String(fname).trim().toLowerCase(), lname: String(lname).trim().toLowerCase() };
     employees.push(entry);
-    writeEmployeesToTxt(employees);
+    writeEmployeesToJson(employees);
     res.status(201).json({ success: true });
   } catch (err) {
     console.error('Failed to add employee', err);
@@ -130,10 +140,10 @@ router.delete('/employees/:id', (req, res) => {
       return res.json({ success: true });
     }
 
-    let employees = readEmployeesFromTxt();
+    let employees = readEmployeesFromJson();
     employees = employees.filter(e => Number(e.id) !== id);
     // reindex and write
-    writeEmployeesToTxt(employees);
+    writeEmployeesToJson(employees);
     res.json({ success: true });
   } catch (err) {
     console.error('Failed to delete employee', err);
