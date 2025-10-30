@@ -24,6 +24,9 @@ const { requireAuth } = require("./middleware/auth.js");
 
 const app = express();
 
+// Trust proxy headers (required for Vercel/serverless deployments)
+app.set('trust proxy', 1);
+
 // Serve static assets
 
 app.use(express.static(path.join(__dirname, "public")));
