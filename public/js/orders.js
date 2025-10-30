@@ -254,7 +254,6 @@ function renderOrderDetails(data) {
 
         <div style="background: #e8f5e9; padding: 14px; border-radius: 8px; border-left: 5px solid #4caf50;">
             <p style="margin: 6px 0;"><strong>📄 Paper Goods:</strong> ${escapeHtml(data.paper_goods || 'N/A')}</p>
-            <p style="margin: 6px 0;"><strong>🥒 Pickles on Side:</strong> ${escapeHtml(data.pickles)}</p>
             <p style="margin: 6px 0;"><strong>🔥 Hot Bag(s):</strong> ${escapeHtml(data.hotbags)}</p>
         </div>
 
