@@ -76,6 +76,48 @@ function flattenItems(arr) {
   });
 }
 
+// --- Check if pickles are needed for email orders ---
+function checkPicklesNeeded(order, sandwichesList, otherFoodItems) {
+  // Check all possible places where "side of pickles" might appear
+  const allItems = [];
+  
+  // Add food items
+  if (order.food_items && Array.isArray(order.food_items)) {
+    order.food_items.forEach(f => {
+      if (f && f.item) allItems.push(f.item.toLowerCase());
+    });
+  }
+  
+  // Add meal box items
+  if (order.meal_boxes && Array.isArray(order.meal_boxes)) {
+    order.meal_boxes.forEach(m => {
+      if (m && m.item) allItems.push(m.item.toLowerCase());
+    });
+  }
+  
+  // Add drink items (in case pickles are listed there)
+  if (order.drink_items && Array.isArray(order.drink_items)) {
+    order.drink_items.forEach(d => {
+      if (d && d.item) allItems.push(d.item.toLowerCase());
+    });
+  }
+  
+  // Add sauces/dressings (in case pickles are listed there)
+  if (order.sauces_dressings && Array.isArray(order.sauces_dressings)) {
+    order.sauces_dressings.forEach(s => {
+      if (s && s.item) allItems.push(s.item.toLowerCase());
+    });
+  }
+  
+  // Check if any item contains "pickles" (not just "side of pickles")
+  const hasPicklesItem = allItems.some(item => 
+    item.includes('pickle') || item.includes('pickles')
+  );
+  
+  // Only return "Yes" if pickles are explicitly mentioned in the order
+  return hasPicklesItem ? "Yes" : "No";
+}
+
 // --- Process JSON order ---
 function processJsonOrder(order) {
   const sandwichesList = [];
@@ -102,7 +144,7 @@ function processJsonOrder(order) {
     drinks: drinkList.length ? drinkList.join("<br>") : "N/A",
     meal_boxes: mealBoxList.length ? mealBoxList.join("<br>") : "N/A",
     hotbags: order.hotbags || "N/A",
-    pickles: sandwichesList.length ? "Yes" : "No",
+    pickles: checkPicklesNeeded(order, sandwichesList, otherFoodItems),
     guest_count: order.guest_count || "N/A",
     paper_goods: order.paper_goods || "No",
     created_by: order.customer_email || order.created_by || "",
