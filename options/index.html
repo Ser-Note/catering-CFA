@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catering Orders</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="icon" type="image/x-icon" href="../images/cfalogo.ico">
+</head>
+<body>
+  <div class="login-container">
+    <!-- Logo placeholder -->
+    <div class="logo">
+      <img src="/images/cfalogo.webp" alt="Chick-fil-A Logo">
+    </div>
+
+    <!-- Catering box -->
+    <div class="login-box">
+      <h2>Catering Orders</h2>
+      <form id="cateringForm">
+        <label for="choice">Choose an option</label>
+        <select id="choice" name="choice" required>
+          <option value="">-- Select an option --</option>
+          <option value="prev_txt">Previous Caterings for Sandwich Catering</option>
+          <option value="prev_json">Previous Caterings for Reg Catering</option>
+          <option value="new-sandwich">Create New Catering for Sandwiches</option>
+          <option value="new-regular">Create New Catering for Regular Catering</option>
+          <option value="today-boh">View Today's Caterings - Back of House (Kitchen)</option>
+          <option value="today-foh">View Today's Caterings - Front of House (Delivery/Pickup)</option>
+          <option value="change_password">Change Password</option>
+          <option value="add-delete">Add or Delete Employees</option>
+        </select>
+
+        <button type="submit">Continue</button>
+      </form>
+      <p id="message"></p>
+    </div>
+  </div>
+  <script src="/js/options.js"></script>
+</body>
+</html>

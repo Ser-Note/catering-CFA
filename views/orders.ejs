@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Back of House — Catering Orders</title>
+<link rel="stylesheet" href="/css/orders.css">
+</head>
+<body>
+<header>Chick-fil-A <%= viewMode === 'foh' ? 'Front of House (FOH)' : 'Back of House (BOH)' %> Orders — <%= todayStr %></header>
+<a href="/options/" class="back-btn">⬅ Back to Options</a>
+<button id="refreshBtn" class="refresh-button">🔄 Refresh Orders</button>
+<span id="refreshStatus" style="margin-left: 10px; color: green;"></span>
+
+<script>
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('refreshStatus');
+  statusEl.textContent = 'Refreshing... ⏳';
+
+  try {
+    const res = await fetch('/fetch-catering');
+    const text = await res.text();
+    statusEl.textContent = text.includes('✅') ? '✅ Refreshed successfully!' : '⚠️ Something went wrong.';
+    console.log(text);
+    
+    // Optional: Reload the catering list after refresh
+    setTimeout(() => location.reload(), 1500);
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = '❌ Failed to refresh orders';
+  }
+});
+</script>
+<div class="container">
+  <div class="orders">
+    <% if (!orders.length) { %>
+      <p style="padding:10px;">No catering orders for today.</p>
+    <% } else { %>
+      <% orders.forEach(order => { %>
+        <div class="order" 
+     data-uid="<%= order.uid %>" 
+     data-order='<%- JSON.stringify(order).replace(/'/g, "&#39;") %>'>
+  <strong><%= order.team %></strong><br>
+  Time: <%= order.time %>
+</div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <div class="details" id="details">
+    <span class="close-btn" onclick="closeDetails()">✖</span>
+    <div id="detailsContent"></div>
+  </div>
+</div>
+
+<script>
+  const traySizes = <%- JSON.stringify(traySizes) %>;
+  const viewMode = '<%= viewMode %>'; // 'boh' or 'foh'
+</script>
+<script src="/js/orders.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Password - Catering System</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .setup-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo h1 {
+      color: #1976d2;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .logo p {
+      color: #666;
+      font-size: 14px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #2196f3;
+    }
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #c62828;
+      font-size: 14px;
+    }
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #4caf50;
+    }
+    .success h3 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+    .hash-box {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      word-break: break-all;
+      margin: 12px 0;
+      border: 1px solid #ddd;
+    }
+    .instructions {
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #1976d2;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .info {
+      background: #e3f2fd;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border-left: 4px solid #2196f3;
+      font-size: 14px;
+      color: #0d47a1;
+    }
+  </style>
+</head>
+<body>
+  <div class="setup-container">
+    <div class="logo">
+      <h1>🔐 Password Setup</h1>
+      <p>First-time configuration</p>
+    </div>
+    
+    <% if (!success) { %>
+      <div class="info">
+        Create a strong password to protect your catering data. You'll need this password every time you access the system.
+      </div>
+      
+      <% if (error) { %>
+        <div class="error">
+          <%= error %>
+        </div>
+      <% } %>
+      
+      <form method="POST" action="/auth/setup">
+        <div class="form-group">
+          <label for="password">Password (minimum 8 characters)</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Enter password"
+            minlength="8"
+            required
+            autofocus
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirmPassword" 
+            placeholder="Re-enter password"
+            minlength="8"
+            required
+          >
+        </div>
+        
+        <button type="submit" class="btn">Generate Password Hash</button>
+      </form>
+    <% } else { %>
+      <div class="success">
+        <h3>✓ Password Hash Generated!</h3>
+        <p class="instructions"><%= instructions %></p>
+        <div class="hash-box"><%= hash %></div>
+        <p style="margin-top: 12px; font-size: 13px;">
+          <strong>Important:</strong> Save this hash securely. After adding it to your .env file and restarting the server, use <a href="/auth/login" style="color: #2e7d32; font-weight: 600;">/auth/login</a> to access the system.
+        </p>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

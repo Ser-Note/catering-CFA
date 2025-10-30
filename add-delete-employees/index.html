@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chick-fil-A Employee Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="../images/cfalogo.ico">
+</head>
+<body>
+  <div class="logo">
+    <img src="../images/cfalogo.webp" alt="Chick-fil-A Logo" class="logo">
+  </div>
+
+  <div class="container">
+    <a href="../options/" class="back-btn">← Back</a>
+
+    <h1>Chick-fil-A Employee Manager</h1>
+
+    <form id="addForm" class="add-form">
+      <input id="fname" type="text" name="fname" placeholder="First Name" required>
+      <input id="lname" type="text" name="lname" placeholder="Last Name" required>
+      <button type="submit">Add Employee</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Employee Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="3">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="main.js" defer></script>
+</body>
+</html>

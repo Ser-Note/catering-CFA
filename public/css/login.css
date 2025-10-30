@@ -1,0 +1,113 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Body background */
+body {
+  background: linear-gradient(135deg, #fff 0%, #f7f7f7 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+/* Container */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Logo */
+.logo img {
+  width: 140px;
+  height: auto;
+}
+
+/* Login box */
+.login-box {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  width: 320px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.login-box h2 {
+  margin-bottom: 25px;
+  color: #c8102e; /* Chick-fil-A red */
+  font-size: 22px;
+  font-weight: 700;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px; /* was 15px before */
+}
+
+label {
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #c8102e;
+  outline: none;
+  box-shadow: 0 0 6px rgba(200, 16, 46, 0.3);
+}
+
+/* Button */
+button {
+  background: #c8102e;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+  background: #a50d25;
+  transform: translateY(-2px);
+}
+
+/* Message */
+#message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Subtle fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

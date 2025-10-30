@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit/Delete Catering Orders</title>
+<link rel="stylesheet" href="/css/login.css">
+<link rel="icon" type="image/x-icon" href="/images/cfalogo.ico">
+<style>
+.container { max-width:1000px;margin:40px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.15);}
+h2 { text-align:center; color:#c8102e; }
+table { width:100%; border-collapse:collapse; margin-top:20px; }
+th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+th { background:#c8102e; color:#fff; }
+tr:nth-child(even) { background:#f9f9f9; }
+.actions button { margin:2px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+.edit-btn { background:#007bff; color:white; }
+.delete-btn { background:#dc3545; color:white; }
+.edit-form { display:none; margin-top:10px; padding:10px; border:1px solid #ddd; border-radius:6px; background:#f9f9f9; }
+.edit-form input[type="text"], .edit-form input[type="number"], .edit-form input[type="date"], .edit-form select { padding:6px; margin:4px; border:1px solid #ccc; border-radius:6px; }
+.message { text-align:center; margin-top:15px; font-weight:bold; color:green; }
+.pagination { text-align:center; margin-top:15px; }
+.pagination a { margin:0 10px; text-decoration:none; font-weight:bold; color:#c8102e; }
+.back-link { display:block; text-align:center; margin-top:20px; color:#c8102e; font-weight:bold; text-decoration:none; }
+ul { padding-left:20px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Edit/Delete Catering Orders</h2>
+
+<% if (displayRows && displayRows.length > 0) { %>
+<table>
+<thead>
+<tr>
+<th>ID</th><th>Date</th><th>Organization/Person</th><th>Sandwiches</th><th>Other Items</th><th>Sauces</th><th>Cost ($)</th><th>Paid?</th><th>Actions</th>
+</tr>
+</thead>
+<tbody>
+<% displayRows.forEach(row => { %>
+<tr>
+<td><%= row[0] %></td>
+<td><%= row[1] %></td>
+<td><%= row[2] %></td>
+<td><%= row[3] %></td>
+<td><%= row[4] ? row[4].split(';').join(', ') : '' %></td>
+<td><%= row[5] ? row[5].split(';').join(', ') : '' %></td>
+<td><%= row[6] %></td>
+<td><%= row[7] == 1 ? 'Yes' : 'No' %></td>
+<td class="actions">
+<button class="edit-btn" onclick="toggleEditForm(<%= row[0] %>)">Edit</button>
+<form method="post" action="/catering/edit-catering" style="display:inline;">
+<input type="hidden" name="id" value="<%= row[0] %>">
+<input type="hidden" name="action" value="delete">
+<button type="submit" class="delete-btn" onclick="return confirm('Delete this order?')">Delete</button>
+</form>
+</td>
+</tr>
+
+<tr id="edit-form-<%= row[0] %>" class="edit-form">
+<td colspan="9">
+<form method="post" action="/catering/edit-catering" oninput="updateCost(<%= row[0] %>)">
+<input type="hidden" name="id" value="<%= row[0] %>">
+<input type="hidden" name="action" value="edit">
+
+<label>Date:</label>
+<input type="date" name="date" value="<%= row[1] %>">
+
+<label>Organization Name:</label>
+<input type="text" name="org" value="<%= row[2] %>">
+
+<label>Sandwiches:</label>
+<input type="number" id="sandwiches-<%= row[0] %>" name="sandwiches" value="<%= row[3] %>" min="0">
+
+<label>Other Items:</label>
+<div style="display:flex; gap:10px; align-items:center;">
+<select id="other-item-<%= row[0] %>">
+<option value="">-- Select Item --</option>
+<option value="12-ct nugget">12-ct nugget</option>
+<option value="8-ct nugget">8-ct nugget</option>
+<option value="grilled 8-ct nugget">Grilled 8-ct nugget</option>
+<option value="grilled 12-ct nugget">Grilled 12-ct nugget</option>
+<option value="grilled sandwich">Grilled sandwich</option>
+<option value="spicy sandwich">Spicy sandwich</option>
+<option value="4-ct strip">4-ct strip</option>
+</select>
+<input type="number" id="other-qty-<%= row[0] %>" placeholder="Qty" min="0">
+<button type="button" onclick="addOtherItem(<%= row[0] %>)">Add</button>
+</div>
+<ul id="other-list-<%= row[0] %>">
+<% if (row[4]) { row[4].split(';').forEach(item => { %>
+<li><%= item %></li>
+<% }) } %>
+</ul>
+<input type="hidden" name="other" id="hidden-other-<%= row[0] %>" value="<%= row[4] %>">
+
+<label>Sauces:</label>
+<div style="display:flex; gap:10px; flex-wrap:wrap;">
+<%
+const allSauces = [
+"bbq","chick fil a","garden herb ranch","honey mustard",
+"honey roasted bbq","ketchup","mayonnaise","polynesian",
+"sweet and spicy sriracha","zesty buffalo"
+];
+const selectedSauces = row[5] ? row[5].toLowerCase().split(';').map(s=>s.trim()) : [];
+allSauces.forEach(sauce => {
+%>
+<label style="margin-right:10px;">
+<input type="checkbox" name="sauces" value="<%= sauce %>" <%= selectedSauces.includes(sauce) ? 'checked' : '' %>>
+<%= sauce.charAt(0).toUpperCase() + sauce.slice(1) %>
+</label>
+<% }) %>
+</div>
+
+<label>Order Type:</label>
+<select name="orderType">
+<option value="pickup" <%= row[8] === "pickup" ? "selected" : "" %>>Pick-up</option>
+<option value="delivery" <%= row[8] === "delivery" ? "selected" : "" %>>Delivery</option>
+</select>
+
+<label>Time of Day:</label>
+<input type="text" name="timeOfDay" value="<%= row[9] || '' %>">
+
+<label>Contact Name:</label>
+<input type="text" name="contactName" value="<%= row[10] || '' %>">
+
+<label>Contact Phone:</label>
+<input type="text" name="contactPhone" value="<%= row[11] || '' %>">
+
+<label>Pickles on side:</label>
+<select name="pickles">
+<option value="yes" <%= row[12] === "yes" ? "selected" : "" %>>Yes</option>
+<option value="no" <%= row[12] === "no" ? "selected" : "" %>>No</option>
+</select>
+
+<label>Number of Hotbags:</label>
+<input type="number" name="numBags" value="<%= row[13] || '' %>" min="0">
+
+<label>Cost ($):</label>
+<input type="text" id="cost-<%= row[0] %>" name="cost" value="<%= row[6] %>">
+
+<label>Paid:</label>
+<input type="checkbox" name="paid" <%= row[7] == 1 ? "checked" : "" %>>
+
+<button type="submit" class="edit-btn">Save</button>
+</form>
+</td>
+</tr>
+<% }) %>
+</tbody>
+</table>
+
+<div class="pagination">
+<% if (page > 1) { %>
+<a href="/catering/edit-catering?page=<%= page - 1 %>">← Previous</a>
+<% } %>
+<% if (page * 5 < total) { %>
+<a href="/catering/edit-catering?page=<%= page + 1 %>">Next →</a>
+<% } %>
+</div>
+
+<% if (message) { %>
+<p class="message"><%= message %></p>
+<% } %>
+<a href="/catering" class="back-link">← Back to Previous Orders</a>
+
+<% } else { %>
+<p style="text-align:center;color:red;">No catering records found.</p>
+<% } %>
+</div>
+
+<script>
+function toggleEditForm(id){
+  const row=document.getElementById("edit-form-"+id);
+  row.style.display=(row.style.display==="table-row")?"none":"table-row";
+}
+function updateCost(id){
+  const sandwiches=parseInt(document.getElementById("sandwiches-"+id).value)||0;
+  const raw=(document.getElementById("hidden-other-"+id).value||'').trim();
+  let otherCount=0;
+  if(raw!==''){
+    const parts=raw.split(';').map(s=>s.trim()).filter(Boolean);
+    parts.forEach(entry=>{
+      const colon=entry.indexOf(':');
+      if(colon!==-1){
+        const qty=parseInt(entry.slice(colon+1).trim())||0;
+        otherCount+=qty;
+      } else {
+        otherCount+=1;
+      }
+    });
+  }
+  const cost=(sandwiches*5)+(otherCount*3);
+  document.getElementById("cost-"+id).value=cost.toFixed(2);
+}
+function addOtherItem(id){
+  const itemSelect=document.getElementById("other-item-"+id);
+  const qtyInput=document.getElementById("other-qty-"+id);
+  const itemName=itemSelect.value;
+  const qty=parseInt(qtyInput.value)||0;
+  if(!itemName||qty<=0){alert("Select item and enter quantity");return;}
+  const hiddenInput=document.getElementById("hidden-other-"+id);
+  let existing=hiddenInput.value?hiddenInput.value.split(';'):[];
+  let updated=[];
+  let found=false;
+  existing.forEach(entry=>{
+    const parts=entry.split(':');
+    const name=parts[0].trim();
+    const count=parseInt(parts[1]||1);
+    if(name===itemName){
+      updated.push(name+": "+(count+qty));
+      found=true;
+    } else {
+      updated.push(entry);
+    }
+  });
+  if(!found) updated.push(itemName+": "+qty);
+  hiddenInput.value=updated.join(';');
+  const ul=document.getElementById("other-list-"+id);
+  ul.innerHTML="";
+  updated.forEach(entry=>{
+    const li=document.createElement("li");
+    li.textContent=entry;
+    ul.appendChild(li);
+  });
+  itemSelect.value="";
+  qtyInput.value="";
+  updateCost(id);
+}
+</script>
+</body>
+</html>

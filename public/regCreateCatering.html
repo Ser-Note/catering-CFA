@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>create_reg_cfa - catering form</title>
+  <link rel="stylesheet" href="/css/createRegCatering.css">
+  <link rel="stylesheet" href="/css/tray-cheatsheet.css">
+</head>
+<body>
+<div class="container">
+  <header><h1>cfa catering order</h1></header>
+
+  <main id="app">
+    <div class="progress-wrap">
+      <div id="progressBar" class="progress-bar"></div>
+      <div id="progressText" class="progress-text">step 1 of 8</div>
+    </div>
+
+    <form id="cateringForm" onsubmit="return false;">
+      <!-- STEP 1 -->
+      <section class="form-step active" data-step="1">
+        <h2>pickup or delivery?</h2>
+        <div class="choice-row">
+          <button type="button" class="btn choice-btn" data-type="Pickup">pickup</button>
+          <button type="button" class="btn choice-btn" data-type="Delivery">delivery</button>
+        </div>
+        <div class="nav-row"><button type="button" class="btn btn-next">next</button></div>
+      </section>
+
+      <!-- STEP 2: Event details ONLY shown on step 2 -->
+      <section class="form-step" data-step="2">
+        <h2>event details</h2>
+        <div class="grid-two">
+          <label>date <input id="date" name="date" type="date"></label>
+          <label>time <input id="time" name="time" type="time"></label>
+          <label>destination <input id="destination" name="destination" type="text" placeholder="N/A"></label>
+          <label>customer name <input id="customer_name" name="customer_name" type="text" required></label>
+          <label>phone number <input id="phone_number" name="phone_number" type="tel"></label>
+          <label>customer email <input id="customer_email" name="customer_email" type="email"></label>
+          <label>guest count <input id="guest_count" name="guest_count" type="number" min="1" placeholder="N/A"></label>
+          <div class="radio-row">
+            <label><input type="radio" name="paper_goods" value="Yes"> paper goods - yes</label>
+            <label><input type="radio" name="paper_goods" value="No" checked> paper goods - no</label>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button type="button" class="btn btn-back">back</button>
+          <button type="button" class="btn btn-next">next</button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Food selection (nested) -->
+      <section class="form-step" data-step="3">
+        <h2>food items</h2>
+        <div class="search-wrap">
+          <input id="itemSearch" placeholder="search menu items or type to filter...">
+          <div id="suggestions" class="suggestions"></div>
+        </div>
+
+        <div class="categories">
+          <button type="button" class="cat-btn active" data-cat="all">all</button>
+          <button type="button" class="cat-btn" data-cat="trays">Trays</button>
+          <button type="button" class="cat-btn" data-cat="entrees">Entrees</button>
+          <button type="button" class="cat-btn" data-cat="salads">Salads</button>
+          <button type="button" class="cat-btn" data-cat="sides">Sides</button>
+          <button type="button" class="cat-btn" data-cat="desserts">Desserts</button>
+        </div>
+
+        <div id="menuList" class="menu-list"></div>
+
+        <div class="nav-row">
+          <button type="button" class="btn btn-back">back</button>
+          <button type="button" class="btn btn-next">next</button>
+        </div>
+      </section>
+
+      <!-- STEP 4: Meal box questions area (populated by modal) -->
+      <section class="form-step" data-step="4">
+        <h2>meal box details (if applicable)</h2>
+        <div id="mealBoxArea" class="meal-area"><p class="muted">no meal box questions required.</p></div>
+        <div class="nav-row">
+          <button type="button" class="btn btn-back">back</button>
+          <button type="button" class="btn btn-next">next</button>
+        </div>
+      </section>
+
+      <!-- STEP 5: Drinks -->
+      <section class="form-step" data-step="5">
+        <h2>drinks</h2>
+        <div id="drinksList" class="menu-list"></div>
+        <div class="nav-row">
+          <button type="button" class="btn btn-back">back</button>
+          <button type="button" class="btn btn-next">next</button>
+        </div>
+      </section>
+
+      <!-- STEP 6: Sauces -->
+      <section class="form-step" data-step="6">
+        <h2>sauces & dressings</h2>
+        <div id="saucesList" class="menu-list"></div>
+        <div class="nav-row">
+          <button type="button" class="btn btn-back">back</button>
+          <button type="button" class="btn btn-next">next</button>
+        </div>
+      </section>
+
+  <!-- STEP 7: Summary -->
+<section class="form-step" data-step="7">
+  <h2>order summary</h2>
+  <div id="summaryArea" class="summary-area"></div>
+  <label>adjust total if needed <input id="manualTotal" type="text" placeholder="$0.00"></label>
+
+  <!-- add this line -->
+  <p id="submitStatus" class="muted"></p>
+
+  <div class="nav-row">
+    <button type="button" class="btn btn-back">back</button>
+    <button type="button" id="submitBtn" class="btn btn-primary">submit order</button>
+  </div>
+</section>
+
+      <!-- STEP 8: Confirmation -->
+      <section class="form-step" data-step="8">
+        <h2>submission finished!</h2>
+        <p id="countdown">redirecting in <span id="count">3</span>...</p>
+      </section>
+    </form>
+
+    <aside>
+      <a href="/options/" class="back-btn">⬅ Back to Options</a>
+    </aside>
+    
+<aside class="live-total">
+  <h3>live total</h3>
+  <div id="liveTotal">$0.00</div>
+
+  <label style="display:block; margin-top:8px;">
+    <input type="checkbox" id="applyTax"> Apply 6% Tax
+  </label>
+</aside>
+  </main>
+
+  <footer><small>created by chase — prototype</small></footer>
+</div>
+
+<!-- Meal box modal -->
+<div id="mealModal" class="modal hidden">
+  <div class="modal-inner">
+    <h3>meal box builder</h3>
+    <div id="mealModalContent"></div>
+    <div class="modal-actions">
+      <button id="mealCancel" class="btn">cancel</button>
+      <button id="mealSave" class="btn btn-primary">save meal box</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tray Cheatsheet Panel -->
+<button id="cheatsheetToggle" class="cheatsheet-toggle" title="Toggle Tray Size Guide">ℹ️</button>
+<div id="trayCheatsheet" class="tray-cheatsheet">
+  <h2>Tray Size Guide</h2>
+  <header>
+    <h2>Tray Size Guide</h2>
+  </header>
+  <div id="trayContent" class="tray-content">
+    <!-- Content populated by JS -->
+  </div>
+</div>
+
+<script>const BASE_URL = '';</script>
+<script src="/js/tray-config.js"></script>
+<script src="/js/createRegCatering.js"></script>
+<script src="/js/tray-cheatsheet.js"></script>
+</body>
+</html>

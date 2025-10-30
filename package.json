@@ -1,0 +1,26 @@
+{
+  "name": "catering-cfa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate-users": "node scripts/migrate-employees.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.30.0",
+    "body-parser": "^2.2.0",
+    "csv-parse": "^6.1.0",
+    "csv-stringify": "^6.6.0",
+    "date-fns-tz": "^3.2.0",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "imap": "^0.8.19",
+    "mailparser": "^3.7.5"
+  }
+}

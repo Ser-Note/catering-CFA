@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Previous Caterings</title>
+  <link rel="stylesheet" href="/css/login.css" />
+  <link rel="icon" type="image/x-icon" href="/images/cfalogo.ico" />
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background-color: #c8102e; color: white; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    .paid { color: green; font-weight: bold; }
+    .unpaid { color: red; font-weight: bold; }
+    .container { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); max-width: 1000px; margin: 40px auto; }
+    h2 { text-align: center; color: #c8102e; margin-bottom: 20px; }
+    .back-link, .edit-btn { display: inline-block; margin-top: 15px; color: #c8102e; text-decoration: none; font-weight: bold; }
+    .edit-btn { margin-right: 20px; }
+    .back-link:hover, .edit-btn:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Previous Catering Orders</h2>
+
+    <% if (rows && rows.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Organization/Person</th>
+            <th>Sandwiches</th>
+            <th>Other Items</th>
+            <th>Sauces</th>
+            <th>Cost ($)</th>
+            <th>Paid?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% rows.forEach(row => { %>
+            <tr>
+              <td><%= row[0] || '' %></td>
+              <td><%= row[1] || '' %></td>
+              <td><%= row[2] || '' %></td>
+              <td><%= row[3] || '' %></td>
+              <td><%= row[4] || '' %></td>
+              <td><%= row[5] || '' %></td>
+              <td><%= row[6] || '' %></td>
+              <td class="<%= (row[7] == 1) ? 'paid' : 'unpaid' %>">
+                <%= (row[7] == 1) ? 'Yes' : 'No' %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p style="text-align:center; color:red;">No catering records found.</p>
+    <% } %>
+
+    <p style="text-align:center;">
+      <a href="/catering/edit-catering" class="edit-btn">✏️ Edit/Delete Orders</a>
+      <a href="/options/" class="back-link">← Back to Catering Menu</a>
+    </p>
+  </div>
+</body>
+</html>
