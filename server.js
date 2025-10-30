@@ -48,8 +48,9 @@ app.use(express.json());
 // Session configuration with environment variables
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production",
-  resave: false,
+  resave: true, // Force session save for serverless
   saveUninitialized: false, // Don't create session until authenticated
+  name: 'catering.sid', // Explicit session cookie name
   cookie: {
     maxAge: parseInt(process.env.SESSION_TIMEOUT) || 86400000, // 24 hours default
     httpOnly: true,

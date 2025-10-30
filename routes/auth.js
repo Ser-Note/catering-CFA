@@ -32,6 +32,12 @@ router.post('/login', (req, res) => {
     req.session.authenticated = true;
     req.session.authenticatedAt = new Date().toISOString();
     
+    console.log('🔧 Session before save:', {
+      id: req.session.id,
+      authenticated: req.session.authenticated,
+      cookie: req.session.cookie
+    });
+    
     // Force session save before redirect (important for serverless environments)
     req.session.save((err) => {
       if (err) {
@@ -42,7 +48,8 @@ router.post('/login', (req, res) => {
         });
       }
       
-      console.log('📍 Session saved, redirecting to:', redirect || '/login');
+      console.log('📍 Session saved successfully, redirecting to:', redirect || '/login');
+      console.log('🍪 Set-Cookie header should be sent');
       // Redirect to original destination or employee login
       return res.redirect(redirect || '/login');
     });
@@ -72,13 +79,22 @@ router.get('/debug', (req, res) => {
     environment: {
       NODE_ENV: process.env.NODE_ENV,
       hasSessionSecret: !!process.env.SESSION_SECRET,
-      hasPasswordHash: !!process.env.DATA_PASSWORD_HASH
+      hasPasswordHash: !!process.env.DATA_PASSWORD_HASH,
+      sessionSecretLength: process.env.SESSION_SECRET?.length || 0
     },
     request: {
       headers: {
         'user-agent': req.headers['user-agent'],
-        'cookie': req.headers.cookie ? 'present' : 'missing'
-      }
+        'cookie': req.headers.cookie ? req.headers.cookie : 'missing',
+        'host': req.headers.host,
+        'x-forwarded-proto': req.headers['x-forwarded-proto']
+      },
+      secure: req.secure,
+      protocol: req.protocol
+    },
+    cookieDetails: {
+      expectedName: 'catering.sid',
+      cookieString: req.headers.cookie || 'none'
     }
   });
 });
