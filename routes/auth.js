@@ -32,9 +32,20 @@ router.post('/login', (req, res) => {
     req.session.authenticated = true;
     req.session.authenticatedAt = new Date().toISOString();
     
-    console.log('📍 Redirecting to:', redirect || '/login');
-    // Redirect to original destination or employee login
-    return res.redirect(redirect || '/login');
+    // Force session save before redirect (important for serverless environments)
+    req.session.save((err) => {
+      if (err) {
+        console.error('❌ Session save error:', err);
+        return res.render('auth-login', { 
+          redirectUrl: redirect || '/login',
+          error: 'Session error. Please try again.' 
+        });
+      }
+      
+      console.log('📍 Session saved, redirecting to:', redirect || '/login');
+      // Redirect to original destination or employee login
+      return res.redirect(redirect || '/login');
+    });
   } else {
     console.log('❌ Password incorrect');
     // Password incorrect
@@ -43,6 +54,33 @@ router.post('/login', (req, res) => {
       error: 'Incorrect password. Please try again.' 
     });
   }
+});
+
+// GET /auth/debug - Debug session information (only in development or when DEBUG_SESSIONS=true)
+router.get('/debug', (req, res) => {
+  if (process.env.NODE_ENV === 'production' && process.env.DEBUG_SESSIONS !== 'true') {
+    return res.status(404).json({ error: 'Not found' });
+  }
+  
+  res.json({
+    session: {
+      id: req.session?.id,
+      authenticated: req.session?.authenticated,
+      authenticatedAt: req.session?.authenticatedAt,
+      cookie: req.session?.cookie
+    },
+    environment: {
+      NODE_ENV: process.env.NODE_ENV,
+      hasSessionSecret: !!process.env.SESSION_SECRET,
+      hasPasswordHash: !!process.env.DATA_PASSWORD_HASH
+    },
+    request: {
+      headers: {
+        'user-agent': req.headers['user-agent'],
+        'cookie': req.headers.cookie ? 'present' : 'missing'
+      }
+    }
+  });
 });
 
 // GET /auth/logout - Destroy session

@@ -46,18 +46,28 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Session configuration with environment variables
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production",
-    resave: false,
-    saveUninitialized: false, // Don't create session until authenticated
-    cookie: {
-      maxAge: parseInt(process.env.SESSION_TIMEOUT) || 86400000, // 24 hours default
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production' // HTTPS only in production
-    }
-  })
-);
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production",
+  resave: false,
+  saveUninitialized: false, // Don't create session until authenticated
+  cookie: {
+    maxAge: parseInt(process.env.SESSION_TIMEOUT) || 86400000, // 24 hours default
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    sameSite: 'strict' // Strict same-site policy for better security
+  }
+};
+
+// Log session configuration in development
+if (process.env.NODE_ENV !== 'production') {
+  console.log('🔧 Session config:', {
+    secure: sessionConfig.cookie.secure,
+    sameSite: sessionConfig.cookie.sameSite,
+    maxAge: sessionConfig.cookie.maxAge
+  });
+}
+
+app.use(session(sessionConfig));
 
 // Routes - Authentication (no password protection on auth routes)
 app.use("/auth", authRoutes);
