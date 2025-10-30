@@ -1,5 +1,6 @@
 // routes/auth.js
 const express = require('express');
+const crypto = require('crypto');
 const { verifyPassword, hashPassword } = require('../middleware/auth');
 const { setAuthCookie, clearAuthCookie, verifyAuthToken } = require('../middleware/serverless-auth');
 const router = express.Router();
@@ -154,6 +155,54 @@ router.get('/check-cookies', (req, res) => {
       data: authData
     }
   });
+});
+
+// GET /auth/verify-token - Debug token verification step by step  
+router.get('/verify-token', (req, res) => {
+  const authToken = req.cookies['auth-token'];
+  
+  if (!authToken) {
+    return res.json({ error: 'No auth token found' });
+  }
+  
+  try {
+    const crypto = require('crypto');
+    
+    // Debug the token verification process step by step
+    const decoded = Buffer.from(authToken, 'base64').toString('utf8');
+    const [payload, signature] = decoded.split('.');
+    
+    const SESSION_SECRET = process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production";
+    const expectedSignature = crypto
+      .createHmac('sha256', SESSION_SECRET)
+      .update(payload)
+      .digest('hex');
+    
+    const data = JSON.parse(payload);
+    const maxAge = parseInt(process.env.SESSION_TIMEOUT) || 86400000;
+    const age = Date.now() - data.timestamp;
+    
+    res.json({
+      token: authToken,
+      decoded: decoded,
+      payload: payload,
+      payloadData: data,
+      receivedSignature: signature,
+      expectedSignature: expectedSignature,
+      signatureMatch: signature === expectedSignature,
+      sessionSecret: SESSION_SECRET.substring(0, 10) + '...', // Only show first 10 chars
+      age: age,
+      maxAge: maxAge,
+      expired: age > maxAge,
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    res.json({ 
+      error: 'Token verification failed', 
+      message: error.message,
+      token: authToken 
+    });
+  }
 });
 
 // GET /auth/debug - Debug session information (only in development or when DEBUG_SESSIONS=true)
