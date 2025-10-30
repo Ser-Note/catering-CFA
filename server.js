@@ -21,6 +21,7 @@ const employeesApi = require("./routes/employeesApi.js");
 
 // Middleware
 const { requireAuth } = require("./middleware/auth.js");
+const { requireServerlessAuth } = require("./middleware/serverless-auth.js");
 
 const app = express();
 
@@ -84,15 +85,15 @@ app.use("/auth", authRoutes);
 app.use("/", loginRoutes);  // login router for existing user login
 
 // Routes - Protected (require password authentication)
-app.use("/catering", requireAuth, previousCateringRouter);       // GET /catering/
-app.use("/catering", requireAuth, editCateringRouter); // GET/POST /catering/edit-catering
-app.use("/json-catering", requireAuth, jsonCateringRouter); // optional
-app.use("/fundraiser", requireAuth, fundraiserRouter);     // optional
-app.use("/catering", requireAuth, submitCateringRouter);
-app.use("/orders", requireAuth, ordersRouter); // GET /orders - PROTECTED
-app.use("/fetch-catering", requireAuth, fetchCateringRouter); // PROTECTED
+app.use("/catering", requireServerlessAuth, previousCateringRouter);       // GET /catering/
+app.use("/catering", requireServerlessAuth, editCateringRouter); // GET/POST /catering/edit-catering
+app.use("/json-catering", requireServerlessAuth, jsonCateringRouter); // optional
+app.use("/fundraiser", requireServerlessAuth, fundraiserRouter);     // optional
+app.use("/catering", requireServerlessAuth, submitCateringRouter);
+app.use("/orders", requireServerlessAuth, ordersRouter); // GET /orders - PROTECTED
+app.use("/fetch-catering", requireServerlessAuth, fetchCateringRouter); // PROTECTED
 // API for employees management - PROTECTED
-app.use('/api', requireAuth, employeesApi);
+app.use('/api', requireServerlessAuth, employeesApi);
 // Root redirect to password login (not employee login)
 app.get("/", (req, res) => {
   res.redirect("/auth/login");
