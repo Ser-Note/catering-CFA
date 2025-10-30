@@ -16,8 +16,11 @@ router.post('/login', (req, res) => {
   
   console.log('🔐 Login attempt:');
   console.log('- Password received:', password ? 'YES' : 'NO');
+  console.log('- Password length:', password ? password.length : 0);
   console.log('- Redirect URL:', redirect);
   console.log('- Hash configured:', storedPasswordHash ? 'YES' : 'NO');
+  console.log('- Hash length:', storedPasswordHash ? storedPasswordHash.length : 0);
+  console.log('- Session ID before auth:', req.session?.id);
   
   if (!storedPasswordHash) {
     return res.render('auth-login', { 
@@ -26,7 +29,11 @@ router.post('/login', (req, res) => {
     });
   }
   
-  if (verifyPassword(password, storedPasswordHash)) {
+  console.log('🔍 Verifying password...');
+  const passwordValid = verifyPassword(password, storedPasswordHash);
+  console.log('🔍 Password verification result:', passwordValid);
+  
+  if (passwordValid) {
     console.log('✅ Password correct - creating session');
     // Password correct - create session
     req.session.authenticated = true;
