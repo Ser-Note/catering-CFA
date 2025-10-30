@@ -55,7 +55,12 @@ router.post('/employees', async (req, res) => {
     const tempPassword = genPassword();
     const hashedPassword = await argon2.hash(tempPassword);
     
-    const user = await userDB.create(username, hashedPassword, cleanF.toLowerCase(), cleanL.toLowerCase());
+    const user = await userDB.create({
+      username: username,
+      password_hash: hashedPassword,
+      fname: cleanF,
+      lname: cleanL
+    });
     
     // Return temp password once to the admin client
     res.status(201).json({ success: true, username, tempPassword });
