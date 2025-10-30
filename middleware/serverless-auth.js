@@ -80,13 +80,14 @@ function clearAuthCookie(res) {
 function requireServerlessAuth(req, res, next) {
   const token = req.cookies['auth-token'];
   
-  if (process.env.DEBUG_SESSIONS === 'true') {
-    console.log('🔐 Serverless auth check:', {
-      url: req.originalUrl,
-      hasToken: !!token,
-      tokenLength: token?.length || 0
-    });
-  }
+  // Always log in production for debugging
+  console.log('🔐 Serverless auth check:', {
+    url: req.originalUrl,
+    hasToken: !!token,
+    tokenLength: token?.length || 0,
+    allCookies: Object.keys(req.cookies || {}),
+    cookieString: req.headers.cookie
+  });
   
   if (!token) {
     console.log('🚪 No auth token, redirecting to login');
@@ -98,6 +99,13 @@ function requireServerlessAuth(req, res, next) {
   }
   
   const authData = verifyAuthToken(token);
+  console.log('🔍 Token verification result:', {
+    valid: !!authData,
+    authenticated: authData?.authenticated,
+    timestamp: authData?.timestamp,
+    age: authData ? (Date.now() - authData.timestamp) : 'N/A'
+  });
+  
   if (!authData || !authData.authenticated) {
     console.log('🚪 Invalid auth token, redirecting to login');
     clearAuthCookie(res);

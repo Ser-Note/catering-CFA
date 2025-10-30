@@ -35,32 +35,21 @@ router.post('/login', (req, res) => {
   console.log('🔍 Password verification result:', passwordValid);
   
   if (passwordValid) {
-    console.log('✅ Password correct - creating session');
-    // Password correct - create session
+    console.log('✅ Password correct - creating serverless auth');
+    
+    // Set serverless auth cookie instead of session
+    setAuthCookie(res, {
+      authenticated: true,
+      authenticatedAt: new Date().toISOString()
+    });
+    
+    // Also set session for backward compatibility
     req.session.authenticated = true;
     req.session.authenticatedAt = new Date().toISOString();
     
-    console.log('🔧 Session before save:', {
-      id: req.session.id,
-      authenticated: req.session.authenticated,
-      cookie: req.session.cookie
-    });
-    
-    // Force session save before redirect (important for serverless environments)
-    req.session.save((err) => {
-      if (err) {
-        console.error('❌ Session save error:', err);
-        return res.render('auth-login', { 
-          redirectUrl: redirect || '/login',
-          error: 'Session error. Please try again.' 
-        });
-      }
-      
-      console.log('📍 Session saved successfully, redirecting to:', redirect || '/login');
-      console.log('🍪 Set-Cookie header should be sent');
-      // Redirect to original destination or employee login
-      return res.redirect(redirect || '/login');
-    });
+    console.log('📍 Serverless auth cookie set, redirecting to:', redirect || '/login');
+    // Redirect to original destination or employee login
+    return res.redirect(redirect || '/login');
   } else {
     console.log('❌ Password incorrect');
     // Password incorrect
@@ -145,6 +134,25 @@ router.get('/force-serverless-auth', (req, res) => {
     method: 'serverless-cookie',
     message: 'Serverless authenticated - try accessing /options now',
     nextStep: 'Visit /options to test if serverless authentication worked'
+  });
+});
+
+// GET /auth/check-cookies - Check what cookies are present
+router.get('/check-cookies', (req, res) => {
+  const authToken = req.cookies['auth-token'];
+  const authData = authToken ? verifyAuthToken(authToken) : null;
+  
+  res.json({
+    cookies: req.cookies,
+    headers: {
+      cookie: req.headers.cookie
+    },
+    authToken: {
+      present: !!authToken,
+      length: authToken?.length || 0,
+      valid: !!authData,
+      data: authData
+    }
   });
 });
 
