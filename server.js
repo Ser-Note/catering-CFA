@@ -54,7 +54,7 @@ const sessionConfig = {
     maxAge: parseInt(process.env.SESSION_TIMEOUT) || 86400000, // 24 hours default
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // HTTPS only in production
-    sameSite: 'strict' // Strict same-site policy for better security
+    sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'strict' // More permissive in prod
   }
 };
 
