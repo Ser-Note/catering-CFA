@@ -1,6 +1,7 @@
 // routes/auth.js
 const express = require('express');
 const { verifyPassword, hashPassword } = require('../middleware/auth');
+const { setAuthCookie, clearAuthCookie, verifyAuthToken } = require('../middleware/serverless-auth');
 const router = express.Router();
 
 // GET /auth/login - Show login page
@@ -102,6 +103,48 @@ router.post('/test-login', (req, res) => {
       authenticated: req.session.authenticated,
       message: 'Manually authenticated - try accessing /options now'
     });
+  });
+});
+
+// GET /auth/force-auth - Force authentication via GET (for easy testing)  
+router.get('/force-auth', (req, res) => {
+  console.log('🧪 Force authentication via GET');
+  req.session.authenticated = true;
+  req.session.authenticatedAt = new Date().toISOString();
+  
+  req.session.save((err) => {
+    if (err) {
+      console.error('❌ Force auth session save error:', err);
+      return res.json({ success: false, error: err.message });
+    }
+    
+    console.log('✅ Force authentication successful');
+    res.json({ 
+      success: true, 
+      sessionId: req.session.id,
+      authenticated: req.session.authenticated,
+      message: 'Force authenticated - try accessing /options now',
+      nextStep: 'Visit /options to test if authentication worked'
+    });
+  });
+});
+
+// GET /auth/force-serverless-auth - Force authentication using serverless cookies
+router.get('/force-serverless-auth', (req, res) => {
+  console.log('🧪 Force serverless authentication via GET');
+  
+  // Set serverless auth cookie
+  setAuthCookie(res, {
+    authenticated: true,
+    authenticatedAt: new Date().toISOString()
+  });
+  
+  console.log('✅ Serverless force authentication successful');
+  res.json({ 
+    success: true, 
+    method: 'serverless-cookie',
+    message: 'Serverless authenticated - try accessing /options now',
+    nextStep: 'Visit /options to test if serverless authentication worked'
   });
 });
 

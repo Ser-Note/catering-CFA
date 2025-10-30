@@ -48,11 +48,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Cookie parsing (needed for serverless auth)
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 // Session configuration with environment variables
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production",
   resave: true, // Force session save for serverless
-  saveUninitialized: false, // Don't create session until authenticated
+  saveUninitialized: true, // Create session immediately for serverless
   name: 'catering.sid', // Explicit session cookie name
   cookie: {
     maxAge: parseInt(process.env.SESSION_TIMEOUT) || 86400000, // 24 hours default
