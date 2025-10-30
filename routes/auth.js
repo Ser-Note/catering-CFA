@@ -138,6 +138,26 @@ router.get('/force-serverless-auth', (req, res) => {
   });
 });
 
+// GET /auth/logout - Clear all authentication cookies
+router.get('/logout', (req, res) => {
+  console.log('🚪 Logout endpoint hit');
+  
+  clearAuthCookie(res);
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log('Session destroy error:', err);
+      }
+    });
+  }
+  
+  res.json({
+    success: true,
+    message: 'Logged out successfully',
+    nextStep: 'Visit /auth/login to log in again'
+  });
+});
+
 // GET /auth/check-cookies - Check what cookies are present
 router.get('/check-cookies', (req, res) => {
   const authToken = req.cookies['auth-token'];
@@ -169,7 +189,17 @@ router.get('/verify-token', (req, res) => {
     const crypto = require('crypto');
     
     // Debug the token verification process step by step
-    const decoded = Buffer.from(authToken, 'base64').toString('utf8');
+    // Convert URL-safe base64 back to regular base64
+    let base64Token = authToken
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    
+    // Add padding if necessary
+    while (base64Token.length % 4) {
+      base64Token += '=';
+    }
+    
+    const decoded = Buffer.from(base64Token, 'base64').toString('utf8');
     const [payload, signature] = decoded.split('.');
     
     const SESSION_SECRET = process.env.SESSION_SECRET || "yourSecretKey-change-this-in-production";
