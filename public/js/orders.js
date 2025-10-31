@@ -108,8 +108,15 @@ orders.forEach(order => {
         }
 
         // helper to determine source and id
-        const parsedSource = order.dataset.uid && order.dataset.uid.indexOf('json_') === 0 ? 'json' : 'csv';
-        const orderId = data.id || (order.dataset.uid || '').replace(/^(json_|csv_)/, '');
+        let parsedSource = 'json'; // default fallback
+        if (order.dataset.uid) {
+            if (order.dataset.uid.indexOf('json_') === 0) {
+                parsedSource = 'email';
+            } else if (order.dataset.uid.indexOf('catering_') === 0) {
+                parsedSource = 'catering';
+            }
+        }
+        const orderId = data.id || (order.dataset.uid || '').replace(/^(json_|catering_|csv_)/, '');
 
         function persistUpdate(newPaid, newCompletedValue){
             const updatePayload = { source: parsedSource, id: orderId, paid: newPaid };

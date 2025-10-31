@@ -408,6 +408,7 @@ body {
 
 .item-name-compact.tooltip {
     cursor: help;
+    position: relative;
 }
 
 .item-count-compact {
@@ -542,17 +543,15 @@ body {
         gap: 10px;
     }
     
-    /* Mobile tooltips appear above content */
+    /* Mobile tooltips appear below content */
     .tooltip::after {
-        bottom: auto;
-        top: -40px;
+        top: calc(100% + 5px);
         max-width: 200px;
         white-space: normal;
     }
     
     .tooltip::before {
-        bottom: auto;
-        top: -32px;
+        top: calc(100% + 1px);
         border-top-color: transparent;
         border-bottom-color: rgba(0, 0, 0, 0.9);
     }
@@ -567,7 +566,7 @@ body {
 .tooltip::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 125%;
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0, 0, 0, 0.9);
@@ -581,19 +580,21 @@ body {
     transition: opacity 0.3s ease;
     z-index: 1000;
     pointer-events: none;
+    margin-top: 5px;
 }
 
 .tooltip::before {
     content: '';
     position: absolute;
-    bottom: 117%;
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: rgba(0, 0, 0, 0.9);
+    border-bottom-color: rgba(0, 0, 0, 0.9);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease;
+    margin-top: 1px;
 }
 
 .tooltip:hover::after,

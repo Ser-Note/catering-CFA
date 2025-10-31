@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate-users": "node scripts/migrate-employees.js"
+    "migrate-users": "node scripts/migrate-employees.js",
+    "migrate-temp-creds": "node scripts/migrate-temp-creds.js"
   },
   "keywords": [],
   "author": "",

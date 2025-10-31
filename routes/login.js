@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const argon2 = require('argon2');
-const { employeeDB, checkInDB, userDB } = require('../database/db');
+const { employeeDB, checkInDB, userDB, tempCredsDB } = require('../database/db');
 
 // GET /login → serve login page
 router.get("/login", (req, res) => {
@@ -29,20 +29,69 @@ router.post('/change-password', async (req, res) => {
       return res.status(400).json({ error: 'username/currentPassword/newPassword required' });
     }
 
-    // Get user from database
-    const user = await userDB.getByUsername(username);
-    if (!user) return res.status(400).json({ error: 'User not found' });
+    // Check if this is a temp credential first
+    const tempCred = await tempCredsDB.getByUsername(username);
+    let usingTempPassword = false;
+    
+    if (tempCred && tempCred.temp_password === currentPassword) {
+      // User is using a temporary password
+      console.log(`🔑 User ${username} is changing password from temp credentials`);
+      usingTempPassword = true;
+      
+      // Check if temp credential is expired
+      if (new Date(tempCred.expires_at) < new Date()) {
+        return res.status(400).json({ error: 'Temporary password has expired. Please contact administrator.' });
+      }
+    } else {
+      // Check regular user password
+      const user = await userDB.getByUsername(username);
+      if (!user) return res.status(400).json({ error: 'User not found' });
 
-    const ok = await argon2.verify(user.password_hash, currentPassword);
-    if (!ok) return res.status(400).json({ error: 'Current password incorrect' });
+      const ok = await argon2.verify(user.password_hash, currentPassword);
+      if (!ok) return res.status(400).json({ error: 'Current password incorrect' });
+    }
 
-    // basic new password validation
+    // Basic new password validation
     if (newPassword.length < 8) return res.status(400).json({ error: 'New password must be at least 8 characters' });
 
+    // Hash new password
     const newHash = await argon2.hash(newPassword);
-    await userDB.updatePassword(username, newHash);
+    
+    if (usingTempPassword) {
+      // For temp credentials, we need to either create or update the user record
+      const existingUser = await userDB.getByUsername(username);
+      
+      if (existingUser) {
+        // Update existing user
+        await userDB.updatePassword(username, newHash);
+        console.log(`✅ Updated password for existing user ${username}`);
+      } else {
+        // Create new user (extract first and last name from username)
+        const [fname, lname] = username.split('.');
+        await userDB.create({
+          username: username,
+          fname: fname || 'Unknown',
+          lname: lname || 'User',
+          password_hash: newHash
+        });
+        console.log(`✅ Created new user account for ${username}`);
+      }
+      
+      // Delete the temporary credentials
+      await tempCredsDB.deleteByUsername(username);
+      console.log(`🗑️  Deleted temp credentials for ${username}`);
+      
+    } else {
+      // Regular password change
+      await userDB.updatePassword(username, newHash);
+      console.log(`✅ Updated password for user ${username}`);
+    }
 
-    return res.json({ success: true });
+    return res.json({ 
+      success: true, 
+      message: usingTempPassword ? 'Account setup complete! You can now login with your new password.' : 'Password changed successfully!' 
+    });
+    
   } catch (err) {
     console.error('Change password error', err);
     return res.status(500).json({ error: 'Server error' });
@@ -63,7 +112,27 @@ router.post("/login", async (req, res) => {
     // If username/password provided, prefer secure hashed-password authentication
     if (username && password) {
       try {
-        // Get user from database
+        // First check if this is a temp credential
+        const tempCred = await tempCredsDB.getByUsername(username);
+        
+        if (tempCred && tempCred.temp_password === password) {
+          // Check if temp credential is expired
+          if (new Date(tempCred.expires_at) < new Date()) {
+            return res.status(400).json({ error: 'Temporary password has expired. Please contact administrator.' });
+          }
+          
+          // User is using temp credentials - redirect to password change
+          req.session.username = username;
+          req.session.tempCredential = true; // Flag to indicate this is a temp login
+          
+          console.log(`🔑 User ${username} logged in with temp credentials, redirecting to password setup`);
+          return res.json({ 
+            redirect: '/change-password',
+            message: 'Please set up your permanent password'
+          });
+        }
+        
+        // Check regular user password
         const user = await userDB.getByUsername(username);
         if (!user || !user.password_hash) return res.status(400).json({ error: 'Invalid credentials' });
         
@@ -74,6 +143,7 @@ router.post("/login", async (req, res) => {
         req.session.username = user.username;
         req.session.fname = user.fname || '';
         req.session.lname = user.lname || '';
+        req.session.tempCredential = false;
 
         // record check-in to database
         try {

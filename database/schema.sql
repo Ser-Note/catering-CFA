@@ -107,6 +107,22 @@ CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 -- Enable Row Level Security
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
+-- 7. Temporary credentials table (replaces temp-creds.csv)
+CREATE TABLE IF NOT EXISTS temp_creds (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    temp_password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '30 days')
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_temp_creds_username ON temp_creds(username);
+CREATE INDEX IF NOT EXISTS idx_temp_creds_expires ON temp_creds(expires_at);
+
+-- Enable Row Level Security
+ALTER TABLE temp_creds ENABLE ROW LEVEL SECURITY;
+
 -- Create policies (adjust as needed based on your authentication requirements)
 -- For now, allow all operations (you can restrict these later)
 CREATE POLICY "Allow all operations on employees" ON employees FOR ALL USING (true);
@@ -115,3 +131,4 @@ CREATE POLICY "Allow all operations on debug_logs" ON debug_logs FOR ALL USING (
 CREATE POLICY "Allow all operations on catering_orders" ON catering_orders FOR ALL USING (true);
 CREATE POLICY "Allow all operations on email_orders" ON email_orders FOR ALL USING (true);
 CREATE POLICY "Allow all operations on users" ON users FOR ALL USING (true);
+CREATE POLICY "Allow all operations on temp_creds" ON temp_creds FOR ALL USING (true);

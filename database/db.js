@@ -393,11 +393,89 @@ const userDB = {
   }
 };
 
+// Temporary credentials operations
+const tempCredsDB = {
+  // Get all temp credentials
+  async getAll() {
+    const { data, error } = await supabase
+      .from('temp_creds')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return data || [];
+  },
+
+  // Get temp credentials by username
+  async getByUsername(username) {
+    const { data, error } = await supabase
+      .from('temp_creds')
+      .select('*')
+      .eq('username', username.toLowerCase())
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows returned
+    return data;
+  },
+
+  // Create new temp credentials
+  async create(username, tempPassword) {
+    const { data, error } = await supabase
+      .from('temp_creds')
+      .insert([{
+        username: username.toLowerCase(),
+        temp_password: tempPassword
+      }])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Delete temp credentials by username
+  async deleteByUsername(username) {
+    const { error } = await supabase
+      .from('temp_creds')
+      .delete()
+      .eq('username', username.toLowerCase());
+    
+    if (error) throw error;
+    return true;
+  },
+
+  // Clean up expired temp credentials
+  async cleanupExpired() {
+    const { error } = await supabase
+      .from('temp_creds')
+      .delete()
+      .lt('expires_at', new Date().toISOString());
+    
+    if (error) throw error;
+    return true;
+  },
+
+  // Check if temp password is valid
+  async validateTempPassword(username, tempPassword) {
+    const { data, error } = await supabase
+      .from('temp_creds')
+      .select('*')
+      .eq('username', username.toLowerCase())
+      .eq('temp_password', tempPassword)
+      .gt('expires_at', new Date().toISOString())
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    return !!data;
+  }
+};
+
 module.exports = {
   employeeDB,
   checkInDB,
   debugLogDB,
   cateringOrderDB,
   emailOrderDB,
-  userDB
+  userDB,
+  tempCredsDB
 };

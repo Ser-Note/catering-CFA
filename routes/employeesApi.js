@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const argon2 = require('argon2');
-const { employeeDB, userDB } = require('../database/db');
+const { employeeDB, userDB, tempCredsDB } = require('../database/db');
 
 const router = express.Router();
 
@@ -43,27 +43,35 @@ router.post('/employees', async (req, res) => {
     const cleanL = String(lname).trim();
     let username = sanitizeUsername(cleanF, cleanL);
     
-    // Ensure unique username in database
+    // Ensure unique username in database (check both users and temp_creds)
     let attempt = 1;
     let existingUser = await userDB.getByUsername(username);
-    while (existingUser) {
+    let existingTempCred = await tempCredsDB.getByUsername(username);
+    
+    while (existingUser || existingTempCred) {
       attempt++;
       username = `${sanitizeUsername(cleanF, cleanL)}${attempt}`;
       existingUser = await userDB.getByUsername(username);
+      existingTempCred = await tempCredsDB.getByUsername(username);
     }
     
     const tempPassword = genPassword();
-    const hashedPassword = await argon2.hash(tempPassword);
     
-    const user = await userDB.create({
-      username: username,
-      password_hash: hashedPassword,
-      fname: cleanF,
-      lname: cleanL
-    });
+    // Add to employees table for tracking
+    await employeeDB.create(cleanF, cleanL);
+    
+    // Create temporary credentials (not permanent user yet)
+    await tempCredsDB.create(username, tempPassword);
+    
+    console.log(`👤 Created new employee: ${cleanF} ${cleanL} (${username}) with temp password`);
     
     // Return temp password once to the admin client
-    res.status(201).json({ success: true, username, tempPassword });
+    res.status(201).json({ 
+      success: true, 
+      username, 
+      tempPassword,
+      message: `Employee ${cleanF} ${cleanL} created. They can use username "${username}" and the temporary password to set up their account.`
+    });
   } catch (err) {
     console.error('Failed to add employee', err);
     res.status(500).json({ error: 'Failed to add employee' });
