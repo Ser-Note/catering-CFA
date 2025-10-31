@@ -46,14 +46,28 @@
             </div>
         </fieldset>
 
-        <!-- Contact Information -->
+        <!-- Employee & Contact Information -->
         <fieldset>
-            <legend>Contact Information</legend>
+            <legend>Employee & Contact Information</legend>
             <div class="flex-row">
+                <div class="flex-column">
+                    <label for="creator">Created By (Employee)</label>
+                    <select id="creator" name="creator" required>
+                        <option value="">Select Employee</option>
+                        <% if (typeof employees !== 'undefined' && employees) { %>
+                            <% employees.forEach(emp => { %>
+                                <option value="<%= emp.fname %> <%= emp.lname %>"><%= emp.fname %> <%= emp.lname %></option>
+                            <% }) %>
+                        <% } %>
+                        <option value="Other Employee">Other Employee</option>
+                    </select>
+                </div>
                 <div class="flex-column">
                     <label for="organization">Organization Name</label>
                     <input type="text" id="organization" name="organization" required>
                 </div>
+            </div>
+            <div class="flex-row">
                 <div class="flex-column">
                     <label for="contactName">Contact Name</label>
                     <input type="text" id="contactName" name="contactName" required>

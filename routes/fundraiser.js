@@ -1,21 +1,31 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const { cateringOrderDB } = require('../database/db');
+const { cateringOrderDB, userDB } = require('../database/db');
 const router = express.Router();
 
 // Database operations now handled by cateringOrderDB
 
 // Show fundraiser form
-router.get('/', (req, res) => {
-    if (!req.session.firstName || !req.session.lastName) {
-        return res.send("Error: You must be logged in to access this page.");
-    }
+router.get('/', async (req, res) => {
+    try {
+        // Check if user is authenticated with serverless auth
+        if (!req.auth || !req.auth.authenticated) {
+            return res.redirect('/auth/login?redirect=' + encodeURIComponent(req.originalUrl));
+        }
 
-    res.render('fundraiser', {
-        firstName: req.session.firstName,
-        lastName: req.session.lastName
-    });
+        // Get all employees from database for the dropdown
+        const employees = await userDB.getAll();
+        
+        res.render('fundraiser', {
+            firstName: 'Authenticated',
+            lastName: 'User',
+            employees: employees
+        });
+    } catch (error) {
+        console.error('Error loading fundraiser page:', error);
+        res.status(500).send('Error loading page');
+    }
 });
 
 // Handle form submission
@@ -39,8 +49,8 @@ router.post('/submit', async (req, res) => {
         // Sauces
         let sauces = Array.isArray(data.sauces) ? data.sauces.join('; ') : '';
 
-        // Creator
-        const creator = `${req.session.firstName} ${req.session.lastName}`;
+        // Creator - get from form data or use default
+        const creator = data.creator || 'Authenticated User';
 
         // Build order object for database
         const newOrder = {
