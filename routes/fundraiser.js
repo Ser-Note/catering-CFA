@@ -72,7 +72,7 @@ router.post('/submit', async (req, res) => {
 
         await cateringOrderDB.create(newOrder);
 
-        res.redirect('/options'); // redirect back like PHP
+        res.redirect('/dashboard'); // redirect back to dashboard
     } catch (error) {
         console.error('Error creating catering order:', error);
         res.status(500).send('Error creating catering order');

@@ -2,7 +2,9 @@
       e.preventDefault();
       const choice = document.getElementById("choice").value;
 
-      if (choice === "prev_txt") {
+      if (choice === "dashboard") {
+        window.location.href = "/dashboard";
+      } else if (choice === "prev_txt") {
         // Redirect to route that reads catering.json
         window.location.href = "/catering";
       } else if (choice === "prev_json") {

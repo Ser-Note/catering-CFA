@@ -48,9 +48,9 @@ router.post('/login', (req, res) => {
     req.session.authenticated = true;
     req.session.authenticatedAt = new Date().toISOString();
     
-    console.log('📍 Serverless auth cookie set, redirecting to:', redirect || '/login');
-    // Redirect to original destination or employee login
-    return res.redirect(redirect || '/login');
+    console.log('📍 Serverless auth cookie set, redirecting to:', redirect || '/dashboard');
+    // Redirect to original destination or dashboard
+    return res.redirect(redirect || '/dashboard');
   } else {
     console.log('❌ Password incorrect');
     // Password incorrect
@@ -91,7 +91,7 @@ router.post('/test-login', (req, res) => {
       success: true, 
       sessionId: req.session.id,
       authenticated: req.session.authenticated,
-      message: 'Manually authenticated - try accessing /options now'
+      message: 'Manually authenticated - try accessing /dashboard now'
     });
   });
 });
@@ -113,8 +113,8 @@ router.get('/force-auth', (req, res) => {
       success: true, 
       sessionId: req.session.id,
       authenticated: req.session.authenticated,
-      message: 'Force authenticated - try accessing /options now',
-      nextStep: 'Visit /options to test if authentication worked'
+      message: 'Force authenticated - try accessing /dashboard now',
+      nextStep: 'Visit /dashboard to test if authentication worked'
     });
   });
 });
@@ -133,8 +133,8 @@ router.get('/force-serverless-auth', (req, res) => {
   res.json({ 
     success: true, 
     method: 'serverless-cookie',
-    message: 'Serverless authenticated - try accessing /options now',
-    nextStep: 'Visit /options to test if serverless authentication worked'
+    message: 'Serverless authenticated - try accessing /dashboard now',
+    nextStep: 'Visit /dashboard to test if serverless authentication worked'
   });
 });
 

@@ -14,6 +14,7 @@ const submitCateringRouter = require("./routes/submitCatering.js");
 const ordersRouter = require("./routes/orders.js");
 const fetchCateringRouter = require("./routes/fetchCatering.js");
 const employeesApi = require("./routes/employeesApi.js");
+const dashboardApi = require("./routes/dashboard.js");
 
 //Server check
 
@@ -31,7 +32,6 @@ app.set('trust proxy', 1);
 // Serve static assets
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/options", express.static(path.join(__dirname, "options")));
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/data", express.static(path.join(__dirname, "data")));
 // Serve the static employees UI
@@ -94,6 +94,14 @@ app.use("/orders", requireServerlessAuth, ordersRouter); // GET /orders - PROTEC
 app.use("/fetch-catering", requireServerlessAuth, fetchCateringRouter); // PROTECTED
 // API for employees management - PROTECTED
 app.use('/api', requireServerlessAuth, employeesApi);
+// Dashboard API - PROTECTED
+app.use('/api/dashboard', requireServerlessAuth, dashboardApi);
+
+// Dashboard HTML - PROTECTED
+app.get("/dashboard", requireServerlessAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
+});
+
 // Root redirect to password login (not employee login)
 app.get("/", (req, res) => {
   res.redirect("/auth/login");

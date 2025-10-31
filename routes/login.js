@@ -91,7 +91,7 @@ router.post("/login", async (req, res) => {
           // Don't fail login if check-in fails, just log the error
         }
 
-        return res.json({ redirect: '/options' });
+        return res.json({ redirect: '/dashboard' });
       } catch (dbError) {
         console.error('Database error during user authentication:', dbError);
         return res.status(500).json({ error: 'Server error during authentication' });
@@ -121,11 +121,11 @@ router.post("/login", async (req, res) => {
 
           await checkInDB.create(firstName, lastName, date, time);
         } catch (checkInError) {
-          console.error('Failed to record check-in:', checkInError);
+          console.error('Failed to record check-in:', checkError);
           // Don't fail login if check-in fails, just log the error
         }
 
-        return res.json({ redirect: '/options' });
+        return res.json({ redirect: '/dashboard' });
       }
 
       return res.status(400).json({ error: 'Login failed. Name not found.' });
