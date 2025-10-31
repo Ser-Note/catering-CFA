@@ -195,6 +195,30 @@ const cateringOrderDB = {
     
     if (error) throw error;
     return data || [];
+  },
+
+  // Update catering order (full update)
+  async update(id, updates) {
+    const { data, error } = await supabase
+      .from('catering_orders')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  // Delete catering order
+  async delete(id) {
+    const { error } = await supabase
+      .from('catering_orders')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
   }
 };
 
@@ -260,6 +284,17 @@ const emailOrderDB = {
     
     if (error) throw error;
     return data || [];
+  },
+
+  // Delete email order
+  async delete(id) {
+    const { error } = await supabase
+      .from('email_orders')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
+    return true;
   }
 };
 

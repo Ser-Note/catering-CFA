@@ -6,18 +6,23 @@
 <style>
 body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
 h1 { text-align:center; color:#c8102e; }
-table { width:100%; border-collapse: collapse; background:#fff; margin-bottom:20px; }
+table { width:100%; border-collapse: collapse; background:#fff; margin-bottom:20px; table-layout: fixed; }
 th, td { border:1px solid #ddd; padding:8px 10px; text-align:left; }
 th { background:#c8102e; color:white; }
 tr:nth-child(even) { background:#f2f2f2; }
-button { background:#c8102e; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; }
+button { background:#c8102e; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; margin-right:8px; }
 button:hover { background:#a50c23; }
+.action-buttons { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.delete-btn { background:red; text-decoration:none; padding:6px 12px; color:white; border-radius:6px; font-size:12px; }
+.delete-btn:hover { background:#a00; }
 .pagination { text-align:center; }
 .pagination a { padding:8px 12px; margin:2px; background:#c8102e; color:white; border-radius:4px; text-decoration:none; }
 .pagination a:hover { background:#a50c23; }
 form { background:#fff; padding:15px; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,0.1); margin-bottom:20px; }
-input[type=text], input[type=number] { padding:4px; margin:4px; width:250px; }
-label { margin-right:10px; display:inline-block; }
+input[type=text], input[type=number] { padding:6px; margin:4px; width:250px; border:1px solid #ddd; border-radius:4px; }
+label { margin-right:10px; display:inline-block; font-weight:600; margin-bottom:8px; }
+.form-row { margin-bottom:12px; }
+.form-section { margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px; }
 .item-row { display:flex; align-items:center; margin-bottom:5px; }
 .item-row input[type=text] { width:400px; margin-right:8px; }
 .remove-item { background:red; padding:2px 6px; margin-left:6px; border-radius:4px; }
@@ -36,14 +41,29 @@ label { margin-right:10px; display:inline-block; }
   <p style="text-align:center;color:green;font-weight:bold;">✅ Order updated successfully!</p>
 <% } %>
 
+<% if (typeof emptyState !== 'undefined' && emptyState) { %>
+  <div style="text-align:center; padding:40px; background:#fff; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,0.1);">
+    <h3 style="color:#666;">📭 No Email Orders Found</h3>
+    <p style="color:#888; margin:20px 0;">Your email orders database table is empty.</p>
+    <p style="color:#888;">
+      <strong>Email orders come from:</strong><br>
+      • Gmail catering orders processed by the fetch catering system<br>
+      • Orders imported from email parsing<br><br>
+      <strong>To get email orders:</strong><br>
+      1. Use the fetch catering functionality to import orders from Gmail<br>
+      2. Orders will appear here once they're processed from emails
+    </p>
+  </div>
+<% } else { %>
+
 <table>
 <tr>
-  <th>ID</th>
-  <th>Customer</th>
-  <th>Date</th>
-  <th>Time</th>
-  <th>Total</th>
-  <th>Action</th>
+  <th style="width:8%;">ID</th>
+  <th style="width:25%;">Customer</th>
+  <th style="width:15%;">Date</th>
+  <th style="width:15%;">Time</th>
+  <th style="width:12%;">Total</th>
+  <th style="width:25%;">Actions</th>
 </tr>
 
 <% paginated.forEach((order, i) => { %>
@@ -54,54 +74,68 @@ label { margin-right:10px; display:inline-block; }
   <td><%= order.time %></td>
   <td><%= order.total %></td>
   <td>
-    <button onclick="toggleForm(<%= i + (page - 1) * perPage %>)">Edit</button>
-    <a href="?delete=<%= i + (page - 1) * perPage %>&page=<%= page %>" onclick="return confirm('Are you sure?');" style="background:red;padding:6px 12px;color:white;border-radius:6px;text-decoration:none;">Delete</a>
+    <div class="action-buttons">
+      <button onclick="toggleForm(<%= i + (page - 1) * perPage %>)">Edit</button>
+      <a href="?delete=<%= order.id %>&page=<%= page %>" onclick="return confirm('Are you sure?');" class="delete-btn">Delete</a>
+    </div>
   </td>
 </tr>
 
 <tr id="form<%= i + (page - 1) * perPage %>" style="display:none;">
 <td colspan="6">
   <form method="POST" action="?page=<%= page %>">
-    <input type="hidden" name="index" value="<%= i + (page - 1) * perPage %>">
-    <label>Order Type: <input type="text" name="order_type" value="<%= order.order_type %>"></label>
-    <label>Date: <input type="text" name="date" value="<%= order.date %>"></label>
-    <label>Time: <input type="text" name="time" value="<%= order.time %>"></label><br>
-    <label>Destination: <input type="text" name="destination" value="<%= order.destination %>"></label><br>
-    <label>Customer Name: <input type="text" name="customer_name" value="<%= order.customer_name %>"></label>
-    <label>Phone: <input type="text" name="phone_number" value="<%= order.phone_number %>"></label><br>
-    <label>Email: <input type="text" name="customer_email" value="<%= order.customer_email %>"></label><br>
-    <label>Guest Count: <input type="text" name="guest_count" value="<%= order.guest_count %>"></label>
-    <label>Paper Goods: <input type="text" name="paper_goods" value="<%= order.paper_goods %>"></label><br>
-    <label>Total: <input type="text" name="total" value="<%= order.total %>"></label><br>
-
-    <h4>Food Items:</h4>
-    <% (order.food_items || []).forEach(item => { %>
-      <div class="item-row">
-        <input type="text" name="food_items[]" value="<%= item.item %>">
-        <input type="number" name="food_qty[]" value="<%= item.qty %>">
-        <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
+    <input type="hidden" name="order_id" value="<%= order.id %>">
+    
+    <div class="form-section">
+      <h4 style="margin-top:0; color:#c8102e;">📋 Order Details</h4>
+      <div class="form-row">
+        <label>Order Type: <input type="text" name="order_type" value="<%= order.order_type %>"></label>
+        <label>Date: <input type="text" name="date" value="<%= order.date %>"></label>
+        <label>Time: <input type="text" name="time" value="<%= order.time %>"></label>
       </div>
-    <% }) %>
-    <div class="item-row"><input type="text" name="food_items[]" placeholder="Add item"><input type="number" name="food_qty[]" placeholder="Qty"></div>
-
-    <h4>Drink Items:</h4>
-    <% (order.drink_items || []).forEach(item => { %>
-      <div class="item-row">
-        <input type="text" name="drink_items[]" value="<%= item.item %>">
-        <input type="number" name="drink_qty[]" value="<%= item.qty %>">
-        <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
+      <div class="form-row">
+        <label>Total: <input type="text" name="total" value="<%= order.total %>"></label>
+        <label>Destination: <input type="text" name="destination" value="<%= order.destination %>"></label>
       </div>
-    <% }) %>
-    <div class="item-row"><input type="text" name="drink_items[]" placeholder="Add drink"><input type="number" name="drink_qty[]" placeholder="Qty"></div>
-
-    <h4>Sauces/Dressings:</h4>
-    <% (order.sauces_dressings || []).forEach(item => { %>
-      <div class="item-row">
-        <input type="text" name="sauce_items[]" value="<%= item.item %>">
-        <input type="number" name="sauce_qty[]" value="<%= item.qty %>">
-        <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
+    </div>
+    
+    <div class="form-section">
+      <h4 style="margin-top:0; color:#c8102e;">👤 Customer Info</h4>
+      <div class="form-row">
+        <label>Customer Name: <input type="text" name="customer_name" value="<%= order.customer_name %>"></label>
+        <label>Phone: <input type="text" name="phone_number" value="<%= order.phone_number %>"></label>
       </div>
-    <% }) %>
+      <div class="form-row">
+        <label>Email: <input type="text" name="customer_email" value="<%= order.customer_email %>"></label>
+        <label>Guest Count: <input type="text" name="guest_count" value="<%= order.guest_count %>"></label>
+      </div>
+      <div class="form-row">
+        <label>Paper Goods: <input type="text" name="paper_goods" value="<%= order.paper_goods %>"></label>
+      </div>
+    </div>
+
+    <h4>Other Food Items:</h4>
+    <% if (order.other_items) { %>
+      <% order.other_items.split('\n').filter(item => item.trim()).forEach((item, idx) => { %>
+        <div class="item-row">
+          <input type="text" name="food_items[]" value="<%= item.trim() %>">
+          <input type="number" name="food_qty[]" value="1">
+          <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
+        </div>
+      <% }) %>
+    <% } %>
+    <div class="item-row"><input type="text" name="food_items[]" placeholder="Add food item"><input type="number" name="food_qty[]" placeholder="Qty"></div>
+
+    <h4>Sauces:</h4>
+    <% if (order.sauces) { %>
+      <% order.sauces.split('\n').filter(sauce => sauce.trim()).forEach((sauce, idx) => { %>
+        <div class="item-row">
+          <input type="text" name="sauce_items[]" value="<%= sauce.trim() %>">
+          <input type="number" name="sauce_qty[]" value="1">
+          <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
+        </div>
+      <% }) %>
+    <% } %>
     <div class="item-row"><input type="text" name="sauce_items[]" placeholder="Add sauce"><input type="number" name="sauce_qty[]" placeholder="Qty"></div>
 
     <br>
@@ -117,6 +151,8 @@ label { margin-right:10px; display:inline-block; }
     <a href="?page=<%= i %>" style="<%= i === page ? 'background:#a50c23;' : '' %>"><%= i %></a>
   <% } %>
 </div>
+
+<% } %>
 
 <script>
 function toggleForm(i) {

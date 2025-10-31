@@ -1,103 +1,146 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
+const { emailOrderDB } = require('../database/db');
 
 const router = express.Router();
-const jsonFile = path.join(__dirname, "..", "data", "orders.json");
-
-// Ensure file exists
-if (!fs.existsSync(jsonFile)) {
-  fs.writeFileSync(jsonFile, JSON.stringify([], null, 2));
-}
-
-// --- Helper functions ---
-function loadOrders() {
-  const data = fs.readFileSync(jsonFile, "utf8");
-  try {
-    return JSON.parse(data) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveOrders(data) {
-  fs.writeFileSync(jsonFile, JSON.stringify(data, null, 2));
-}
 
 // --- GET list page ---
-router.get("/", (req, res) => {
-  let data = loadOrders();
+router.get("/", async (req, res) => {
+  try {
+    console.log('🔍 JSON Catering route accessed');
+    console.log('🔧 Environment check:', {
+      hasSupabaseUrl: !!process.env.SUPABASE_URL,
+      hasSupabaseKey: !!process.env.SUPABASE_ANON_KEY,
+      nodeEnv: process.env.NODE_ENV
+    });
 
-  // Delete request
-  if (req.query.delete !== undefined) {
-    const deleteIndex = parseInt(req.query.delete);
-    if (!isNaN(deleteIndex) && data[deleteIndex]) {
-      data.splice(deleteIndex, 1);
-      data = data.map((order, i) => ({ ...order, id: i + 1 }));
-      saveOrders(data);
-      const page = parseInt(req.query.page) || 1;
-      return res.redirect(`/json-catering?page=${page}`);
+    // Delete request
+    if (req.query.delete !== undefined) {
+      const deleteId = parseInt(req.query.delete);
+      if (!isNaN(deleteId)) {
+        console.log('🗑️ Deleting email order ID:', deleteId);
+        await emailOrderDB.delete(deleteId);
+        const page = parseInt(req.query.page) || 1;
+        return res.redirect(`/json-catering?page=${page}`);
+      }
     }
+
+    console.log('📊 Fetching email orders from database...');
+    // Get all email orders from database
+    let data = await emailOrderDB.getAll();
+    console.log('📊 Found', data.length, 'email orders');
+    
+    // If no data found, render with empty state message
+    if (data.length === 0) {
+      console.log('📭 No email orders found in database');
+      return res.render("json-catering", { 
+        data: [], 
+        paginated: [], 
+        total: 0, 
+        page: 1, 
+        perPage: 5, 
+        saved: req.query.saved,
+        emptyState: true 
+      });
+    }
+    
+    // Convert email order database format to match what the template expects
+    data = data.map(order => ({
+      id: order.id,
+      order_type: order.order_type || 'N/A',
+      date: order.order_date || new Date().toISOString().split('T')[0],
+      time: order.order_time || 'N/A',
+      destination: order.destination || 'N/A',
+      customer_name: order.customer_name || 'N/A',
+      phone_number: order.phone_number || 'N/A',
+      customer_email: order.customer_email || 'N/A',
+      guest_count: order.guest_count || 'N/A',
+      paper_goods: order.paper_goods || 'N/A',
+      total: order.total || 'N/A',
+      // Email orders already have the correct array format
+      food_items: order.food_items || [],
+      drink_items: order.drink_items || [],
+      sauces_dressings: order.sauces_dressings || [],
+      meal_boxes: order.meal_boxes || [],
+      special_instructions: order.special_instructions || ''
+    }));
+
+    // Sort by ID (oldest first)
+    data.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+    // Pagination
+    const perPage = 5;
+    const total = data.length;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const start = (page - 1) * perPage;
+    const paginated = data.slice(start, start + perPage);
+
+    res.render("json-catering", { data, paginated, total, page, perPage, saved: req.query.saved });
+  } catch (error) {
+    console.error('Error loading catering orders:', error);
+    res.status(500).send('Error loading catering orders');
   }
-
-  // Sort by ID
-  data.sort((a, b) => (a.id || 0) - (b.id || 0));
-
-  // Pagination
-  const perPage = 5;
-  const total = data.length;
-  const page = Math.max(1, parseInt(req.query.page) || 1);
-  const start = (page - 1) * perPage;
-  const paginated = data.slice(start, start + perPage);
-
-  res.render("json-catering", { data, paginated, total, page, perPage, saved: req.query.saved });
 });
 
 // --- POST update ---
-router.post("/", (req, res) => {
-  const data = loadOrders();
-  const index = parseInt(req.body.index);
-  const page = parseInt(req.query.page) || 1;
+router.post("/", async (req, res) => {
+  try {
+    const orderId = parseInt(req.body.order_id);
+    const page = parseInt(req.query.page) || 1;
 
-  if (isNaN(index) || !data[index]) {
-    return res.status(400).send("Invalid index");
-  }
-
-  const updated = { ...data[index] };
-
-  updated.order_type = req.body.order_type || updated.order_type;
-  updated.date = req.body.date || updated.date;
-  updated.time = req.body.time || updated.time;
-  updated.destination = req.body.destination || updated.destination;
-  updated.customer_name = req.body.customer_name || updated.customer_name;
-  updated.phone_number = req.body.phone_number || updated.phone_number;
-  updated.customer_email = req.body.customer_email || updated.customer_email;
-  updated.guest_count = req.body.guest_count || updated.guest_count;
-  updated.paper_goods = req.body.paper_goods || updated.paper_goods;
-  updated.total = req.body.total || updated.total;
-
-  // Convert arrays
-  function makeItems(names, qtys) {
-    const arr = [];
-    if (!names) return arr;
-    const list = Array.isArray(names) ? names : [names];
-    const qlist = Array.isArray(qtys) ? qtys : [qtys];
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].trim() !== "") {
-        arr.push({ item: list[i].trim(), qty: parseInt(qlist[i]) || 0 });
-      }
+    if (isNaN(orderId)) {
+      return res.status(400).send("Invalid order ID");
     }
-    return arr;
+
+    // Convert arrays back to database format
+    function makeItemsArray(names, qtys) {
+      if (!names) return [];
+      const list = Array.isArray(names) ? names : [names];
+      const qlist = Array.isArray(qtys) ? qtys : [qtys];
+      const items = [];
+      for (let i = 0; i < list.length; i++) {
+        if (list[i] && list[i].trim() !== "") {
+          items.push({
+            item: list[i].trim(),
+            qty: parseInt(qlist[i]) || 1
+          });
+        }
+      }
+      return items;
+    }
+
+    // Build update object with email order database fields
+    const updates = {
+      order_date: req.body.date || null,
+      order_type: req.body.order_type || null,
+      order_time: req.body.time || null,
+      destination: req.body.destination || null,
+      customer_name: req.body.customer_name || null,
+      phone_number: req.body.phone_number || null,
+      customer_email: req.body.customer_email || null,
+      guest_count: req.body.guest_count || null,
+      paper_goods: req.body.paper_goods || null,
+      total: req.body.total || null,
+      special_instructions: req.body.special_instructions || null,
+      // Convert arrays back to JSONB format for email orders
+      food_items: makeItemsArray(req.body.food_items, req.body.food_qty),
+      drink_items: makeItemsArray(req.body.drink_items, req.body.drink_qty),
+      sauces_dressings: makeItemsArray(req.body.sauce_items, req.body.sauce_qty)
+    };
+
+    // Remove any undefined values
+    Object.keys(updates).forEach(key => {
+      if (updates[key] === undefined || updates[key] === null) {
+        delete updates[key];
+      }
+    });
+
+    await emailOrderDB.updateStatus(orderId, updates);
+
+    res.redirect(`/json-catering?page=${page}&saved=1`);
+  } catch (error) {
+    console.error('Error updating catering order:', error);
+    res.status(500).send('Error updating catering order');
   }
-
-  updated.food_items = makeItems(req.body.food_items, req.body.food_qty);
-  updated.drink_items = makeItems(req.body.drink_items, req.body.drink_qty);
-  updated.sauces_dressings = makeItems(req.body.sauce_items, req.body.sauce_qty);
-
-  data[index] = updated;
-  saveOrders(data);
-
-  res.redirect(`/json-catering?page=${page}&saved=1`);
 });
 
 module.exports = router;
