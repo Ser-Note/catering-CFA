@@ -32,17 +32,18 @@
       <section class="form-step" data-step="2">
         <h2>event details</h2>
         <div class="grid-two">
-          <label>date <input id="date" name="date" type="date"></label>
-          <label>time <input id="time" name="time" type="time"></label>
-          <label>destination <input id="destination" name="destination" type="text" placeholder="N/A"></label>
-          <label>customer name <input id="customer_name" name="customer_name" type="text" required></label>
-          <label>phone number <input id="phone_number" name="phone_number" type="tel"></label>
-          <label>customer email <input id="customer_email" name="customer_email" type="email"></label>
-          <label>guest count <input id="guest_count" name="guest_count" type="number" min="1" placeholder="N/A"></label>
+          <label>date <input id="date" name="date" type="date" placeholder="optional"></label>
+          <label>time <input id="time" name="time" type="time" placeholder="optional"></label>
+          <label>destination <input id="destination" name="destination" type="text" placeholder="enter address or N/A"></label>
+          <label>customer name <input id="customer_name" name="customer_name" type="text" placeholder="enter name or N/A"></label>
+          <label>phone number <input id="phone_number" name="phone_number" type="tel" placeholder="enter phone or N/A"></label>
+          <label>customer email <input id="customer_email" name="customer_email" type="email" placeholder="enter email or N/A"></label>
+          <label>guest count <input id="guest_count" name="guest_count" type="text" placeholder="enter number or N/A"></label>
           <div class="radio-row">
             <label><input type="radio" name="paper_goods" value="Yes"> paper goods - yes</label>
             <label><input type="radio" name="paper_goods" value="No" checked> paper goods - no</label>
           </div>
+          <label style="grid-column: 1 / -1;">special instructions (optional) <textarea id="special_instructions" name="special_instructions" rows="3" placeholder="enter any special requests or N/A"></textarea></label>
         </div>
         <div class="nav-row">
           <button type="button" class="btn btn-back">back</button>

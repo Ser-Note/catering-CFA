@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     step: 1, steps: 8, order_type: null,
     date: null, time: null, destination: 'N/A',
     customer_name: '', phone_number: '', customer_email: '',
-    guest_count: 'N/A', paper_goods: 'No',
+    guest_count: 'N/A', paper_goods: 'No', special_instructions: '',
     food_items: [], drink_items: [], sauces_dressings: [],
     meal_boxes: [], total: 0.00, prices: {}
   };
@@ -289,6 +289,7 @@ const inputBindings = [
   { id: 'date', key: 'date' },
   { id: 'time', key: 'time' },
   { id: 'guest_count', key: 'guest_count' },
+  { id: 'special_instructions', key: 'special_instructions' }
 ];
 
 // radio buttons require separate handling:
@@ -481,22 +482,30 @@ document.addEventListener('change', (e) => {
     submitBtn.addEventListener('click', () => {
       submitStatus.textContent = 'Submitting...';
 
-      // Prepare payload (use current state values, not DOM elements)
+      // Check if tax is applied
+      const taxBox = document.getElementById('applyTax');
+      let finalTotal = state.total;
+      if (taxBox && taxBox.checked) {
+        finalTotal = round2(state.total * 1.06);
+      }
+
+      // Prepare payload (match backend schema exactly)
       const payload = {
-        order_type: state.order_type,
-        customer_name: state.customer_name,
-        phone_number: state.phone_number,
-        customer_email: state.customer_email,
-        date: formatDate(state.date),
-        time: formatTime(state.time),
-        destination: state.destination,
-        guest_count: state.guest_count,
-        paper_goods: state.paper_goods,
+        order_type: state.order_type || 'Pickup',
+        date: state.date || new Date().toISOString().split('T')[0], // Keep raw date format (YYYY-MM-DD)
+        time: state.time || 'N/A', // Keep raw time format (HH:MM)
+        destination: state.destination || 'N/A',
+        customer_name: state.customer_name || 'N/A',
+        phone_number: state.phone_number || 'N/A',
+        customer_email: state.customer_email || 'N/A',
+        guest_count: state.guest_count || 'N/A',
+        paper_goods: state.paper_goods || 'No',
+        special_instructions: state.special_instructions || '',
         food_items: state.food_items,
         meal_boxes: state.meal_boxes,
         drink_items: state.drink_items,
         sauces_dressings: state.sauces_dressings,
-        total: formatTotal(state.total)
+        total: '$' + finalTotal.toFixed(2)
       };
 
      fetch('/catering/submit', {
@@ -532,6 +541,7 @@ document.addEventListener('change', (e) => {
     state.customer_email = '';
     state.guest_count = 'N/A';
     state.paper_goods = 'No';
+    state.special_instructions = '';
     state.food_items = [];
     state.meal_boxes = [];
     state.drink_items = [];
