@@ -87,6 +87,26 @@ class CompactDashboard {
     this.animateValue('nuggets-value', this.formatNumber(this.stats.thisWeek.nuggets));
     this.animateValue('revenue-value', `$${this.formatMoney(this.stats.thisWeek.revenue)}`);
     this.animateValue('completion-value', `${this.stats.thisWeek.completionRate.boh}%`);
+    
+    // Update dynamic trends
+    if (this.stats.trends) {
+      const ordersTrend = document.getElementById('orders-trend');
+      const revenueTrend = document.getElementById('revenue-trend');
+      
+      if (ordersTrend) {
+        const ordersChange = this.stats.trends.ordersChange;
+        const sign = ordersChange > 0 ? '+' : '';
+        const color = ordersChange >= 0 ? '#28a745' : '#dc3545';
+        ordersTrend.innerHTML = `<span style="color: ${color}">${sign}${ordersChange}% vs last week</span>`;
+      }
+      
+      if (revenueTrend) {
+        const revenueChange = this.stats.trends.revenueChange;
+        const sign = revenueChange > 0 ? '+' : '';
+        const color = revenueChange >= 0 ? '#28a745' : '#dc3545';
+        revenueTrend.innerHTML = `<span style="color: ${color}">${sign}${revenueChange}% vs last week</span>`;
+      }
+    }
   }
 
   updateKitchenStatus() {

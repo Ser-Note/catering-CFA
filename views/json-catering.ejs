@@ -2,166 +2,779 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Edit Catering Orders (JSON)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Orders - CFA Catering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
-h1 { text-align:center; color:#c8102e; }
-table { width:100%; border-collapse: collapse; background:#fff; margin-bottom:20px; table-layout: fixed; }
-th, td { border:1px solid #ddd; padding:8px 10px; text-align:left; }
-th { background:#c8102e; color:white; }
-tr:nth-child(even) { background:#f2f2f2; }
-button { background:#c8102e; color:white; border:none; padding:6px 14px; border-radius:6px; cursor:pointer; margin-right:8px; }
-button:hover { background:#a50c23; }
-.action-buttons { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.delete-btn { background:red; text-decoration:none; padding:6px 12px; color:white; border-radius:6px; font-size:12px; }
-.delete-btn:hover { background:#a00; }
-.pagination { text-align:center; }
-.pagination a { padding:8px 12px; margin:2px; background:#c8102e; color:white; border-radius:4px; text-decoration:none; }
-.pagination a:hover { background:#a50c23; }
-form { background:#fff; padding:15px; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,0.1); margin-bottom:20px; }
-input[type=text], input[type=number] { padding:6px; margin:4px; width:250px; border:1px solid #ddd; border-radius:4px; }
-label { margin-right:10px; display:inline-block; font-weight:600; margin-bottom:8px; }
-.form-row { margin-bottom:12px; }
-.form-section { margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px; }
-.item-row { display:flex; align-items:center; margin-bottom:5px; }
-.item-row input[type=text] { width:400px; margin-right:8px; }
-.remove-item { background:red; padding:2px 6px; margin-left:6px; border-radius:4px; }
-.remove-item:hover { background:#a00; }
-.back-btn { display:inline-block; background:#c8102e; color:white; text-decoration:none; padding:8px 18px; border-radius:8px; font-weight:bold; margin-bottom:15px; }
-.back-btn:hover { background:#a50c23; transform:scale(1.05); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  background: white;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header h1 {
+  color: #c8102e;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  background: #c8102e;
+  color: white;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn:hover {
+  background: #a50c23;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+}
+
+/* Search and Filters */
+.search-filter-bar {
+  background: white;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  margin-bottom: 24px;
+}
+
+.search-box {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 14px 48px 14px 48px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #c8102e;
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-size: 20px;
+}
+
+.clear-search {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e5e7eb;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  display: none;
+}
+
+.clear-search:hover {
+  background: #d1d5db;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 20px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.filter-chip:hover {
+  border-color: #c8102e;
+  color: #c8102e;
+}
+
+.filter-chip.active {
+  background: #c8102e;
+  color: white;
+  border-color: #c8102e;
+}
+
+/* Stats Bar */
+.stats-bar {
+  background: white;
+  padding: 20px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  margin-bottom: 24px;
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Orders Grid */
+.orders-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.order-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.order-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #c8102e;
+}
+
+.order-card-header {
+  padding: 20px 24px;
+  display: grid;
+  grid-template-columns: 80px 1fr 140px 140px 120px 180px;
+  gap: 16px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.order-id {
+  font-weight: 700;
+  color: #c8102e;
+  font-size: 16px;
+}
+
+.order-customer {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 15px;
+}
+
+.order-date, .order-time {
+  color: #6b7280;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-total {
+  font-weight: 700;
+  color: #059669;
+  font-size: 16px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* Edit Form */
+.order-edit-form {
+  display: none;
+  padding: 24px 32px;
+  background: #f9fafb;
+  border-top: 2px solid #e5e7eb;
+}
+
+.order-edit-form.active {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-section h4 {
+  color: #c8102e;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-field {
+  margin-bottom: 12px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.form-field input, .form-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.form-field input:focus, .form-field textarea:focus {
+  outline: none;
+  border-color: #c8102e;
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.item-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.item-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-row input[type="number"] {
+  width: 80px;
+  flex: none;
+}
+
+.btn-remove {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-remove:hover {
+  background: #dc2626;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.btn-save {
+  background: #059669;
+  color: white;
+  padding: 12px 32px;
+  flex: none;
+}
+
+.btn-save:hover {
+  background: #047857;
+}
+
+.btn-cancel {
+  background: #6b7280;
+  color: white;
+  padding: 12px 24px;
+}
+
+.btn-cancel:hover {
+  background: #4b5563;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.pagination a {
+  padding: 10px 16px;
+  background: white;
+  color: #4b5563;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: 2px solid #e5e7eb;
+}
+
+.pagination a:hover {
+  border-color: #c8102e;
+  color: #c8102e;
+}
+
+.pagination a.active {
+  background: #c8102e;
+  color: white;
+  border-color: #c8102e;
+}
+
+/* Empty State */
+.empty-state {
+  background: white;
+  padding: 60px 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  color: #4b5563;
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+.empty-state p {
+  color: #6b7280;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 8px auto;
+}
+
+/* Success Message */
+.success-message {
+  background: #d1fae5;
+  border: 2px solid #059669;
+  color: #065f46;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* No Results */
+.no-results {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  color: #6b7280;
+}
+
+@media (max-width: 1024px) {
+  .order-card-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
 <body>
 
-<h1>Catering Orders (JSON)</h1>
-
-<a class="back-btn" href="/dashboard">⬅ Back to Dashboard</a>
-
-<% if (saved) { %>
-  <p style="text-align:center;color:green;font-weight:bold;">✅ Order updated successfully!</p>
-<% } %>
-
-<% if (typeof emptyState !== 'undefined' && emptyState) { %>
-  <div style="text-align:center; padding:40px; background:#fff; border-radius:8px; box-shadow:0 0 5px rgba(0,0,0,0.1);">
-    <h3 style="color:#666;">📭 No Email Orders Found</h3>
-    <p style="color:#888; margin:20px 0;">Your email orders database table is empty.</p>
-    <p style="color:#888;">
-      <strong>Email orders come from:</strong><br>
-      • Gmail catering orders processed by the fetch catering system<br>
-      • Orders imported from email parsing<br><br>
-      <strong>To get email orders:</strong><br>
-      1. Use the fetch catering functionality to import orders from Gmail<br>
-      2. Orders will appear here once they're processed from emails
-    </p>
+<div class="container">
+  
+  <!-- Header -->
+  <div class="header">
+    <h1>📧 Email Orders</h1>
+    <a class="back-btn" href="/dashboard">⬅ Back to Dashboard</a>
   </div>
-<% } else { %>
 
-<table>
-<tr>
-  <th style="width:8%;">ID</th>
-  <th style="width:25%;">Customer</th>
-  <th style="width:15%;">Date</th>
-  <th style="width:15%;">Time</th>
-  <th style="width:12%;">Total</th>
-  <th style="width:25%;">Actions</th>
-</tr>
-
-<% paginated.forEach((order, i) => { %>
-<tr>
-  <td><%= order.id %></td>
-  <td><%= order.customer_name %></td>
-  <td><%= order.date %></td>
-  <td><%= order.time %></td>
-  <td><%= order.total %></td>
-  <td>
-    <div class="action-buttons">
-      <button onclick="toggleForm(<%= i + (page - 1) * perPage %>)">Edit</button>
-      <a href="?delete=<%= order.id %>&page=<%= page %>" onclick="return confirm('Are you sure?');" class="delete-btn">Delete</a>
+  <!-- Success Message -->
+  <% if (saved) { %>
+    <div class="success-message">
+      ✅ Order updated successfully!
     </div>
-  </td>
-</tr>
-
-<tr id="form<%= i + (page - 1) * perPage %>" style="display:none;">
-<td colspan="6">
-  <form method="POST" action="?page=<%= page %>">
-    <input type="hidden" name="order_id" value="<%= order.id %>">
-    
-    <div class="form-section">
-      <h4 style="margin-top:0; color:#c8102e;">📋 Order Details</h4>
-      <div class="form-row">
-        <label>Order Type: <input type="text" name="order_type" value="<%= order.order_type %>"></label>
-        <label>Date: <input type="text" name="date" value="<%= order.date %>"></label>
-        <label>Time: <input type="text" name="time" value="<%= order.time %>"></label>
-      </div>
-      <div class="form-row">
-        <label>Total: <input type="text" name="total" value="<%= order.total %>"></label>
-        <label>Destination: <input type="text" name="destination" value="<%= order.destination %>"></label>
-      </div>
-    </div>
-    
-    <div class="form-section">
-      <h4 style="margin-top:0; color:#c8102e;">👤 Customer Info</h4>
-      <div class="form-row">
-        <label>Customer Name: <input type="text" name="customer_name" value="<%= order.customer_name %>"></label>
-        <label>Phone: <input type="text" name="phone_number" value="<%= order.phone_number %>"></label>
-      </div>
-      <div class="form-row">
-        <label>Email: <input type="text" name="customer_email" value="<%= order.customer_email %>"></label>
-        <label>Guest Count: <input type="text" name="guest_count" value="<%= order.guest_count %>"></label>
-      </div>
-      <div class="form-row">
-        <label>Paper Goods: <input type="text" name="paper_goods" value="<%= order.paper_goods %>"></label>
-      </div>
-    </div>
-
-    <h4>Other Food Items:</h4>
-    <% if (order.other_items) { %>
-      <% order.other_items.split('\n').filter(item => item.trim()).forEach((item, idx) => { %>
-        <div class="item-row">
-          <input type="text" name="food_items[]" value="<%= item.trim() %>">
-          <input type="number" name="food_qty[]" value="1">
-          <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
-        </div>
-      <% }) %>
-    <% } %>
-    <div class="item-row"><input type="text" name="food_items[]" placeholder="Add food item"><input type="number" name="food_qty[]" placeholder="Qty"></div>
-
-    <h4>Sauces:</h4>
-    <% if (order.sauces) { %>
-      <% order.sauces.split('\n').filter(sauce => sauce.trim()).forEach((sauce, idx) => { %>
-        <div class="item-row">
-          <input type="text" name="sauce_items[]" value="<%= sauce.trim() %>">
-          <input type="number" name="sauce_qty[]" value="1">
-          <button type="button" class="remove-item" onclick="removeRow(this)">❌</button>
-        </div>
-      <% }) %>
-    <% } %>
-    <div class="item-row"><input type="text" name="sauce_items[]" placeholder="Add sauce"><input type="number" name="sauce_qty[]" placeholder="Qty"></div>
-
-    <br>
-    <button type="submit">💾 Save Changes</button>
-  </form>
-</td>
-</tr>
-<% }) %>
-</table>
-
-<div class="pagination">
-  <% for (let i = 1; i <= Math.ceil(total / perPage); i++) { %>
-    <a href="?page=<%= i %>" style="<%= i === page ? 'background:#a50c23;' : '' %>"><%= i %></a>
   <% } %>
+
+  <!-- Empty State -->
+  <% if (typeof emptyState !== 'undefined' && emptyState) { %>
+    <div class="empty-state">
+      <div class="empty-state-icon">📭</div>
+      <h3>No Email Orders Found</h3>
+      <p>Your email orders database table is empty.</p>
+      <p><strong>Email orders come from:</strong><br>
+      • Gmail catering orders processed by the fetch catering system<br>
+      • Orders imported from email parsing</p>
+      <p><strong>To get email orders:</strong><br>
+      Use the fetch catering functionality to import orders from Gmail</p>
+    </div>
+  <% } else { %>
+
+  <!-- Search and Filters -->
+  <div class="search-filter-bar">
+    <form method="GET" action="" id="filterForm">
+      <input type="hidden" name="page" value="1" id="pageInput">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          id="searchInput" 
+          name="search"
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
+          placeholder="Search by customer name, date, time, total, or order ID..."
+          autocomplete="off"
+        >
+        <button type="button" class="clear-search" id="clearSearch" style="display: <%= typeof search !== 'undefined' && search ? 'block' : 'none' %>">Clear</button>
+      </div>
+      <div class="filter-chips">
+        <button type="button" class="filter-chip <%= typeof filter === 'undefined' || filter === 'all' ? 'active' : '' %>" data-filter="all">All Orders</button>
+        <button type="button" class="filter-chip <%= filter === 'today' ? 'active' : '' %>" data-filter="today">Today</button>
+        <button type="button" class="filter-chip <%= filter === 'week' ? 'active' : '' %>" data-filter="week">This Week</button>
+        <button type="button" class="filter-chip <%= filter === 'month' ? 'active' : '' %>" data-filter="month">This Month</button>
+      </div>
+      <input type="hidden" name="filter" id="filterInput" value="<%= typeof filter !== 'undefined' ? filter : 'all' %>">
+    </form>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-label">Total Orders</span>
+      <span class="stat-value"><%= total %></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Showing</span>
+      <span class="stat-value"><%= paginated.length %></span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Current Page</span>
+      <span class="stat-value"><%= page %> / <%= Math.ceil(total / perPage) || 1 %></span>
+    </div>
+  </div>
+
+  <!-- Orders Grid -->
+  <div class="orders-grid" id="ordersGrid">
+    <% 
+      const searchParam = typeof search !== 'undefined' && search ? '&search=' + encodeURIComponent(search) : '';
+      const filterParam = typeof filter !== 'undefined' && filter !== 'all' ? '&filter=' + filter : '';
+    %>
+    <% paginated.forEach((order, i) => { %>
+      <div class="order-card" data-order-id="<%= order.id %>" data-customer="<%= order.customer_name %>" data-date="<%= order.date %>" data-time="<%= order.time %>" data-total="<%= order.total %>">
+        <div class="order-card-header" onclick="toggleEdit('<%= i + (page - 1) * perPage %>')">
+          <div class="order-id">#<%= order.id %></div>
+          <div class="order-customer">👤 <%= order.customer_name %></div>
+          <div class="order-date">📅 <%= order.date %></div>
+          <div class="order-time">🕐 <%= order.time %></div>
+          <div class="order-total"><%= order.total %></div>
+          <div class="order-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-edit" onclick="toggleEdit('<%= i + (page - 1) * perPage %>')">✏️ Edit</button>
+            <a href="?delete=<%= order.id %>&page=<%= page %><%= searchParam %><%= filterParam %>" onclick="return confirm('Are you sure you want to delete this order?');" class="btn btn-delete">🗑️ Delete</a>
+          </div>
+        </div>
+
+        <div class="order-edit-form" id="editForm<%= i + (page - 1) * perPage %>">
+          <form method="POST" action="?page=<%= page %><%= searchParam %><%= filterParam %>">
+            <input type="hidden" name="order_id" value="<%= order.id %>">
+            
+            <div class="form-grid">
+              <div class="form-section">
+                <h4>📋 Order Details</h4>
+                <div class="form-field">
+                  <label>Order Type</label>
+                  <input type="text" name="order_type" value="<%= order.order_type %>">
+                </div>
+                <div class="form-field">
+                  <label>Date</label>
+                  <input type="text" name="date" value="<%= order.date %>">
+                </div>
+                <div class="form-field">
+                  <label>Time</label>
+                  <input type="text" name="time" value="<%= order.time %>">
+                </div>
+                <div class="form-field">
+                  <label>Total</label>
+                  <input type="text" name="total" value="<%= order.total %>">
+                </div>
+                <div class="form-field">
+                  <label>Destination</label>
+                  <input type="text" name="destination" value="<%= order.destination %>">
+                </div>
+              </div>
+              
+              <div class="form-section">
+                <h4>👤 Customer Info</h4>
+                <div class="form-field">
+                  <label>Customer Name</label>
+                  <input type="text" name="customer_name" value="<%= order.customer_name %>">
+                </div>
+                <div class="form-field">
+                  <label>Phone Number</label>
+                  <input type="text" name="phone_number" value="<%= order.phone_number %>">
+                </div>
+                <div class="form-field">
+                  <label>Email</label>
+                  <input type="text" name="customer_email" value="<%= order.customer_email %>">
+                </div>
+                <div class="form-field">
+                  <label>Guest Count</label>
+                  <input type="text" name="guest_count" value="<%= order.guest_count %>">
+                </div>
+                <div class="form-field">
+                  <label>Paper Goods</label>
+                  <input type="text" name="paper_goods" value="<%= order.paper_goods %>">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>🍽️ Food Items</h4>
+              <div class="item-list">
+                <% if (order.other_items) { %>
+                  <% order.other_items.split('\n').filter(item => item.trim()).forEach((item, idx) => { %>
+                    <div class="item-row">
+                      <input type="text" name="food_items[]" value="<%= item.trim() %>">
+                      <input type="number" name="food_qty[]" value="1" min="1">
+                      <button type="button" class="btn-remove" onclick="removeRow(this)">❌</button>
+                    </div>
+                  <% }) %>
+                <% } %>
+                <div class="item-row">
+                  <input type="text" name="food_items[]" placeholder="Add food item">
+                  <input type="number" name="food_qty[]" placeholder="Qty" min="1">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>🥫 Sauces & Dressings</h4>
+              <div class="item-list">
+                <% if (order.sauces) { %>
+                  <% order.sauces.split('\n').filter(sauce => sauce.trim()).forEach((sauce, idx) => { %>
+                    <div class="item-row">
+                      <input type="text" name="sauce_items[]" value="<%= sauce.trim() %>">
+                      <input type="number" name="sauce_qty[]" value="1" min="1">
+                      <button type="button" class="btn-remove" onclick="removeRow(this)">❌</button>
+                    </div>
+                  <% }) %>
+                <% } %>
+                <div class="item-row">
+                  <input type="text" name="sauce_items[]" placeholder="Add sauce">
+                  <input type="number" name="sauce_qty[]" placeholder="Qty" min="1">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-save">💾 Save Changes</button>
+              <button type="button" class="btn btn-cancel" onclick="toggleEdit('<%= i + (page - 1) * perPage %>')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- No Results Message -->
+  <% if (paginated.length === 0 && total === 0) { %>
+  <div class="no-results">
+    <h3>😕 No orders found</h3>
+    <p>Try adjusting your search or filters</p>
+  </div>
+  <% } %>
+
+  <!-- Pagination -->
+  <% if (total > 0) { %>
+  <div class="pagination">
+    <% 
+      const searchParam = typeof search !== 'undefined' && search ? '&search=' + encodeURIComponent(search) : '';
+      const filterParam = typeof filter !== 'undefined' && filter !== 'all' ? '&filter=' + filter : '';
+    %>
+    <% for (let i = 1; i <= Math.ceil(total / perPage); i++) { %>
+      <a href="?page=<%= i %><%= searchParam %><%= filterParam %>" class="<%= i === page ? 'active' : '' %>"><%= i %></a>
+    <% } %>
+  </div>
+  <% } %>
+
+  <% } %>
+
 </div>
 
-<% } %>
-
 <script>
-function toggleForm(i) {
-  const el = document.getElementById('form' + i);
-  el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
+// Toggle edit form
+function toggleEdit(index) {
+  const form = document.getElementById('editForm' + index);
+  form.classList.toggle('active');
 }
+
+// Remove item row
 function removeRow(button) {
-  button.parentNode.remove();
+  button.parentElement.remove();
 }
+
+// Form elements
+const searchInput = document.getElementById('searchInput');
+const clearSearch = document.getElementById('clearSearch');
+const filterForm = document.getElementById('filterForm');
+const filterInput = document.getElementById('filterInput');
+const filterChips = document.querySelectorAll('.filter-chip');
+
+// Auto-submit search with debounce
+let searchTimeout;
+searchInput.addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    filterForm.submit();
+  }, 500); // Wait 500ms after user stops typing
+});
+
+// Clear search
+clearSearch.addEventListener('click', function() {
+  searchInput.value = '';
+  filterForm.submit();
+});
+
+// Filter chips
+filterChips.forEach(chip => {
+  chip.addEventListener('click', function() {
+    const filter = this.dataset.filter;
+    filterInput.value = filter;
+    filterForm.submit();
+  });
+});
 </script>
 
 </body>

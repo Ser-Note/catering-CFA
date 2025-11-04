@@ -381,6 +381,8 @@ body {
 .activity-stream {
     max-height: 120px;
     overflow-y: auto;
+    overflow-x: visible;
+    padding-bottom: 10px;
 }
 
 .popular-item-compact {
@@ -390,10 +392,12 @@ body {
     padding: 8px 0;
     border-bottom: 1px solid #f1f3f4;
     font-size: 13px;
+    position: relative;
 }
 
 .popular-item-compact:last-child {
     border-bottom: none;
+    padding-bottom: 35px; /* Extra space for tooltip */
 }
 
 .item-name-compact {
@@ -401,7 +405,7 @@ body {
     color: #495057;
     flex: 1;
     text-overflow: ellipsis;
-    overflow: hidden;
+    overflow: visible;
     white-space: nowrap;
     position: relative;
 }
@@ -569,18 +573,23 @@ body {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.95);
     color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
-    z-index: 1000;
+    transition: all 0.2s ease;
+    z-index: 10000;
     pointer-events: none;
-    margin-top: 5px;
+    margin-top: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    white-space: normal;
+    text-align: center;
 }
 
 .tooltip::before {
@@ -589,12 +598,13 @@ body {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-bottom-color: rgba(0, 0, 0, 0.9);
+    border: 6px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.95);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
-    margin-top: 1px;
+    transition: all 0.2s ease;
+    margin-top: 2px;
+    z-index: 10001;
 }
 
 .tooltip:hover::after,

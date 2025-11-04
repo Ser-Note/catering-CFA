@@ -20,7 +20,15 @@ router.get("/", async (req, res) => {
         console.log('🗑️ Deleting email order ID:', deleteId);
         await emailOrderDB.delete(deleteId);
         const page = parseInt(req.query.page) || 1;
-        return res.redirect(`/json-catering?page=${page}`);
+        const searchTerm = req.query.search || '';
+        const filter = req.query.filter || 'all';
+        
+        // Build redirect URL with preserved search and filter
+        let redirectUrl = `/json-catering?page=${page}`;
+        if (searchTerm) redirectUrl += `&search=${encodeURIComponent(searchTerm)}`;
+        if (filter && filter !== 'all') redirectUrl += `&filter=${filter}`;
+        
+        return res.redirect(redirectUrl);
       }
     }
 
@@ -39,7 +47,9 @@ router.get("/", async (req, res) => {
         page: 1, 
         perPage: 5, 
         saved: req.query.saved,
-        emptyState: true 
+        emptyState: true,
+        search: '',
+        filter: 'all'
       });
     }
     
@@ -61,11 +71,72 @@ router.get("/", async (req, res) => {
       drink_items: order.drink_items || [],
       sauces_dressings: order.sauces_dressings || [],
       meal_boxes: order.meal_boxes || [],
-      special_instructions: order.special_instructions || ''
+      special_instructions: order.special_instructions || '',
+      // For client-side compatibility
+      other_items: order.food_items ? order.food_items.map(f => `${f.item} (${f.qty})`).join('\n') : '',
+      sauces: order.sauces_dressings ? order.sauces_dressings.map(s => `${s.item} (${s.qty})`).join('\n') : ''
     }));
 
     // Sort by ID (oldest first)
     data.sort((a, b) => (a.id || 0) - (b.id || 0));
+
+    // Get search and filter parameters
+    const searchTerm = req.query.search || '';
+    const filter = req.query.filter || 'all';
+
+    // Apply search filter
+    if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
+      data = data.filter(order => {
+        return (
+          order.customer_name.toLowerCase().includes(lowerSearch) ||
+          order.date.toLowerCase().includes(lowerSearch) ||
+          order.time.toLowerCase().includes(lowerSearch) ||
+          order.total.toLowerCase().includes(lowerSearch) ||
+          order.id.toString().includes(lowerSearch)
+        );
+      });
+    }
+
+    // Apply date filter
+    if (filter && filter !== 'all') {
+      const today = new Date();
+      const todayDateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+      
+      data = data.filter(order => {
+        const orderDateString = order.date; // Already in YYYY-MM-DD format
+        
+        switch(filter) {
+          case 'today':
+            return orderDateString === todayDateString;
+          case 'week':
+            // Get start of current week (Sunday)
+            const startOfWeek = new Date(today);
+            const dayOfWeek = startOfWeek.getDay(); // 0 = Sunday, 6 = Saturday
+            startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek);
+            const startOfWeekString = startOfWeek.toISOString().split('T')[0];
+            
+            // Get end of current week (Saturday)
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(endOfWeek.getDate() + 6);
+            const endOfWeekString = endOfWeek.toISOString().split('T')[0];
+            
+            return orderDateString >= startOfWeekString && orderDateString <= endOfWeekString;
+          case 'month':
+            // Get first day of current month
+            const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const startOfMonthString = startOfMonth.toISOString().split('T')[0];
+            
+            // Get last day of current month
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            const endOfMonthString = endOfMonth.toISOString().split('T')[0];
+            
+            return orderDateString >= startOfMonthString && orderDateString <= endOfMonthString;
+          default:
+            return true;
+        }
+      });
+    }
 
     // Pagination
     const perPage = 5;
@@ -74,7 +145,16 @@ router.get("/", async (req, res) => {
     const start = (page - 1) * perPage;
     const paginated = data.slice(start, start + perPage);
 
-    res.render("json-catering", { data, paginated, total, page, perPage, saved: req.query.saved });
+    res.render("json-catering", { 
+      data, 
+      paginated, 
+      total, 
+      page, 
+      perPage, 
+      saved: req.query.saved,
+      search: searchTerm,
+      filter: filter
+    });
   } catch (error) {
     console.error('Error loading catering orders:', error);
     res.status(500).send('Error loading catering orders');
@@ -86,6 +166,8 @@ router.post("/", async (req, res) => {
   try {
     const orderId = parseInt(req.body.order_id);
     const page = parseInt(req.query.page) || 1;
+    const searchTerm = req.query.search || '';
+    const filter = req.query.filter || 'all';
 
     if (isNaN(orderId)) {
       return res.status(400).send("Invalid order ID");
@@ -136,7 +218,12 @@ router.post("/", async (req, res) => {
 
     await emailOrderDB.updateStatus(orderId, updates);
 
-    res.redirect(`/json-catering?page=${page}&saved=1`);
+    // Build redirect URL with preserved search and filter
+    let redirectUrl = `/json-catering?page=${page}&saved=1`;
+    if (searchTerm) redirectUrl += `&search=${encodeURIComponent(searchTerm)}`;
+    if (filter && filter !== 'all') redirectUrl += `&filter=${filter}`;
+
+    res.redirect(redirectUrl);
   } catch (error) {
     console.error('Error updating catering order:', error);
     res.status(500).send('Error updating catering order');

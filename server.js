@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const http = require("http");
 require('dotenv').config(); // Load environment variables
 
 // Routers
@@ -15,6 +16,9 @@ const ordersRouter = require("./routes/orders.js");
 const fetchCateringRouter = require("./routes/fetchCatering.js");
 const employeesApi = require("./routes/employeesApi.js");
 const dashboardApi = require("./routes/dashboard.js");
+
+// Gmail Poller Service
+const GmailPoller = require("./services/gmailPoller.js");
 
 //Server check
 
@@ -107,4 +111,107 @@ app.get("/", (req, res) => {
   res.redirect("/auth/login");
 });
 
-app.listen(3000, () => console.log("✅ Server running at http://localhost:3000"));
+// Server-Sent Events (SSE) endpoint for real-time order notifications
+app.get("/api/order-notifications", requireServerlessAuth, (req, res) => {
+  // Set headers for SSE
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx buffering
+
+  // Send initial connection message
+  res.write('data: {"type":"connected","message":"Connected to order notifications"}\n\n');
+
+  // Listen for new orders from the poller
+  const onNewOrders = (data) => {
+    res.write(`data: ${JSON.stringify({
+      type: 'newOrders',
+      count: data.count,
+      totalNew: data.totalNew,
+      timestamp: data.timestamp
+    })}\n\n`);
+  };
+
+  const onError = (error) => {
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      message: error.message
+    })}\n\n`);
+  };
+
+  const onChecked = (data) => {
+    res.write(`data: ${JSON.stringify({
+      type: 'checked',
+      timestamp: data.timestamp
+    })}\n\n`);
+  };
+
+  // Register event listeners
+  gmailPoller.on('newOrders', onNewOrders);
+  gmailPoller.on('error', onError);
+  gmailPoller.on('checked', onChecked);
+
+  // Send heartbeat every 30 seconds to keep connection alive
+  const heartbeat = setInterval(() => {
+    res.write(': heartbeat\n\n');
+  }, 30000);
+
+  // Cleanup on client disconnect
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    gmailPoller.removeListener('newOrders', onNewOrders);
+    gmailPoller.removeListener('error', onError);
+    gmailPoller.removeListener('checked', onChecked);
+  });
+});
+
+// API endpoint to get poller status
+app.get("/api/poller-status", requireServerlessAuth, (req, res) => {
+  res.json(gmailPoller.getStatus());
+});
+
+// API endpoint to manually trigger a check
+app.post("/api/check-orders-now", requireServerlessAuth, async (req, res) => {
+  try {
+    await gmailPoller.checkForNewOrders();
+    res.json({ success: true, message: 'Manual check initiated' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Gmail Poller
+const gmailPoller = new GmailPoller({
+  pollInterval: parseInt(process.env.GMAIL_POLL_INTERVAL) || 5 * 60 * 1000, // 5 minutes default
+  debugMode: process.env.NODE_ENV !== 'production'
+});
+
+// Start the poller when server starts
+gmailPoller.start();
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received, shutting down gracefully...');
+  gmailPoller.stop();
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT received, shutting down gracefully...');
+  gmailPoller.stop();
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+server.listen(3000, () => {
+  console.log("✅ Server running at http://localhost:3000");
+  console.log(`📧 Gmail poller active - checking every ${Math.round(gmailPoller.pollInterval / 60000)} minutes`);
+});

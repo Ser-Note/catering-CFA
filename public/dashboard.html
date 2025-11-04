@@ -40,7 +40,7 @@
                     <div class="metric-tile orders-tile">
                         <div class="metric-value" id="orders-value">-</div>
                         <div class="metric-label">Total Orders</div>
-                        <div class="metric-trend">+12% vs last week</div>
+                        <div class="metric-trend" id="orders-trend">Calculating...</div>
                     </div>
                     
                     <div class="metric-tile nuggets-tile">
@@ -52,7 +52,7 @@
                     <div class="metric-tile revenue-tile">
                         <div class="metric-value" id="revenue-value">-</div>
                         <div class="metric-label">Revenue</div>
-                        <div class="metric-trend">Target: $25K</div>
+                        <div class="metric-trend" id="revenue-trend">Calculating...</div>
                     </div>
                     
                     <div class="metric-tile completion-tile">
@@ -184,6 +184,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="/js/order-notifications.js"></script>
     <script src="/js/dashboard.js"></script>
     <script>
         // Live time update
