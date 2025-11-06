@@ -141,41 +141,20 @@
                 </div>
             </div>
 
-            <!-- Right Panel: Insights -->
+            <!-- Right Panel: Weekly Overview -->
             <div class="insights-panel">
                 <div class="panel-header">
-                    <h2>🔥 Insights</h2>
-                </div>
-                
-                <!-- Popular Items Compact List -->
-                <div class="insight-section">
-                    <h3>Top Items</h3>
-                    <div class="popular-list" id="popular-items-compact">
-                        <div class="loading-compact">Loading...</div>
+                    <h2>📅 This Week</h2>
+                    <div class="day-navigation">
+                        <button class="day-nav-btn" id="prev-day" title="Previous Day">◀</button>
+                        <span class="day-display" id="day-display">Monday</span>
+                        <button class="day-nav-btn" id="next-day" title="Next Day">▶</button>
                     </div>
                 </div>
                 
-                <!-- Recent Activity Stream -->
-                <div class="insight-section">
-                    <h3>Recent Activity</h3>
-                    <div class="activity-stream" id="activity-stream">
-                        <div class="loading-compact">Loading...</div>
-                    </div>
-                </div>
-                
-                <!-- Quick Stats -->
-                <div class="insight-section">
-                    <h3>Quick Stats</h3>
-                    <div class="quick-stats-grid">
-                        <div class="quick-stat">
-                            <div class="stat-number" id="avg-order">-</div>
-                            <div class="stat-text">Avg Order</div>
-                        </div>
-                        <div class="quick-stat">
-                            <div class="stat-number" id="peak-hour">-</div>
-                            <div class="stat-text">Peak Hour</div>
-                        </div>
-                    </div>
+                <!-- Day's Orders (Small Cards) -->
+                <div class="day-orders-container" id="day-orders-container">
+                    <div class="loading-compact">Loading orders...</div>
                 </div>
             </div>
         </div>

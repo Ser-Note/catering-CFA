@@ -543,3 +543,228 @@ function goToCompactPage(action) {
     window.compactDashboard.handleAction(action);
   }
 }
+
+// Weekly Overview Functionality
+class WeeklyOverview {
+  constructor() {
+    this.currentDayIndex = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+    // Convert to Mon=0, Sat=5 (skip Sunday)
+    if (this.currentDayIndex === 0) {
+      this.currentDayIndex = 0; // Sunday -> Monday
+    } else {
+      this.currentDayIndex = this.currentDayIndex - 1; // Mon-Sat = 0-5
+    }
+    
+    this.weekOrders = {};
+    this.dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    this.init();
+  }
+
+  async init() {
+    await this.fetchWeekOrders();
+    this.setupEventListeners();
+    this.updateDayDisplay();
+  }
+
+  async fetchWeekOrders() {
+    try {
+      // Get Monday and Saturday of current week
+      const { monday, saturday } = this.getWeekDates();
+      
+      const response = await fetch(`/orders/range?start=${monday.toISOString()}&end=${saturday.toISOString()}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const orders = await response.json();
+      
+      // Organize orders by day
+      this.organizeOrdersByDay(orders);
+      
+    } catch (error) {
+      console.error('❌ Error fetching week orders:', error);
+      this.showErrorState();
+    }
+  }
+
+  getWeekDates() {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 6 = Saturday
+    
+    // Calculate days since Monday (Mon=0, Sun=6)
+    const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    
+    // Get Monday of current week
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - daysSinceMonday);
+    monday.setHours(0, 0, 0, 0);
+    
+    // Get Saturday of current week
+    const saturday = new Date(monday);
+    saturday.setDate(monday.getDate() + 5);
+    saturday.setHours(23, 59, 59, 999);
+    
+    return { monday, saturday };
+  }
+
+  organizeOrdersByDay(orders) {
+    // Initialize empty arrays for each day
+    this.dayNames.forEach(day => {
+      this.weekOrders[day] = [];
+    });
+    
+    // Organize orders by day
+    orders.forEach(order => {
+      const orderDate = new Date(order.order_datetime || order.created_at);
+      const dayIndex = orderDate.getDay(); // 0 = Sunday, 6 = Saturday
+      
+      // Skip Sunday orders (day 0)
+      if (dayIndex === 0) return;
+      
+      // Convert to Mon-Sat index (0-5)
+      const dayName = this.dayNames[dayIndex - 1];
+      
+      if (this.weekOrders[dayName]) {
+        this.weekOrders[dayName].push(order);
+      }
+    });
+    
+    // Sort each day's orders by time
+    Object.keys(this.weekOrders).forEach(day => {
+      this.weekOrders[day].sort((a, b) => {
+        const timeA = new Date(a.order_datetime || a.created_at);
+        const timeB = new Date(b.order_datetime || b.created_at);
+        return timeA - timeB;
+      });
+    });
+  }
+
+  setupEventListeners() {
+    const prevBtn = document.getElementById('prev-day');
+    const nextBtn = document.getElementById('next-day');
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => this.navigateDay(-1));
+    }
+    
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => this.navigateDay(1));
+    }
+  }
+
+  navigateDay(direction) {
+    this.currentDayIndex += direction;
+    
+    // Wrap around: 0 (Mon) <-> 5 (Sat)
+    if (this.currentDayIndex < 0) {
+      this.currentDayIndex = 5; // Wrap to Saturday
+    } else if (this.currentDayIndex > 5) {
+      this.currentDayIndex = 0; // Wrap to Monday
+    }
+    
+    this.updateDayDisplay();
+  }
+
+  updateDayDisplay() {
+    const dayDisplay = document.getElementById('day-display');
+    const container = document.getElementById('day-orders-container');
+    
+    if (!dayDisplay || !container) return;
+    
+    const currentDay = this.dayNames[this.currentDayIndex];
+    dayDisplay.textContent = currentDay;
+    
+    // Get orders for current day
+    const dayOrders = this.weekOrders[currentDay] || [];
+    
+    if (dayOrders.length === 0) {
+      container.innerHTML = `
+        <div class="no-orders">
+          <div class="no-orders-icon">📅</div>
+          <div class="no-orders-text">No orders scheduled for ${currentDay}</div>
+        </div>
+      `;
+      return;
+    }
+    
+    // Render order cards
+    container.innerHTML = dayOrders.map(order => this.renderOrderCard(order)).join('');
+    
+    // Add click handlers to navigate to full order details
+    container.querySelectorAll('.order-card').forEach((card, index) => {
+      card.addEventListener('click', () => {
+        const orderId = dayOrders[index].id;
+        window.location.href = `/orders?id=${orderId}`;
+      });
+    });
+  }
+
+  renderOrderCard(order) {
+    const orderTime = new Date(order.order_datetime || order.created_at);
+    const timeStr = orderTime.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
+    const customerName = order.customer_name || 'Unknown Customer';
+    const phone = order.phone || '';
+    const email = order.email || '';
+    
+    const isPaid = order.paid || false;
+    const isCompletedBOH = order.completed_boh || false;
+    const isCompletedFOH = order.completed_foh || false;
+    
+    return `
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-customer">${customerName}</div>
+          <div class="order-time">${timeStr}</div>
+        </div>
+        
+        ${phone ? `
+          <div class="order-contact">
+            📞 <a href="tel:${phone}" class="order-phone">${phone}</a>
+          </div>
+        ` : ''}
+        
+        ${email ? `
+          <div class="order-contact">
+            ✉️ ${email}
+          </div>
+        ` : ''}
+        
+        <div class="order-status">
+          <span class="status-badge ${isPaid ? 'status-paid' : 'status-unpaid'}">
+            ${isPaid ? 'PAID' : 'UNPAID'}
+          </span>
+          ${isCompletedBOH ? 
+            '<span class="status-badge status-completed-boh">KITCHEN ✓</span>' : 
+            '<span class="status-badge status-pending">KITCHEN</span>'
+          }
+          ${isCompletedFOH ? 
+            '<span class="status-badge status-completed-foh">SERVICE ✓</span>' : 
+            '<span class="status-badge status-pending">SERVICE</span>'
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  showErrorState() {
+    const container = document.getElementById('day-orders-container');
+    if (container) {
+      container.innerHTML = `
+        <div class="no-orders">
+          <div class="no-orders-icon">⚠️</div>
+          <div class="no-orders-text">Unable to load orders</div>
+        </div>
+      `;
+    }
+  }
+}
+
+// Initialize weekly overview when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  window.weeklyOverview = new WeeklyOverview();
+});

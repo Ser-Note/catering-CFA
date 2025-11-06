@@ -382,4 +382,91 @@ router.post('/update', async (req, res) => {
   }
 });
 
+// --- GET /orders/range - Get orders within a date range ---
+router.get('/range', async (req, res) => {
+  try {
+    const { start, end } = req.query;
+    
+    if (!start || !end) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'start and end dates required' 
+      });
+    }
+    
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    
+    if (isNaN(startDate) || isNaN(endDate)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'invalid date format' 
+      });
+    }
+    
+    // Get all orders
+    const cateringOrders = await readCateringOrders();
+    const emailOrdersRaw = await readEmailOrders();
+    const emailOrders = emailOrdersRaw.map(processJsonOrder);
+    const allOrders = [...emailOrders, ...cateringOrders];
+    
+    // Filter by date range
+    const filteredOrders = allOrders.filter(order => {
+      if (!order.date) return false;
+      
+      const orderDate = new Date(order.date);
+      if (isNaN(orderDate)) return false;
+      
+      return orderDate >= startDate && orderDate <= endDate;
+    });
+    
+    // Return orders with essential fields for weekly overview
+    const ordersData = filteredOrders.map(order => {
+      // Parse the time to 24-hour format if needed
+      let timeStr = order.time || '12:00';
+      
+      // Convert 12-hour to 24-hour if needed
+      if (/am|pm/i.test(timeStr)) {
+        const match = timeStr.match(/(\d{1,2}):?(\d{2})?\s*(am|pm)/i);
+        if (match) {
+          let hours = parseInt(match[1]);
+          const minutes = match[2] || '00';
+          const meridian = match[3].toLowerCase();
+          if (meridian === 'pm' && hours < 12) hours += 12;
+          if (meridian === 'am' && hours === 12) hours = 0;
+          timeStr = `${hours.toString().padStart(2, '0')}:${minutes}`;
+        }
+      }
+      
+      // Ensure time has proper format HH:MM
+      if (!/^\d{2}:\d{2}/.test(timeStr)) {
+        timeStr = '12:00';
+      }
+      
+      const datetimeStr = `${order.date}T${timeStr}:00`;
+      
+      return {
+        id: order.id || order.uid,
+        customer_name: order.team || order.contact || 'Unknown',
+        phone: order.phone || '',
+        email: order.email || '',
+        order_datetime: datetimeStr,
+        created_at: datetimeStr,
+        paid: order.paid || false,
+        completed_boh: order.completed_boh || false,
+        completed_foh: order.completed_foh || false
+      };
+    });
+    
+    res.json(ordersData);
+    
+  } catch (error) {
+    console.error('Error fetching orders by range:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'server error' 
+    });
+  }
+});
+
 module.exports = router;

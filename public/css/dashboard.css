@@ -619,3 +619,182 @@ body {
     opacity: 1;
     visibility: visible;
 }
+
+/* Day Navigation */
+.day-navigation {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.day-nav-btn {
+    background: #c8102e;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.day-nav-btn:hover {
+    background: #a00d24;
+    transform: scale(1.05);
+}
+
+.day-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.day-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.day-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: #212529;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Day Orders Container */
+.day-orders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.day-orders-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.day-orders-container::-webkit-scrollbar-track {
+    background: #f1f3f4;
+    border-radius: 3px;
+}
+
+.day-orders-container::-webkit-scrollbar-thumb {
+    background: #c8102e;
+    border-radius: 3px;
+}
+
+/* Order Card */
+.order-card {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    border-left: 4px solid #c8102e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.order-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    transform: translateX(2px);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.order-customer {
+    font-weight: 600;
+    color: #212529;
+    font-size: 14px;
+}
+
+.order-time {
+    font-size: 12px;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.order-contact {
+    font-size: 12px;
+    color: #495057;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.order-phone {
+    color: #c8102e;
+    text-decoration: none;
+}
+
+.order-phone:hover {
+    text-decoration: underline;
+}
+
+.order-status {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.status-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-unpaid {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed-boh {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.status-completed-foh {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-pending {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.no-orders {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.no-orders-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.no-orders-text {
+    font-size: 14px;
+    font-weight: 500;
+}
