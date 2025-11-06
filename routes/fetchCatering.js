@@ -554,6 +554,7 @@ function fetchCateringOrders() {
                       food_items: newOrder.food_items,
                       drink_items: newOrder.drink_items,
                       sauces_dressings: newOrder.sauces_dressings,
+                      meal_boxes: newOrder.meal_boxes,
                       total: newOrder.total
                     };
                     
