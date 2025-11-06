@@ -126,11 +126,27 @@ function processJsonOrder(order) {
   const mealBoxList = flattenItems(order.meal_boxes);
   const saucesList = flattenItems(order.sauces_dressings); 
 
+  // Process food_items - these should NOT include meal boxes (those are in order.meal_boxes)
+  // BUT we need to handle the case where parsers didn't catch them
   (order.food_items || []).forEach(f => {
-    const text = `${f.qty || 1} x ${f.item}`;
-    const lower = f.item.toLowerCase();
-    if (lower.includes("sandwich") || lower.includes("hot")) sandwichesList.push(text);
-    else otherFoodItems.push(text);
+    const itemName = f.item || '';
+    const text = `${f.qty || 1} x ${itemName}`;
+    const lower = itemName.toLowerCase();
+    
+    // Double-check if this is actually a meal box that should be in meal_boxes
+    // This handles cases where the parser missed it
+    if (lower.includes('meal') || lower.includes('box') || lower.includes('boxed') || 
+        lower.includes('package') || lower.includes('packaged')) {
+      mealBoxList.push(text);
+    }
+    // Check if it's a sandwich (but not a packaged meal sandwich)
+    else if (lower.includes("sandwich") || lower.includes("hot")) {
+      sandwichesList.push(text);
+    }
+    // Everything else goes to other food items
+    else {
+      otherFoodItems.push(text);
+    }
   });
 
   return {

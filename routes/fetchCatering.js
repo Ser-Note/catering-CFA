@@ -168,19 +168,26 @@ function parseOrder(message) {
   const food_items = [];
   const drink_items = [];
   const sauces_dressings = [];
+  const meal_boxes = [];
 
-  function pushItem(name, qty) {
+  function pushItem(name, qty, isMealBox = false) {
     name = name.trim();
     if (!name) return;
     
     qty = parseInt(qty, 10) || 1;
     
     if (debugMode) {
-      logDebug(`Processing item: "${name}" with quantity: ${qty}`);
+      logDebug(`Processing item: "${name}" with quantity: ${qty}, isMealBox: ${isMealBox}`);
     }
     
     const lower = name.toLowerCase();
-    if ((lower.includes('sauce') || lower.includes('dressing') || 
+    
+    // Check if this is a meal box/package
+    if (isMealBox || lower.includes('meal') || lower.includes('box') || 
+        lower.includes('boxed') || lower.includes('package') || lower.includes('packaged')) {
+      meal_boxes.push({ item: name, qty });
+    }
+    else if ((lower.includes('sauce') || lower.includes('dressing') || 
          lower.includes('ketchup') || lower.includes('mayo') || 
          lower.includes('honey') || lower.includes('jam')) && 
         !lower.includes('gallon') && !lower.includes('chips')) {
@@ -195,15 +202,165 @@ function parseOrder(message) {
   for (let i = 0; i < rawLines.length; i++) {
     const line = rawLines[i];
     
-    // Match item with embedded quantity and optional price
-    const qtyInLine = line.match(/^(.*\S)\s+(\d+)\s*(?:\$[\d,.\-]+)?$/);
+    // Match item with embedded quantity and optional price (e.g., "25 x Packaged Meal 25 $125.00")
+    const qtyInLine = line.match(/^(\d+)\s*x?\s*(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
     if (qtyInLine) {
-      pushItem(qtyInLine[1], qtyInLine[2]);
+      const qty = qtyInLine[1];
+      const itemName = qtyInLine[2].trim();
+      
+      // Check if this is a meal box and if there are indented sub-items following
+      const isMealBox = /meal|box|boxed|package|packaged/i.test(itemName);
+      
+      if (isMealBox) {
+        // Look ahead for sub-items (indented OR common meal components)
+        const subItems = [];
+        let j = i + 1;
+        
+        // First check for indented items
+        while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
+          const subItem = rawLines[j].trim();
+          if (subItem && !/^\d+\s*\$/.test(subItem)) {
+            subItems.push(subItem);
+          }
+          j++;
+        }
+        
+        // If no indented items, check next few lines for common meal components
+        if (subItems.length === 0) {
+          const maxLookAhead = 4;
+          let lookAheadCount = 0;
+          
+          while (j < rawLines.length && lookAheadCount < maxLookAhead) {
+            const nextLine = rawLines[j];
+            
+            // Skip if it looks like a price-only line
+            if (/^\d+\s*\$/.test(nextLine)) {
+              j++;
+              continue;
+            }
+            
+            // Extract the item name from various patterns
+            let nextItemName = nextLine;
+            const nextQtyMatch = nextLine.match(/^(\d+)\s*x?\s*(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
+            if (nextQtyMatch) {
+              nextItemName = nextQtyMatch[2].trim();
+            } else {
+              const simpleMatch = nextLine.match(/^(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/);
+              if (simpleMatch) {
+                nextItemName = simpleMatch[1].trim();
+              }
+            }
+            
+            const lower = nextItemName.toLowerCase();
+            
+            // Check if this looks like a packaged meal component
+            const isMealComponent = /^(sandwich|spicy|deluxe|grilled|fried|nugget|strip|cool wrap|kale|chip|cookie|brownie|fruit|salad)/i.test(lower) ||
+                                   /\b(kale|chip|chips|cookie|brownie|fruit)\b/i.test(lower);
+            
+            if (isMealComponent) {
+              subItems.push(nextItemName);
+              j++;
+              lookAheadCount++;
+            } else {
+              // Not a meal component, stop looking
+              break;
+            }
+          }
+        }
+        
+        // Combine meal name with sub-items
+        if (subItems.length > 0) {
+          const fullMealName = `${itemName} w/ ${subItems.join(', ')}`;
+          pushItem(fullMealName, qty, true);
+          i = j - 1; // Skip the sub-items we've processed
+        } else {
+          pushItem(itemName, qty, isMealBox);
+        }
+      } else {
+        pushItem(itemName, qty);
+      }
       continue;
     }
 
-    // Match indented sauces or items starting with 8oz
-    if (/^\s{3,}/.test(line) || /^8oz\s/.test(line)) {
+    // Simpler pattern: "Item Name 25 $125.00"
+    const simpleQty = line.match(/^(.*?)\s+(\d+)\s*(?:\$[\d,.\-]+)?$/);
+    if (simpleQty) {
+      const itemName = simpleQty[1].trim();
+      const qty = simpleQty[2];
+      const isMealBox = /meal|box|boxed|package|packaged/i.test(itemName);
+      
+      if (isMealBox) {
+        // Look ahead for sub-items
+        const subItems = [];
+        let j = i + 1;
+        
+        // Check for indented items
+        while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
+          const subItem = rawLines[j].trim();
+          if (subItem && !/^\d+\s*\$/.test(subItem)) {
+            subItems.push(subItem);
+          }
+          j++;
+        }
+        
+        // If no indented items, check for meal components
+        if (subItems.length === 0) {
+          const maxLookAhead = 4;
+          let lookAheadCount = 0;
+          
+          while (j < rawLines.length && lookAheadCount < maxLookAhead) {
+            const nextLine = rawLines[j];
+            
+            if (/^\d+\s*\$/.test(nextLine)) {
+              j++;
+              continue;
+            }
+            
+            let nextItemName = nextLine;
+            const nextQtyMatch = nextLine.match(/^(\d+)\s*x?\s*(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
+            if (nextQtyMatch) {
+              nextItemName = nextQtyMatch[2].trim();
+            } else {
+              const simpleMatch = nextLine.match(/^(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/);
+              if (simpleMatch) {
+                nextItemName = simpleMatch[1].trim();
+              }
+            }
+            
+            const lower = nextItemName.toLowerCase();
+            const isMealComponent = /^(sandwich|spicy|deluxe|grilled|fried|nugget|strip|cool wrap|kale|chip|cookie|brownie|fruit|salad)/i.test(lower) ||
+                                   /\b(kale|chip|chips|cookie|brownie|fruit)\b/i.test(lower);
+            
+            if (isMealComponent) {
+              subItems.push(nextItemName);
+              j++;
+              lookAheadCount++;
+            } else {
+              break;
+            }
+          }
+        }
+        
+        if (subItems.length > 0) {
+          const fullMealName = `${itemName} w/ ${subItems.join(', ')}`;
+          pushItem(fullMealName, qty, true);
+          i = j - 1;
+        } else {
+          pushItem(itemName, qty, isMealBox);
+        }
+      } else {
+        pushItem(itemName, qty);
+      }
+      continue;
+    }
+
+    // Skip indented items (they should have been captured above)
+    if (/^\s{2,}/.test(line)) {
+      continue;
+    }
+
+    // Match sauces or items starting with 8oz
+    if (/^8oz\s/.test(line)) {
       pushItem(line.replace(/\s+\d+$/, ''), 1);
       continue;
     }
@@ -237,6 +394,7 @@ function parseOrder(message) {
     food_items,
     drink_items,
     sauces_dressings,
+    meal_boxes,
     total
   };
 }
@@ -357,6 +515,7 @@ function fetchCateringOrders() {
                   food_items: orderData.food_items,
                   drink_items: orderData.drink_items,
                   sauces_dressings: orderData.sauces_dressings,
+                  meal_boxes: orderData.meal_boxes,
                   total: orderData.total
                 });
               });

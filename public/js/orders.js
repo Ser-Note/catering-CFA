@@ -374,33 +374,54 @@ function highlightItems(text) {
 // --- Box meals formatting ---
 function formatBoxMeals(text) {
     if (!text || text === 'N/A') return '<em>None</em>';
-    return text.split(/<br\s*\/?>|\n/).map(lineRaw => {
+    
+    const lines = text.split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+    
+    return lines.map(lineRaw => {
         const line = lineRaw.trim();
         if (!line) return '';
+        
+        // Match patterns like "25 x Packaged Meal w/ chips, cookies" or just "25 x Packaged Meal"
         const match = line.match(/(\d+)\s*x\s*(.*)/i);
         const qty = match ? match[1] : '1';
         const item = match ? match[2] : line;
-        const parts = item.split(/w\/|with/i);
+        
+        // Split on "w/" or "with" to separate main item from contents
+        const parts = item.split(/\s*(?:w\/|with)\s*/i);
         const main = parts[0].trim();
         const contentsPart = parts[1] ? parts[1].trim() : '';
+        
+        // Parse contents - split on commas, "and", or "&"
         const contents = contentsPart
-    ? contentsPart.split(/\s*(?:,|&|\band\b)\s*/i).map(s => s.trim()).filter(Boolean)
-    : [];
+            ? contentsPart.split(/\s*(?:,|&|\band\b)\s*/i)
+                .map(s => s.trim())
+                .filter(Boolean)
+            : [];
 
+        // Classify main item - default to 'box-meal' for anything in this section
         const mainLower = main.toLowerCase();
-        let mainClass = 'hot';
-        if (/(cookie|brownie)/i.test(mainLower)) mainClass = 'dessert';
-        else if (/(tea|lemonade|drink|soda|water|juice|milk)/i.test(mainLower)) mainClass = 'drink';
-        else if (/(cold|subs|chilled|cool|wrap|salad|kale|fruit)/i.test(mainLower)) mainClass = 'cold';
+        let mainClass = 'box-meal';
+        
+        // Only override if it's clearly not a meal/box/package
+        if (!/(meal|box|boxed|package|packaged)/i.test(mainLower)) {
+            if (/(cookie|brownie)/i.test(mainLower)) mainClass = 'dessert';
+            else if (/(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(mainLower)) mainClass = 'drink';
+            else if (/(cold|subs|chilled|cool|wrap|salad|kale|fruit)/i.test(mainLower)) mainClass = 'cold';
+            else if (/(hot|sandwich|nugget|strip|chicken)/i.test(mainLower)) mainClass = 'hot';
+        }
+        
+        // Build HTML for contents
         const subHTML = contents.map(sub => {
             const lc = sub.toLowerCase();
             let subClass = 'hot';
             if (/(cookie|brownie)/i.test(lc)) subClass = 'dessert';
-            else if (/(tea|lemonade|drink|soda|water|juice|milk)/i.test(lc)) subClass = 'drink';
+            else if (/(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(lc)) subClass = 'drink';
             else if (/(cold|subs|chilled|cool|wrap|salad|kale|fruit)/i.test(lc)) subClass = 'cold';
-            return `<div class="${subClass}">${escapeHtml(sub)}</div>`;
+            else if (/(chip)/i.test(lc)) subClass = 'cold'; // chips are cold items
+            return `<div class="${subClass}" style="margin-left: 20px; font-size: 14px;">• ${escapeHtml(sub)}</div>`;
         }).join('');
-        return `<div class="box-meal"><strong>${qty} x ${escapeHtml(main)}</strong>${subHTML}</div>`;
+        
+        return `<div class="${mainClass}"><strong>${qty} x ${escapeHtml(main)}</strong>${subHTML}</div>`;
     }).join('');
 }
 
@@ -474,7 +495,7 @@ function getUtensils(order) {
 function classifyItem(text) {
     const lower = text.toLowerCase();
     if (/(cookie|brownie)/i.test(lower)) return 'dessert';
-    if (/(tea|lemonade|drink|soda|water|juice|milk)/i.test(lower)) return 'drink';
+    if (/(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(lower)) return 'drink';
     if (/(cold|subs|parfait|chilled|cool|wrap|salad|kale|fruit)/i.test(lower)) return 'cold';
     return 'hot';
 }
