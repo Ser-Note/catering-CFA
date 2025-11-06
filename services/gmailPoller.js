@@ -375,7 +375,7 @@ class GmailPoller extends EventEmitter {
            lower.includes('honey') || lower.includes('jam')) && 
           !lower.includes('gallon') && !lower.includes('chips')) {
         sauces_dressings.push({ item: name, qty });
-      } else if (lower.includes('gallon')) {
+      } else if (lower.includes('gallon') || /^(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(lower)) {
         drink_items.push({ item: name, qty });
       } else {
         food_items.push({ item: name, qty });
