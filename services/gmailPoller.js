@@ -437,8 +437,7 @@ class GmailPoller extends EventEmitter {
               // Check if this looks like a packaged meal component
               // Exclude trays, meals, boxes, and other bulk items
               const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
-                                     (/^(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chip|cookie|brownie|fruit cup|side salad)/i.test(lower) ||
-                                     /\b(kale|chips?|cookies?|brownies?)\b/i.test(lower));
+                                     (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
               
               if (isMealComponent) {
                 subItems.push(nextItemName);
@@ -510,8 +509,7 @@ class GmailPoller extends EventEmitter {
               
               const lower = nextItemName.toLowerCase();
               const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
-                                     (/^(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chip|cookie|brownie|fruit cup|side salad)/i.test(lower) ||
-                                     /\b(kale|chips?|cookies?|brownies?)\b/i.test(lower));
+                                     (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
               
               if (isMealComponent) {
                 subItems.push(nextItemName);
