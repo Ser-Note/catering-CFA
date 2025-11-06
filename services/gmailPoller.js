@@ -546,8 +546,70 @@ class GmailPoller extends EventEmitter {
 
       const nextLine = rawLines[i + 1];
       if (nextLine && /^(\d+)(?:\s*\$[\d,.\-]+)?$/.test(nextLine)) {
-        pushItem(line, nextLine.match(/^(\d+)/)[1]);
-        i++;
+        const qty = nextLine.match(/^(\d+)/)[1];
+        const isMealBox = /meal|box|boxed|package|packaged/i.test(line);
+        
+        if (isMealBox) {
+          // Look ahead for sub-items starting from i+2 (skip the price line)
+          const subItems = [];
+          let j = i + 2;
+          
+          // Check for indented items
+          while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
+            const subItem = rawLines[j].trim();
+            if (subItem && !/^\d+\s*\$/.test(subItem)) {
+              subItems.push(subItem);
+            }
+            j++;
+          }
+          
+          // If no indented items, check for meal components
+          if (subItems.length === 0) {
+            const maxLookAhead = 4;
+            let lookAheadCount = 0;
+            
+            while (j < rawLines.length && lookAheadCount < maxLookAhead) {
+              const checkLine = rawLines[j];
+              
+              // Skip price-only lines
+              if (/^\d+\s*\$/.test(checkLine)) {
+                j++;
+                continue;
+              }
+              
+              // Extract item name - could be "Item Name 1" or "Item Name"
+              let nextItemName = checkLine;
+              const qtyAtEnd = checkLine.match(/^(.*?)\s+(\d+)$/);
+              if (qtyAtEnd) {
+                nextItemName = qtyAtEnd[1].trim();
+              }
+              
+              const lower = nextItemName.toLowerCase();
+              const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
+                                     (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
+              
+              if (isMealComponent) {
+                subItems.push(nextItemName);
+                j++;
+                lookAheadCount++;
+              } else {
+                break;
+              }
+            }
+          }
+          
+          if (subItems.length > 0) {
+            const fullMealName = `${line} w/ ${subItems.join(', ')}`;
+            pushItem(fullMealName, qty, true);
+            i = j - 1; // Skip all processed lines
+          } else {
+            pushItem(line, qty, isMealBox);
+            i++; // Skip the quantity line
+          }
+        } else {
+          pushItem(line, qty);
+          i++; // Skip the quantity line
+        }
         continue;
       }
 

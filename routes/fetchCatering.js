@@ -164,6 +164,14 @@ function parseOrder(message) {
     logDebug('Cleaned Lines:');
     rawLines.forEach((l, i) => logDebug(`Line ${i}: "${l}"`));
   }
+  
+  // Always log to console for debugging packaged meals
+  console.log(`\n📧 Parsing email with ${rawLines.length} lines`);
+  if (rawLines.length < 50) {
+    console.log('--- RAW LINES ---');
+    rawLines.forEach((l, i) => console.log(`${i}: "${l}"`));
+    console.log('--- END RAW LINES ---\n');
+  }
 
   const food_items = [];
   const drink_items = [];
@@ -216,11 +224,14 @@ function parseOrder(message) {
         const subItems = [];
         let j = i + 1;
         
+        console.log(`\n🔍 Found meal box at line ${i}: "${itemName}"`);
+        
         // First check for indented items
         while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
           const subItem = rawLines[j].trim();
           if (subItem && !/^\d+\s*\$/.test(subItem)) {
             subItems.push(subItem);
+            console.log(`  ✓ Found indented sub-item: "${subItem}"`);
           }
           j++;
         }
@@ -229,6 +240,8 @@ function parseOrder(message) {
         if (subItems.length === 0) {
           const maxLookAhead = 4;
           let lookAheadCount = 0;
+          
+          console.log(`  → No indented items, looking ahead for components...`);
           
           while (j < rawLines.length && lookAheadCount < maxLookAhead) {
             const nextLine = rawLines[j];
@@ -253,17 +266,24 @@ function parseOrder(message) {
             
             const lower = nextItemName.toLowerCase();
             
+            console.log(`    Checking line ${j}: "${nextLine}"`);
+            console.log(`      Extracted name: "${nextItemName}"`);
+            
             // Check if this looks like a packaged meal component
             // Exclude trays, meals, boxes, and other bulk items
             const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
                                    (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
             
+            console.log(`      isMealComponent: ${isMealComponent}`);
+            
             if (isMealComponent) {
               subItems.push(nextItemName);
+              console.log(`      ✓ Added as component`);
               j++;
               lookAheadCount++;
             } else {
               // Not a meal component, stop looking
+              console.log(`      ✗ Not a component, stopping`);
               break;
             }
           }
@@ -272,9 +292,12 @@ function parseOrder(message) {
         // Combine meal name with sub-items
         if (subItems.length > 0) {
           const fullMealName = `${itemName} w/ ${subItems.join(', ')}`;
+          console.log(`  ✅ Creating combined meal: "${fullMealName}"`);
+          console.log(`  ⏭️  Skipping lines ${i+1} to ${j} (processed as components)`);
           pushItem(fullMealName, qty, true);
           i = j - 1; // Skip the sub-items we've processed
         } else {
+          console.log(`  ⚠️  No components found, adding as standalone meal`);
           pushItem(itemName, qty, isMealBox);
         }
       } else {
@@ -369,8 +392,86 @@ function parseOrder(message) {
     // Check if next line has quantity and price
     const nextLine = rawLines[i + 1];
     if (nextLine && /^(\d+)(?:\s*\$[\d,.\-]+)?$/.test(nextLine)) {
-      pushItem(line, nextLine.match(/^(\d+)/)[1]);
-      i++; // Skip the quantity line
+      const qty = nextLine.match(/^(\d+)/)[1];
+      const isMealBox = /meal|box|boxed|package|packaged/i.test(line);
+      
+      if (isMealBox) {
+        console.log(`\n🔍 Found meal box at line ${i}: "${line}"`);
+        
+        // Look ahead for sub-items starting from i+2 (skip the price line)
+        const subItems = [];
+        let j = i + 2;
+        
+        // Check for indented items
+        while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
+          const subItem = rawLines[j].trim();
+          if (subItem && !/^\d+\s*\$/.test(subItem)) {
+            subItems.push(subItem);
+            console.log(`  ✓ Found indented sub-item: "${subItem}"`);
+          }
+          j++;
+        }
+        
+        // If no indented items, check for meal components
+        if (subItems.length === 0) {
+          const maxLookAhead = 4;
+          let lookAheadCount = 0;
+          
+          console.log(`  → No indented items, looking ahead for components...`);
+          
+          while (j < rawLines.length && lookAheadCount < maxLookAhead) {
+            const checkLine = rawLines[j];
+            console.log(`    Checking line ${j}: "${checkLine}"`);
+            
+            // Skip price-only lines
+            if (/^\d+\s*\$/.test(checkLine)) {
+              console.log(`      ✗ Skipping (price line)`);
+              j++;
+              continue;
+            }
+            
+            // Extract item name - could be "Item Name 1" or "Item Name"
+            let nextItemName = checkLine;
+            const qtyAtEnd = checkLine.match(/^(.*?)\s+(\d+)$/);
+            if (qtyAtEnd) {
+              nextItemName = qtyAtEnd[1].trim();
+            }
+            
+            const lower = nextItemName.toLowerCase();
+            console.log(`      Extracted name: "${nextItemName}"`);
+            
+            const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
+                                   (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
+            
+            console.log(`      isMealComponent: ${isMealComponent}`);
+            
+            if (isMealComponent) {
+              subItems.push(nextItemName);
+              console.log(`      ✓ Added as component`);
+              j++;
+              lookAheadCount++;
+            } else {
+              console.log(`      ✗ Not a component, stopping`);
+              break;
+            }
+          }
+        }
+        
+        if (subItems.length > 0) {
+          const fullMealName = `${line} w/ ${subItems.join(', ')}`;
+          console.log(`  ✅ Creating combined meal: "${fullMealName}"`);
+          console.log(`  ⏭️  Skipping lines ${i+1} to ${j} (processed as components)`);
+          pushItem(fullMealName, qty, true);
+          i = j - 1; // Skip all processed lines
+        } else {
+          console.log(`  ⚠️  No components found, adding as standalone meal`);
+          pushItem(line, qty, isMealBox);
+          i++; // Skip the quantity line
+        }
+      } else {
+        pushItem(line, qty);
+        i++; // Skip the quantity line
+      }
       continue;
     }
 
