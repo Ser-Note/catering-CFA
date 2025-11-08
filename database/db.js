@@ -268,10 +268,10 @@ const emailOrderDB = {
       .eq('customer_email', email)
       .eq('order_date', date)
       .eq('total', total)
-      .single();
+      .limit(1);
     
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows returned
-    return data;
+    if (error) throw error;
+    return data && data.length > 0 ? data[0] : null;
   },
 
   // Get orders by date
