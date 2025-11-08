@@ -8,7 +8,7 @@ const GmailPoller = require('./services/gmailPoller');
   const poller = new GmailPoller();
   
   try {
-    const count = await poller.checkOnce();
+    const count = await poller.checkForNewOrders();
     console.log(`\n✅ Check complete. New orders saved: ${count}`);
     process.exit(0);
   } catch (error) {

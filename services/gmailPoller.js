@@ -342,9 +342,9 @@ class GmailPoller extends EventEmitter {
       }
     }
     
-    // Log raw email for Angela Hagen
-    if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
-      console.log('========== RAW EMAIL FOR ANGELA HAGEN ==========');
+    // Log raw email for Jennifer Whitenight
+    if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
+      console.log('========== RAW EMAIL FOR JENNIFER WHITENIGHT ==========');
       console.log(msg);
       console.log('========== END RAW EMAIL ==========');
     }
@@ -400,8 +400,8 @@ class GmailPoller extends EventEmitter {
     for (let i = 0; i < rawLines.length; i++) {
       const line = rawLines[i];
       
-      // Log lines for Angela Hagen
-      if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+      // Log lines for Jennifer Whitenight
+      if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
         console.log(`📝 Line ${i}: "${line}"`);
       }
       
@@ -409,7 +409,7 @@ class GmailPoller extends EventEmitter {
       // BUT exclude patterns like "8oz Sauce" where the number is followed by "oz", "oz.", "lb", etc.
       const qtyInLine = line.match(/^(\d+)\s+x\s+(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
       if (qtyInLine) {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
           console.log(`✅ Matched qtyInLine pattern: qty=${qtyInLine[1]}, item="${qtyInLine[2]}"`);
         }
         const qty = qtyInLine[1];
@@ -490,7 +490,7 @@ class GmailPoller extends EventEmitter {
       // Simpler pattern
       const simpleQty = line.match(/^(.*?)\s+(\d+)\s*(?:\$[\d,.\-]+)?$/);
       if (simpleQty) {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
           console.log(`✅ Matched simpleQty pattern: item="${simpleQty[1]}", qty=${simpleQty[2]}`);
         }
         const itemName = simpleQty[1].trim();
@@ -563,7 +563,7 @@ class GmailPoller extends EventEmitter {
 
       // Skip indented items (should be captured above)
       if (/^\s{2,}/.test(line)) {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
           console.log(`⏭️ Skipping indented line: "${line}"`);
         }
         continue;
@@ -571,12 +571,12 @@ class GmailPoller extends EventEmitter {
 
       // Check if next line has quantity + price (e.g., "8oz Sauce" followed by "1 $3.00")
       const nextLine = rawLines[i + 1];
-      if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+      if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
         console.log(`🔍 Checking if next line has qty+price. Current: "${line}", Next: "${nextLine}"`);
       }
       
       if (nextLine && /^(\d+)(?:\s*\$[\d,.\-]+)?$/.test(nextLine)) {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
           console.log(`✅ Next line has qty+price pattern! Qty: ${nextLine.match(/^(\d+)/)[1]}`);
         }
         const qty = nextLine.match(/^(\d+)/)[1];
@@ -598,7 +598,7 @@ class GmailPoller extends EventEmitter {
           
           // If no indented items, check for meal components
           if (subItems.length === 0) {
-            const maxLookAhead = 4;
+            const maxLookAhead = 10; // Increased to capture all components
             let lookAheadCount = 0;
             
             while (j < rawLines.length && lookAheadCount < maxLookAhead) {
@@ -618,10 +618,19 @@ class GmailPoller extends EventEmitter {
               }
               
               const lower = nextItemName.toLowerCase();
-              const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
-                                     (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
               
-              if (isMealComponent) {
+              // Stop if we hit another tray/meal/gallon item
+              if (/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower)) {
+                break;
+              }
+              
+              // Accept items that either:
+              // 1. Match meal component keywords (sandwich, chips, cookies, etc.)
+              // 2. Have quantity at end (format: "Item Name 1") - likely part of meal
+              const hasComponentKeyword = /\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad|pickle)/i.test(lower);
+              const hasQtyAtEnd = /^.*\s+\d+$/.test(checkLine);
+              
+              if (hasComponentKeyword || hasQtyAtEnd) {
                 subItems.push(nextItemName);
                 j++;
                 lookAheadCount++;
