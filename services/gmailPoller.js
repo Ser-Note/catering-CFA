@@ -232,6 +232,9 @@ class GmailPoller extends EventEmitter {
                     if (!existing) {
                       await emailOrderDB.create(newOrder);
                       savedCount++;
+                      this.log(`✅ Saved new order: ${newOrder.customer_name} - ${newOrder.order_date} - $${newOrder.total}`);
+                    } else {
+                      this.log(`⏭️ Skipped duplicate: ${newOrder.customer_name} - ${newOrder.order_date} - $${newOrder.total}`);
                     }
                   } catch (orderErr) {
                     this.log(`ERROR saving order: ${orderErr.message}`);
@@ -339,9 +342,9 @@ class GmailPoller extends EventEmitter {
       }
     }
     
-    // Log raw email for Justin Mills
-    if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
-      console.log('========== RAW EMAIL FOR JUSTIN MILLS ==========');
+    // Log raw email for Angela Hagen
+    if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+      console.log('========== RAW EMAIL FOR ANGELA HAGEN ==========');
       console.log(msg);
       console.log('========== END RAW EMAIL ==========');
     }
@@ -372,8 +375,8 @@ class GmailPoller extends EventEmitter {
       
       const lower = name.toLowerCase();
       
-      // Log for Justin Mills debugging
-      if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+      // Log for Angela Hagen debugging
+      if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
         console.log(`🔍 Pushing item: "${name}" | qty: ${qty} | isMealBox: ${isMealBox}`);
       }
       
@@ -397,8 +400,8 @@ class GmailPoller extends EventEmitter {
     for (let i = 0; i < rawLines.length; i++) {
       const line = rawLines[i];
       
-      // Log lines for Justin Mills
-      if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+      // Log lines for Angela Hagen
+      if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
         console.log(`📝 Line ${i}: "${line}"`);
       }
       
@@ -406,7 +409,7 @@ class GmailPoller extends EventEmitter {
       // BUT exclude patterns like "8oz Sauce" where the number is followed by "oz", "oz.", "lb", etc.
       const qtyInLine = line.match(/^(\d+)\s+x\s+(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
       if (qtyInLine) {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`✅ Matched qtyInLine pattern: qty=${qtyInLine[1]}, item="${qtyInLine[2]}"`);
         }
         const qty = qtyInLine[1];
@@ -487,7 +490,7 @@ class GmailPoller extends EventEmitter {
       // Simpler pattern
       const simpleQty = line.match(/^(.*?)\s+(\d+)\s*(?:\$[\d,.\-]+)?$/);
       if (simpleQty) {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`✅ Matched simpleQty pattern: item="${simpleQty[1]}", qty=${simpleQty[2]}`);
         }
         const itemName = simpleQty[1].trim();
@@ -560,7 +563,7 @@ class GmailPoller extends EventEmitter {
 
       // Skip indented items (should be captured above)
       if (/^\s{2,}/.test(line)) {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`⏭️ Skipping indented line: "${line}"`);
         }
         continue;
@@ -568,12 +571,12 @@ class GmailPoller extends EventEmitter {
 
       // Check if next line has quantity + price (e.g., "8oz Sauce" followed by "1 $3.00")
       const nextLine = rawLines[i + 1];
-      if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+      if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
         console.log(`🔍 Checking if next line has qty+price. Current: "${line}", Next: "${nextLine}"`);
       }
       
       if (nextLine && /^(\d+)(?:\s*\$[\d,.\-]+)?$/.test(nextLine)) {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`✅ Next line has qty+price pattern! Qty: ${nextLine.match(/^(\d+)/)[1]}`);
         }
         const qty = nextLine.match(/^(\d+)/)[1];
@@ -645,12 +648,12 @@ class GmailPoller extends EventEmitter {
 
       // If no pattern matched, check if this is a standalone item line (no qty)
       if (!/^\d+(?:\s*\$[\d,.\-]+)?$/.test(line)) {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`📦 No pattern matched, pushing as standalone item: "${line}"`);
         }
         pushItem(line, 1);
       } else {
-        if (customer_name && customer_name.toLowerCase().includes('justin mills')) {
+        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
           console.log(`⏭️ Skipping line (looks like qty/price only): "${line}"`);
         }
       }
