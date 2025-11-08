@@ -487,7 +487,7 @@ class GmailPoller extends EventEmitter {
         continue;
       }
 
-      // Simpler pattern
+      // Simpler pattern - item and qty on same line
       const simpleQty = line.match(/^(.*?)\s+(\d+)\s*(?:\$[\d,.\-]+)?$/);
       if (simpleQty) {
         if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
@@ -559,6 +559,89 @@ class GmailPoller extends EventEmitter {
           pushItem(itemName, qty);
         }
         continue;
+      }
+      
+      // NEW: Handle item name on one line, quantity on next line
+      // Pattern: Line has item name but no quantity/price, next line has qty + price
+      if (!/\d+\s*\$/.test(line) && i + 1 < rawLines.length) {
+        const lookAheadLine = rawLines[i + 1];
+        const nextLineQty = lookAheadLine.match(/^(\d+)\s*(?:\$[\d,.\-]+)?$/);
+        
+        if (nextLineQty) {
+          const itemName = line.trim();
+          const qty = nextLineQty[1];
+          
+          if (customer_name && customer_name.toLowerCase().includes('jennifer whitenight')) {
+            console.log(`✅ Matched split-line pattern: item="${itemName}", qty=${qty} (from next line)`);
+          }
+          
+          const isMealBox = /meal|box|boxed|package|packaged/i.test(itemName);
+          
+          if (isMealBox) {
+            const subItems = [];
+            let j = i + 2; // Start after the quantity line
+            
+            // Check for indented items
+            while (j < rawLines.length && /^\s{2,}/.test(rawLines[j])) {
+              const subItem = rawLines[j].trim();
+              if (subItem && !/^\d+\s*\$/.test(subItem)) {
+                subItems.push(subItem);
+              }
+              j++;
+            }
+            
+            // If no indented items, check for meal components
+            if (subItems.length === 0) {
+              const maxLookAhead = 4;
+              let lookAheadCount = 0;
+              
+              while (j < rawLines.length && lookAheadCount < maxLookAhead) {
+                const checkLine = rawLines[j];
+                
+                if (/^\d+\s*\$/.test(checkLine)) {
+                  j++;
+                  continue;
+                }
+                
+                let nextItemName = checkLine;
+                const nextQtyMatch = checkLine.match(/^(\d+)\s*x?\s*(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
+                if (nextQtyMatch) {
+                  nextItemName = nextQtyMatch[2].trim();
+                } else {
+                  const simpleMatch = checkLine.match(/^(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/);
+                  if (simpleMatch) {
+                    nextItemName = simpleMatch[1].trim();
+                  }
+                }
+                
+                const lower = nextItemName.toLowerCase();
+                const isMealComponent = !/(tray|meal|box|boxed|package|packaged|gallon)/i.test(lower) &&
+                                       (/\b(sandwich|spicy|deluxe|grilled|fried|cool wrap|kale|chips?|cookies?|brownies?|fruit cup|side salad)\b/i.test(lower));
+                
+                if (isMealComponent) {
+                  subItems.push(nextItemName);
+                  j++;
+                  lookAheadCount++;
+                } else {
+                  break;
+                }
+              }
+            }
+            
+            if (subItems.length > 0) {
+              const fullMealName = `${itemName} w/ ${subItems.join(', ')}`;
+              pushItem(fullMealName, qty, true);
+              i = j - 1;
+            } else {
+              pushItem(itemName, qty, isMealBox);
+              i++; // Skip the quantity line
+            }
+          } else {
+            pushItem(itemName, qty);
+            i++; // Skip the quantity line
+          }
+          continue;
+        }
       }
 
       // Skip indented items (should be captured above)
