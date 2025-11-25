@@ -5,13 +5,20 @@
 <title>Back of House — Catering Orders</title>
 <link rel="stylesheet" href="/css/orders.css">
 </head>
-<body>
+<body class="<%= viewMode === 'boh' && bohSubView === 'simplified' ? 'simplified-view' : '' %>">
 <header>Chick-fil-A <%= viewMode === 'foh' ? 'Front of House (FOH)' : 'Back of House (BOH)' %> Orders — <%= todayStr %></header>
 <a href="/dashboard" class="back-btn">⬅ Back to Dashboard</a>
+<% if (viewMode !== 'foh') { %>
+<div class="view-toggle">
+  <button id="fullViewBtn" class="<%= viewMode === 'boh' && (typeof bohSubView === 'undefined' || bohSubView === 'full') ? 'active' : '' %>">📋 Full View</button>
+  <button id="simplifiedViewBtn" class="<%= viewMode === 'boh' && bohSubView === 'simplified' ? 'active' : '' %>">🍽️ Simplified View</button>
+</div>
+<% } %>
 <button id="refreshBtn" class="refresh-button">🔄 Refresh Orders</button>
 <span id="refreshStatus" style="margin-left: 10px; color: green;"></span>
 
 <script>
+// Refresh button functionality (available in both BOH and FOH views)
 document.getElementById('refreshBtn').addEventListener('click', async () => {
   const statusEl = document.getElementById('refreshStatus');
   statusEl.textContent = 'Refreshing... ⏳';
@@ -29,6 +36,22 @@ document.getElementById('refreshBtn').addEventListener('click', async () => {
     statusEl.textContent = '❌ Failed to refresh orders';
   }
 });
+
+// View toggle functionality (only exists in BOH view)
+const fullViewBtn = document.getElementById('fullViewBtn');
+const simplifiedViewBtn = document.getElementById('simplifiedViewBtn');
+
+if (fullViewBtn) {
+  fullViewBtn.addEventListener('click', () => {
+    window.location.href = '/orders?view=boh&subview=full';
+  });
+}
+
+if (simplifiedViewBtn) {
+  simplifiedViewBtn.addEventListener('click', () => {
+    window.location.href = '/orders?view=boh&subview=simplified';
+  });
+}
 </script>
 <div class="container">
   <div class="orders">
@@ -55,6 +78,7 @@ document.getElementById('refreshBtn').addEventListener('click', async () => {
 <script>
   const traySizes = <%- JSON.stringify(traySizes) %>;
   const viewMode = '<%= viewMode %>'; // 'boh' or 'foh'
+  const bohSubView = '<%= bohSubView %>'; // 'full' or 'simplified' (only used in BOH mode)
 </script>
 <script src="/js/orders.js"></script>
 </body>

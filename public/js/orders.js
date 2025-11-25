@@ -211,6 +211,110 @@ orders.forEach(order => {
 
 // --- Render order details HTML ---
 function renderOrderDetails(data) {
+    // BOH view with subview options
+    if (viewMode === 'boh') {
+        // If subview is 'simplified', show the simplified view
+        if (bohSubView === 'simplified') {
+            return `
+                <div class="boh-header">
+                    <h1 class="boh-time">${escapeHtml(formatTime(data.time))}</h1>
+                    <h2 class="boh-team">${escapeHtml(data.team)}</h2>
+                </div>
+                
+                ${data.special_instructions && data.special_instructions.trim() ? `
+                <div class="boh-special-instructions">
+                    <p><strong>⚠️ ${escapeHtml(data.special_instructions)}</strong></p>
+                </div>
+                ` : ''}
+
+                <div class="boh-items-grid">
+                    <div class="boh-section boh-hot">
+                        <h3>🔥 HOT FOOD</h3>
+                        <div class="boh-items">${getHotFoodOnly(data)}</div>
+                    </div>
+                    
+                    <div class="boh-section boh-cold">
+                        <h3>❄️ COLD FOOD</h3>
+                        <div class="boh-items">${getColdFoodOnly(data)}</div>
+                    </div>
+                    
+                    <div class="boh-section boh-drinks">
+                        <h3>🥤 DRINKS</h3>
+                        <div class="boh-items">${highlightItems(data.drinks)}</div>
+                    </div>
+                    
+                    <div class="boh-section boh-tongs">
+                        <h3>🍴 TONGS</h3>
+                        <div class="boh-items">${getTongsOnly(data)}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Default to full view (original detailed view)
+            return `
+                <div class="cheatsheet">
+                    <strong>📋 Color-Coded Item Guide:</strong><br>
+                    <span class="hot">🔥 Hot Food</span>
+                    <span class="cold">❄️ Cold Food</span>
+                    <span class="dessert">🍪 Dessert</span>
+                    <span class="drink">🥤 Drink</span>
+                    <span class="box-meal">📦 Box Meal</span>
+                    <span class="sauce">🥫 Sauces</span>
+                    <span class="utensils">🍴 Utensils</span>
+                </div>
+                
+                <h2>📝 ${escapeHtml(data.team)}</h2>
+                
+                <div style="background: #fff3e0; padding: 14px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #ff9800;">
+                    <p style="margin: 4px 0;"><strong class="highlight-field">⏰ TIME:</strong> <span style="font-size: 20px; font-weight: 700; color: #d32323;">${escapeHtml(formatTime(data.time))}</span></p>
+                    <p style="margin: 4px 0;"><strong class="highlight-field">📍 ORDER TYPE:</strong> <span style="font-size: 18px; font-weight: 600;">${escapeHtml(data.method)}</span></p>
+                    <p style="margin: 4px 0;"><strong class="highlight-field">👥 GUEST COUNT:</strong> <span style="font-size: 18px; font-weight: 600;">${escapeHtml(data.guest_count || 'N/A')}</span></p>
+                    ${data.delivery_address && data.delivery_address !== 'N/A' ? `<p style="margin: 4px 0;"><strong class="highlight-field">🚚 DELIVERY ADDRESS:</strong> <span style="font-size: 15px; font-weight: 600;">${escapeHtml(data.delivery_address)}</span></p>` : ''}
+                </div>
+                
+                ${data.special_instructions && data.special_instructions.trim() ? `
+                <div style="background: #fff3cd; padding: 16px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #ffc107; border: 2px solid #ffc107;">
+                    <p style="margin: 0;"><strong style="color: #856404; font-size: 18px; text-transform: uppercase;">⚠️ SPECIAL INSTRUCTIONS:</strong></p>
+                    <p style="margin: 8px 0 0 0; font-size: 16px; font-weight: 600; color: #856404; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(data.special_instructions)}</p>
+                </div>
+                ` : ''}
+
+                <div style="border: 2px solid #e0e0e0; padding: 16px; border-radius: 8px; background: #fafafa; margin-bottom: 16px;">
+                    <p><strong>🔥 HOT SANDWICHES:</strong></p>
+                    <div style="margin-left: 10px;">${highlightItems(data.sandwiches)}</div>
+                    
+                    <p style="margin-top: 16px;"><strong>🍽️ OTHER FOOD ITEMS:</strong></p>
+                    <div style="margin-left: 10px;">${highlightItems(data.food_items)}</div>
+                    
+                    <p style="margin-top: 16px;"><strong>📦 BOX MEALS:</strong></p>
+                    <div style="margin-left: 10px;">${formatBoxMeals(data.meal_boxes)}</div>
+                    
+                    <p style="margin-top: 16px;"><strong>🥤 DRINKS:</strong></p>
+                    <div style="margin-left: 10px;">${highlightItems(data.drinks)}</div>
+                    
+                    <p style="margin-top: 16px;"><strong>🥫 SAUCES & DRESSINGS:</strong></p>
+                    <div style="margin-left: 10px;">${formatSauces(data.sauces_dressings)}</div>
+                    
+                    <p style="margin-top: 16px;"><strong>🍴 UTENSILS & SUPPLIES:</strong></p>
+                    <div style="margin-left: 10px;">${getUtensils(data)}</div>
+                </div>
+
+                <div style="background: #e8f5e9; padding: 14px; border-radius: 8px; border-left: 5px solid #4caf50;">
+                    <p style="margin: 6px 0;"><strong>📄 Paper Goods:</strong> ${escapeHtml(data.paper_goods || 'N/A')}</p>
+                    <p style="margin: 6px 0;"><strong>🥒 Pickles on Side:</strong> ${escapeHtml(data.pickles)}</p>
+                    <p style="margin: 6px 0;"><strong>🔥 Hot Bag(s):</strong> ${escapeHtml(data.hotbags)}</p>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 14px; border-radius: 8px; margin-top: 16px; border-left: 5px solid #2196f3;">
+                    <p style="margin: 6px 0;"><strong>📞 Contact:</strong> ${escapeHtml(data.contact)}</p>
+                    <p style="margin: 6px 0;"><strong>☎️ Phone:</strong> ${formatPhoneLink(data.phone)}</p>
+                    <p style="margin: 6px 0;"><strong>👤 Created By:</strong> ${formatEmailLink(data.created_by)}</p>
+                </div>
+            `;
+        }
+    }
+
+    // FOH view - always shows the full detailed view (no toggle options)
     return `
         <div class="cheatsheet">
             <strong>📋 Color-Coded Item Guide:</strong><br>
@@ -320,7 +424,13 @@ function formatEmailLink(email) {
 
 // --- Highlight items and tray logic ---
 function highlightItems(text) {
-    if (!text || text === 'N/A') return '<em>None</em>';
+    if (!text || text === 'N/A') {
+        // Only use BOH styling if in simplified view
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            return '<div class="boh-item boh-empty">No drinks</div>';
+        }
+        return '<em>No drinks</em>';
+    }
 
     // Preserve content inside parentheses so inner newlines/commas (e.g. "1/2 Sweet Tea\n1/2 Lemonade")
     // don't get split into separate items. We replace commas/newlines inside parentheses
@@ -355,19 +465,40 @@ function highlightItems(text) {
             }
         }
 
-        const itemClass = classifyItem(line);
+        // Only use BOH styling if in simplified view
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'boh_tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="boh-item boh-drink-item">
+                            <div class="boh-item-toggle" onclick="toggleBohItemDetails('${idSafe}')">
+                                ${escapeHtml(line)} <span class="boh-arrow" id="${idSafe}_arrow">▶</span>
+                            </div>
+                            <div id="${idSafe}" class="boh-item-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
 
-        if (lower.includes('tray') && trayHtml) {
-            const idSafe = 'tray_' + Math.random().toString(36).slice(2,9);
-            return `<div class="${itemClass}">
-                        <div class="tray-toggle" onclick="toggleTrayDetails('${idSafe}', this)">
-                            ${escapeHtml(line)} <span class="arrow" id="${idSafe}_arrow">▼</span>
-                        </div>
-                        <div id="${idSafe}" class="tray-details">${escapeHtml(trayHtml)}</div>
-                    </div>`;
+            return `<div class="boh-item boh-drink-item">${escapeHtml(line)}</div>`;
+        } else {
+            // Use regular styling for full view - include expandable tray details if available
+            const lower = line.toLowerCase();
+            let cssClass = 'hot';
+            if (/(cookie|brownie)/i.test(lower)) cssClass = 'dessert';
+            else if (/(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(lower)) cssClass = 'drink';
+            else if (/(cold|subs|parfait|chilled|cool|wrap|salad|kale|fruit)/i.test(lower)) cssClass = 'cold';
+
+            // Include expandable tray details in full view if tray info exists
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="${cssClass}">
+                            <div class="tray-toggle" onclick="toggleTrayDetails('${idSafe}', this)">
+                                ${escapeHtml(line)} <span class="arrow" id="${idSafe}_arrow">▼</span>
+                            </div>
+                            <div id="${idSafe}" class="tray-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
+
+            return `<div class="${cssClass}">${escapeHtml(line)}</div>`;
         }
-
-        return `<div class="${itemClass}">${escapeHtml(line)}</div>`;
     }).join('');
 }
 
@@ -508,4 +639,234 @@ function toggleTrayDetails(id, triggerEl) {
     const isVisible = detailsEl.style.display === 'block';
     detailsEl.style.display = isVisible ? 'none' : 'block';
     if (arrowEl) arrowEl.textContent = isVisible ? '▼' : '▲';
+}
+
+// --- BOH View: Get only hot food items ---
+function getHotFoodOnly(data) {
+    const hotItems = [];
+    
+    // Process sandwiches (always hot)
+    if (data.sandwiches && data.sandwiches !== 'N/A') {
+        const items = String(data.sandwiches).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        items.forEach(item => {
+            if (item) hotItems.push(item);
+        });
+    }
+    
+    // Process food_items - filter for hot items only
+    if (data.food_items && data.food_items !== 'N/A') {
+        const items = String(data.food_items).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        items.forEach(item => {
+            const lower = item.toLowerCase();
+            // Include hot items: sandwiches, nuggets, strips, chicken, hot items
+            if (lower.includes('sandwich') || lower.includes('nugget') || lower.includes('strip') || 
+                lower.includes('chicken') || lower.includes('hot') || lower.includes('grilled') ||
+                lower.includes('fried') || lower.includes('spicy')) {
+                hotItems.push(item);
+            }
+        });
+    }
+    
+    // Process meal_boxes - extract hot components
+    if (data.meal_boxes && data.meal_boxes !== 'N/A') {
+        const boxes = String(data.meal_boxes).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        boxes.forEach(box => {
+            // For meal boxes, include the whole box if it contains hot items
+            const lower = box.toLowerCase();
+            if (lower.includes('nugget') || lower.includes('sandwich') || lower.includes('chicken') ||
+                lower.includes('strip') || lower.includes('hot')) {
+                hotItems.push(box);
+            }
+        });
+    }
+    
+    if (hotItems.length === 0) {
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            return '<div class="boh-item boh-empty">No hot food items</div>';
+        }
+        return '<em>No hot food items</em>';
+    }
+    
+    return hotItems.map(item => {
+        const lower = item.toLowerCase();
+        let trayHtml = '';
+
+        // Check if line contains tray info
+        for (const trayName in traySizes) {
+            if (lower.includes(trayName)) {
+                const sizeFound = Object.keys(traySizes[trayName]).find(size =>
+                    new RegExp('\\b' + size + '\\b', 'i').test(item)
+                );
+                if (sizeFound) {
+                    trayHtml = Object.entries(traySizes[trayName][sizeFound])
+                                     .map(([k,v]) => `${k}: ${v}`).join(' • ');
+                }
+                break;
+            }
+        }
+
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'boh_tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="boh-item boh-hot-item">
+                            <div class="boh-item-toggle" onclick="toggleBohItemDetails('${idSafe}')">
+                                ${escapeHtml(item)} <span class="boh-arrow" id="${idSafe}_arrow">▶</span>
+                            </div>
+                            <div id="${idSafe}" class="boh-item-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
+
+            return `<div class="boh-item boh-hot-item">${escapeHtml(item)}</div>`;
+        } else {
+            // Use regular styling for full view - include expandable tray details if available
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="hot">
+                            <div class="tray-toggle" onclick="toggleTrayDetails('${idSafe}', this)">
+                                ${escapeHtml(item)} <span class="arrow" id="${idSafe}_arrow">▼</span>
+                            </div>
+                            <div id="${idSafe}" class="tray-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
+
+            return `<div class="hot">${escapeHtml(item)}</div>`;
+        }
+    }).join('');
+}
+
+// --- BOH View: Get only cold food items ---
+function getColdFoodOnly(data) {
+    const coldItems = [];
+    
+    // Process food_items - filter for cold items only
+    if (data.food_items && data.food_items !== 'N/A') {
+        const items = String(data.food_items).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        items.forEach(item => {
+            const lower = item.toLowerCase();
+            // Include cold items: salads, wraps, fruit, sides, cold items
+            if (lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
+                lower.includes('kale') || lower.includes('cool') || lower.includes('cold') ||
+                lower.includes('chips') || lower.includes('cookie') || lower.includes('brownie') ||
+                lower.includes('side') || lower.includes('parfait')) {
+                coldItems.push(item);
+            }
+        });
+    }
+    
+    // Process meal_boxes - extract cold components
+    if (data.meal_boxes && data.meal_boxes !== 'N/A') {
+        const boxes = String(data.meal_boxes).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        boxes.forEach(box => {
+            // For meal boxes, include if they contain cold items
+            const lower = box.toLowerCase();
+            if (lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
+                lower.includes('chips') || lower.includes('cookie') || lower.includes('brownie')) {
+                coldItems.push(box);
+            }
+        });
+    }
+    
+    if (coldItems.length === 0) {
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            return '<div class="boh-item boh-empty">No cold food items</div>';
+        }
+        return '<em>No cold food items</em>';
+    }
+    
+    return coldItems.map(item => {
+        const lower = item.toLowerCase();
+        let trayHtml = '';
+
+        // Check if line contains tray info
+        for (const trayName in traySizes) {
+            if (lower.includes(trayName)) {
+                const sizeFound = Object.keys(traySizes[trayName]).find(size =>
+                    new RegExp('\\b' + size + '\\b', 'i').test(item)
+                );
+                if (sizeFound) {
+                    trayHtml = Object.entries(traySizes[trayName][sizeFound])
+                                     .map(([k,v]) => `${k}: ${v}`).join(' • ');
+                }
+                break;
+            }
+        }
+
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'boh_tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="boh-item boh-cold-item">
+                            <div class="boh-item-toggle" onclick="toggleBohItemDetails('${idSafe}')">
+                                ${escapeHtml(item)} <span class="boh-arrow" id="${idSafe}_arrow">▶</span>
+                            </div>
+                            <div id="${idSafe}" class="boh-item-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
+
+            return `<div class="boh-item boh-cold-item">${escapeHtml(item)}</div>`;
+        } else {
+            // Use regular styling for full view - include expandable tray details if available
+            if (lower.includes('tray') && trayHtml) {
+                const idSafe = 'tray_' + Math.random().toString(36).slice(2,9);
+                return `<div class="cold">
+                            <div class="tray-toggle" onclick="toggleTrayDetails('${idSafe}', this)">
+                                ${escapeHtml(item)} <span class="arrow" id="${idSafe}_arrow">▼</span>
+                            </div>
+                            <div id="${idSafe}" class="tray-details">${escapeHtml(trayHtml)}</div>
+                        </div>`;
+            }
+
+            return `<div class="cold">${escapeHtml(item)}</div>`;
+        }
+    }).join('');
+}
+
+// --- BOH View: Get only tongs ---
+function getTongsOnly(data) {
+    const utensils = [];
+    let trayCount = 0;
+    
+    // Count trays from all food sources
+    ['sandwiches','food_items','meal_boxes'].forEach(key => {
+        if (data[key] && data[key] !== 'N/A') {
+            const items = String(data[key]).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+            items.forEach(item => {
+                if (/tray/i.test(item)) {
+                    // Try to extract quantity (e.g. '2 Large Nugget Trays')
+                    const qtyMatch = item.match(/^(\d+)\s*x?\s*/i);
+                    let qty = 1;
+                    if (qtyMatch) {
+                        qty = parseInt(qtyMatch[1], 10) || 1;
+                    }
+                    trayCount += qty;
+                }
+            });
+        }
+    });
+    
+    if (trayCount > 0) {
+        utensils.push(`${trayCount} x Tongs`);
+    }
+    
+    if (utensils.length === 0) {
+        if (viewMode === 'boh' && bohSubView === 'simplified') {
+            return '<div class="boh-item boh-empty">No tongs needed</div>';
+        }
+        return '<em>No tongs needed</em>';
+    }
+    
+    if (viewMode === 'boh' && bohSubView === 'simplified') {
+        return utensils.map(u => `<div class="boh-item boh-tongs-item">${escapeHtml(u)}</div>`).join('');
+    } else {
+        return utensils.map(u => `<div class="utensils">${escapeHtml(u)}</div>`).join('');
+    }
+}
+
+// --- Toggle BOH item details ---
+function toggleBohItemDetails(id) {
+    const detailsEl = document.getElementById(id);
+    const arrowEl = document.getElementById(id + '_arrow');
+    if (!detailsEl) return;
+    const isVisible = detailsEl.style.display === 'block';
+    detailsEl.style.display = isVisible ? 'none' : 'block';
+    if (arrowEl) arrowEl.textContent = isVisible ? '▶' : '▼';
 }

@@ -188,6 +188,7 @@ router.get("/", async (req, res) => {
 
   // Determine view mode from query params (defaults to 'boh')
   const viewMode = req.query.view || 'boh'; // 'boh' or 'foh'
+  const bohSubView = req.query.subview || 'full'; // 'full' or 'simplified' (only used in BOH mode)
 
   // Get today's date in Eastern Time
   const etToday = new Date().toLocaleString('en-US', {
@@ -313,7 +314,8 @@ traySizes["Chick-n-Strips® Tray"] = traySizes["strip tray"];
     orders: todaysOrders,
     traySizes,
     todayStr: etDate,
-    viewMode: viewMode
+    viewMode: viewMode,
+    bohSubView: bohSubView
   });
   } catch (error) {
     console.error('Error loading orders:', error);
