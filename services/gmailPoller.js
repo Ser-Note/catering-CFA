@@ -376,7 +376,7 @@ class GmailPoller extends EventEmitter {
       const lower = name.toLowerCase();
       
       // Log for debugging
-      if (customer_name && (customer_name.toLowerCase().includes('angela hagen') || customer_name.toLowerCase().includes('lori zdradzinski'))) {
+      if (customer_name && (customer_name.toLowerCase().includes('lauren palcko') || customer_name.toLowerCase().includes('lori zdradzinski'))) {
         console.log(`🔍 Pushing item: "${name}" | qty: ${qty} | isMealBox: ${isMealBox}`);
       }
       
@@ -735,7 +735,7 @@ class GmailPoller extends EventEmitter {
 
       // Skip indented items (should be captured above)
       if (/^\s{2,}/.test(line)) {
-        if (customer_name && customer_name.toLowerCase().includes('lori zdradzinski')) {
+        if (customer_name && (customer_name.toLowerCase().includes('lauren palcko') || customer_name.toLowerCase().includes('lori zdradzinski'))) {
           console.log(`⏭️ Skipping indented line: "${line}"`);
         }
         continue;
@@ -846,12 +846,12 @@ class GmailPoller extends EventEmitter {
 
       // If no pattern matched, check if this is a standalone item line (no qty)
       if (!/^\d+(?:\s*\$[\d,.\-]+)?$/.test(line)) {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('lauren palcko')) {
           console.log(`📦 No pattern matched, pushing as standalone item: "${line}"`);
         }
         pushItem(line, 1);
       } else {
-        if (customer_name && customer_name.toLowerCase().includes('angela hagen')) {
+        if (customer_name && customer_name.toLowerCase().includes('lauren palcko')) {
           console.log(`⏭️ Skipping line (looks like qty/price only): "${line}"`);
         }
       }
