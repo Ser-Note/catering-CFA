@@ -389,7 +389,16 @@ class GmailPoller extends EventEmitter {
            lower.includes('ketchup') || lower.includes('mayo') || 
            lower.includes('honey') || lower.includes('jam')) && 
           !lower.includes('gallon') && !lower.includes('chips')) {
-        sauces_dressings.push({ item: name, qty });
+        // Normalize sauce names - ensure proper format like "8oz Sauce" not "8 x oz Sauce"
+        let normalizedName = name;
+        // If it looks like "X x Y" where Y contains a unit, reconstruct as "X Y"
+        const badFormat = name.match(/^(\d+)\s+x\s+(\d+)\s*(oz|lb|lbs?|g|kg|ml|l|qt|gal|pt)\s+(.*)$/i);
+        if (badFormat) {
+          const [, qty1, size, unit, item] = badFormat;
+          normalizedName = `${size}${unit} ${item}`;
+          qty = parseInt(qty1, 10);
+        }
+        sauces_dressings.push({ item: normalizedName, qty });
       } else if (lower.includes('gallon') || /^(tea|lemonade|drink|soda|water|juice|milk|coffee)/i.test(lower)) {
         drink_items.push({ item: name, qty });
       } else {
@@ -418,7 +427,11 @@ class GmailPoller extends EventEmitter {
       
       // Match item with embedded quantity (e.g., "25 x Packaged Meal 25 $125.00")
       // BUT exclude patterns like "8oz Sauce" where the number is followed by "oz", "oz.", "lb", etc.
-      const qtyInLine = line.match(/^(\d+)\s+x\s+(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
+      let qtyInLine = null;
+      if (!/^(\d+)\s*(?:oz|lb|lbs?|g|kg|ml|l|qt|gal|pt|cup|pt)\s+/i.test(line)) {
+        qtyInLine = line.match(/^(\d+)\s+x\s+(.*?)\s+\d+\s*(?:\$[\d,.\-]+)?$/i);
+      }
+      
       if (qtyInLine) {
         if (customer_name && customer_name.toLowerCase().includes('sherry stockmal')) {
           console.log(`✅ Matched qtyInLine pattern: qty=${qtyInLine[1]}, item="${qtyInLine[2]}"`);
