@@ -645,10 +645,15 @@ function toggleTrayDetails(id, triggerEl) {
 function getHotFoodOnly(data) {
     const hotItems = [];
     
-    // Process sandwiches (always hot)
+    // Process sandwiches (always hot unless specified as cold)
     if (data.sandwiches && data.sandwiches !== 'N/A') {
         const items = String(data.sandwiches).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
         items.forEach(item => {
+            const lower = item.toLowerCase();
+            // Skip if explicitly cold/chilled
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool')) {
+                return; // Skip this item, it will be handled by cold section
+            }
             if (item) hotItems.push(item);
         });
     }
@@ -658,10 +663,14 @@ function getHotFoodOnly(data) {
         const items = String(data.food_items).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
         items.forEach(item => {
             const lower = item.toLowerCase();
+            // Skip if explicitly cold/chilled
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool')) {
+                return; // Skip this item, it will be handled by cold section
+            }
             // Include hot items: sandwiches, nuggets, strips, chicken, hot items
             if (lower.includes('sandwich') || lower.includes('nugget') || lower.includes('strip') || 
                 lower.includes('chicken') || lower.includes('hot') || lower.includes('grilled') ||
-                lower.includes('fried') || lower.includes('spicy')) {
+                lower.includes('fried') || lower.includes('spicy') || lower.includes('mac')) {
                 hotItems.push(item);
             }
         });
@@ -671,10 +680,15 @@ function getHotFoodOnly(data) {
     if (data.meal_boxes && data.meal_boxes !== 'N/A') {
         const boxes = String(data.meal_boxes).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
         boxes.forEach(box => {
-            // For meal boxes, include the whole box if it contains hot items
+            // Skip if explicitly cold/chilled
             const lower = box.toLowerCase();
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool')) {
+                return; // Skip this item, it will be handled by cold section
+            }
+            // For meal boxes, include the whole box if it contains hot items
             if (lower.includes('nugget') || lower.includes('sandwich') || lower.includes('chicken') ||
-                lower.includes('strip') || lower.includes('hot')) {
+                lower.includes('strip') || lower.includes('hot') || lower.includes('mac') ||
+                lower.includes('grilled') || lower.includes('fried')) {
                 hotItems.push(box);
             }
         });
@@ -738,28 +752,47 @@ function getHotFoodOnly(data) {
 function getColdFoodOnly(data) {
     const coldItems = [];
     
-    // Process food_items - filter for cold items only
-    if (data.food_items && data.food_items !== 'N/A') {
-        const items = String(data.food_items).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+    // Process sandwiches - include if explicitly cold/chilled
+    if (data.sandwiches && data.sandwiches !== 'N/A') {
+        const items = String(data.sandwiches).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
         items.forEach(item => {
             const lower = item.toLowerCase();
-            // Include cold items: salads, wraps, fruit, sides, cold items
-            if (lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
-                lower.includes('kale') || lower.includes('cool') || lower.includes('cold') ||
-                lower.includes('chips') || lower.includes('cookie') || lower.includes('brownie') ||
-                lower.includes('side') || lower.includes('parfait')) {
+            // Include if explicitly cold/chilled
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool')) {
                 coldItems.push(item);
             }
         });
     }
     
-    // Process meal_boxes - extract cold components
+    // Process food_items - include items not already categorized as hot
+    if (data.food_items && data.food_items !== 'N/A') {
+        const items = String(data.food_items).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
+        items.forEach(item => {
+            const lower = item.toLowerCase();
+            // Include cold items: salads, wraps, fruit, sides, cold items, or explicitly chilled
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool') ||
+                lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
+                lower.includes('kale') || lower.includes('chips') || lower.includes('cookie') ||
+                lower.includes('brownie') || lower.includes('side') || lower.includes('parfait')) {
+                coldItems.push(item);
+            }
+        });
+    }
+    
+    // Process meal_boxes - include cold/chilled items (but not hot ones)
     if (data.meal_boxes && data.meal_boxes !== 'N/A') {
         const boxes = String(data.meal_boxes).split(/<br\s*\/?>|\n/).map(s => s.trim()).filter(Boolean);
         boxes.forEach(box => {
-            // For meal boxes, include if they contain cold items
             const lower = box.toLowerCase();
-            if (lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
+            // Skip if it's a hot item (already handled in hot section)
+            if (lower.includes('nugget') || lower.includes('sandwich') || lower.includes('chicken') ||
+                lower.includes('strip') || lower.includes('hot') || lower.includes('mac') ||
+                lower.includes('grilled') || lower.includes('fried')) {
+                return; // Skip, handled by hot section
+            }
+            // Include if explicitly cold/chilled or contains cold items
+            if (lower.includes('chilled') || lower.includes('cold') || lower.includes('cool') ||
+                lower.includes('salad') || lower.includes('wrap') || lower.includes('fruit') ||
                 lower.includes('chips') || lower.includes('cookie') || lower.includes('brownie')) {
                 coldItems.push(box);
             }
