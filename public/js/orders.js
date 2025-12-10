@@ -670,7 +670,7 @@ function getHotFoodOnly(data) {
             // Include hot items: sandwiches, nuggets, strips, chicken, hot items
             if (lower.includes('sandwich') || lower.includes('nugget') || lower.includes('strip') || 
                 lower.includes('chicken') || lower.includes('hot') || lower.includes('grilled') ||
-                lower.includes('fried') || lower.includes('spicy') || lower.includes('mac')) {
+                lower.includes('fried') || lower.includes('spicy') || lower.includes('mac') || lower.includes('minis')) {
                 hotItems.push(item);
             }
         });
