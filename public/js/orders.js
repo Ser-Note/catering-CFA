@@ -581,6 +581,14 @@ function formatSauces(data) {
 
   if (!lines.length) return '<em>None</em>';
 
+  // Fix malformed sauce strings like "8 x oz Sauce" to "1 x 8oz Sauce"
+  lines = lines.map(line => {
+    if (line.includes(' x oz ')) {
+      return line.replace(/(\d+)\s*x\s*oz\s+/i, (match, num) => `1 x ${num}oz `);
+    }
+    return line;
+  });
+
   const idSafe = 'sauces_' + Math.random().toString(36).slice(2, 9);
   return `
     <div class="tray-toggle" onclick="toggleTrayDetails('${idSafe}', this)">
