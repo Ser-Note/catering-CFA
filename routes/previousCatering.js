@@ -1,48 +1,37 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
-// CSV parsing no longer needed for JSON files
+const { cateringOrderDB } = require("../database/db");
 
 const router = express.Router();
 
-// ✅ Correct file path (no leading slash)
-const cateringFile = path.join(__dirname, "..", "data", "catering.json");
-
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    // 1️⃣ Check file existence
-    if (!fs.existsSync(cateringFile)) {
-      console.warn("⚠️ catering.json not found:", cateringFile);
-      return res.render("catering", { rows: [] });
-    }
+    // Get all catering orders from database
+    const orders = await cateringOrderDB.getAll();
 
-    // 2️⃣ Read file contents
-    const cateringData = JSON.parse(fs.readFileSync(cateringFile, "utf8"));
-
-    // 3️⃣ Convert JSON objects to array format for template compatibility
-    const rows = cateringData.map(order => [
+    // Convert to array format for template compatibility
+    const rows = orders.map(order => [
       order.id,
-      order.orderDate,
+      order.order_date,
       order.organization,
-      order.numSandwiches,
-      order.otherItems,
+      order.num_sandwiches,
+      order.other_items,
       order.sauces,
       order.cost,
       order.paid ? 1 : 0,
-      order.orderType,
-      order.timeOfDay,
-      order.contactName,
-      order.contactPhone,
+      order.order_type,
+      order.time_of_day,
+      order.contact_name,
+      order.contact_phone,
       order.pickles,
-      order.numBags,
+      order.num_bags,
       order.creator
     ]);
 
-    // 4️⃣ Render template
+    // Render template
     res.render("catering", { rows });
 
   } catch (error) {
-    console.error("🚨 Error reading catering file:", error);
+    console.error("🚨 Error reading catering orders from database:", error);
     res.status(500).send("Server Error while loading catering data.");
   }
 });
